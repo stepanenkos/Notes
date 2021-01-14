@@ -1,0 +1,32 @@
+<resources>
+    <string name="app_name">Notes</string>
+    <string name="title_notes">Заметки</string>
+    <string name="title_note_add">Новая заметка</string>
+    <string name="title_settings">Настройки</string>
+    <string name="fragment_login_button_close">Закрыть</string>
+    <string name="fragment_login_button_sign_up">Регистрация</string>
+    <string name="fragment_login_button_sign_in">Войти</string>
+    <string name="fragment_login_text_view_forgot_password">Забыли пароль?</string>
+    <string name="fragment_login_hint_enter_password">Введите пароль</string>
+    <string name="fragment_login_label_password">Пароль</string>
+    <string name="fragment_login_hint_enter_email">Введите адрес электронной почты</string>
+    <string name="fragment_login_label_email">Адрес электронной почты</string>
+    <string name="fragment_login_title_authorization">Авторизация</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="fragment_forgot_password_text_view_information">На введённый электронный адрес будет отправлена ссылка для сброса пароля</string>
+    <string name="action_close">Закрыть</string>
+    <string name="action_send">Отправить</string>
+    <string name="fragment_forgot_password_title_password_recovery">Восстановление пароля</string>
+    <string name="fragment_forgot_password_information_text_letter_send">Письмо отправлено на указанную почту</string>
+    <string name="fragment_forgot_password_information_text_enter_email">Введите адрес электронной почты</string>
+    <string name="fragment_forgot_password_information_text_enter_correct_email">Введите корректный адрес электронной почты</string>
+    <string name="fragment_login_dialog_information_text_all_fields_must_be_filled">Все поля должны быть заполнены.</string>
+    <string name="fragment_login_dialog_information_text_you_are_logged_in_as">"Вы вошли как:\n\n%1s\n%2s"</string>
+    <string name="fragment_login_dialog_error_text_no_internet_connection">Нет соединения с интернетом</string>
+    <string name="fragment_login_dialog_error_text_user_not_registered">Пользователь с таким адресом электронной почты не зарегистрирован.</string>
+    <string name="fragment_login_dialog_error_text_invalid_email_or_password">Неверный адрес электронной почты или пароль</string>
+    <string name="fragment_login_dialog_request_id_token_for_google_sign_in"></string>
+    <string name="action_exit">Выйти</string>
+    <string name="fragment_signed_title_profile">Профиль</string>
+</resources>
