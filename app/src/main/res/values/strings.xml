@@ -26,7 +26,11 @@
     <string name="fragment_login_dialog_error_text_no_internet_connection">Нет соединения с интернетом</string>
     <string name="fragment_login_dialog_error_text_user_not_registered">Пользователь с таким адресом электронной почты не зарегистрирован.</string>
     <string name="fragment_login_dialog_error_text_invalid_email_or_password">Неверный адрес электронной почты или пароль</string>
-    <string name="fragment_login_dialog_request_id_token_for_google_sign_in"></string>
+    <string name="fragment_login_dialog_request_id_token_for_google_sign_in">714054521708-vv77ccoadld79eh0n3f5o74nknas7qse.apps.googleusercontent.com</string>
     <string name="action_exit">Выйти</string>
     <string name="fragment_signed_title_profile">Профиль</string>
+    <string name="fragment_editor_hint_title_note">Заголовок заметки</string>
+    <string name="drawer_menu_notes">Заметки</string>
+    <string name="drawer_menu_new_note">Новая заметка</string>
+    <string name="drawer_menu_settings">Настройки</string>
 </resources>

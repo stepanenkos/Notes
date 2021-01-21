@@ -14,13 +14,16 @@ interface NotesDao {
     fun getAllNotes(): Flow<List<NoteData>>
 
     @Query("SELECT * FROM notes WHERE id=(:noteId)")
-    fun getNoteById(noteId: Long): Flow<NoteData>
+    fun getNoteById(noteId: String): Flow<NoteData>
 
     @Update
     fun updateNote(noteData: NoteData)
 
     @Insert
     fun addNote(noteData: NoteData)
+
+    @Insert
+    fun fillRoomDatabaseFromFirebaseDatabase(listNoteData: List<NoteData>)
 
     @Delete
     fun deleteNote(noteData: NoteData)

@@ -41,49 +41,43 @@
         android:text="Выйти"
         />
 
-    <TextView
-        android:id="@+id/fragment_login_text_view_email"
+    <com.google.android.material.textfield.TextInputLayout
+        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="56dp"
         android:layout_marginHorizontal="@dimen/margin_8x"
-        android:layout_marginTop="@dimen/margin_8x"
-        android:fontFamily="@font/roboto_mono_bold"
-        android:text="@string/fragment_login_label_email"
-        android:textStyle="bold"
-        />
+        android:layout_marginTop="@dimen/margin_8x">
+        <EditText
+            android:id="@+id/fragment_login_edit_text_email"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:ems="10"
+            android:textSize="@dimen/text_size_14x"
+            android:layout_marginHorizontal="@dimen/margin_8x"
+            android:hint="@string/fragment_login_hint_enter_email"
+            android:inputType="textEmailAddress"
+            />
 
-    <EditText
-        android:id="@+id/fragment_login_edit_text_email"
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <com.google.android.material.textfield.TextInputLayout
+        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:ems="10"
-        android:textSize="@dimen/text_size_14x"
+        android:layout_height="56dp"
         android:layout_marginHorizontal="@dimen/margin_8x"
-        android:hint="@string/fragment_login_hint_enter_email"
-        android:inputType="textEmailAddress"
-        />
+        android:layout_marginTop="@dimen/margin_8x">
+        <EditText
+            android:id="@+id/fragment_login_edit_text_password"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:ems="10"
+            android:textSize="@dimen/text_size_14x"
+            android:layout_marginHorizontal="8dp"
+            android:hint="@string/fragment_login_hint_enter_password"
+            android:inputType="textPassword"
+            />
 
-    <TextView
-        android:id="@+id/fragment_login_text_view_password"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginHorizontal="@dimen/margin_8x"
-        android:layout_marginTop="@dimen/margin_16x"
-        android:fontFamily="@font/roboto_mono_bold"
-        android:text="@string/fragment_login_label_password"
-        android:textStyle="bold"
-        />
-
-    <EditText
-        android:id="@+id/fragment_login_edit_text_password"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:ems="10"
-        android:textSize="@dimen/text_size_14x"
-        android:layout_marginHorizontal="8dp"
-        android:hint="@string/fragment_login_hint_enter_password"
-        android:inputType="textPassword"
-        />
+    </com.google.android.material.textfield.TextInputLayout>
 
     <TextView
         android:id="@+id/fragment_login_text_view_forgot_password"

@@ -4,7 +4,6 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:layout_margin="16dp"
     android:elevation="5dp"
     app:cardElevation="5dp"
     >
@@ -29,6 +28,7 @@
                 android:layout_height="wrap_content"
                 android:clickable="true"
                 android:focusable="true"
+                android:visibility="gone"
                 android:padding="4dp"
                 android:src="@drawable/ic_format_bold"
                 />
@@ -39,6 +39,7 @@
                 android:layout_height="wrap_content"
                 android:clickable="true"
                 android:focusable="true"
+                android:visibility="gone"
                 android:padding="4dp"
                 android:src="@drawable/ic_format_underlined"
                 />
@@ -49,6 +50,7 @@
                 android:layout_height="wrap_content"
                 android:clickable="true"
                 android:focusable="true"
+                android:visibility="gone"
                 android:padding="4dp"
                 android:src="@drawable/ic_format_italic"
                 />
@@ -83,9 +85,10 @@
             android:layout_marginHorizontal="8dp"
             android:layout_marginTop="8dp"
             android:background="@drawable/bg_edit_text"
-            android:hint="Заголовок заметки"
+            android:hint="@string/fragment_editor_hint_title_note"
             android:padding="4dp"
             android:paddingStart="8dp"
+            android:paddingEnd="8dp"
             android:singleLine="true"
             android:textColor="@color/black"
             android:textColorHint="#808080"

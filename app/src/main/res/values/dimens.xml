@@ -8,4 +8,5 @@
     <dimen name="text_size_14x">14sp</dimen>
     <dimen name="margin_32x">32dp</dimen>
     <dimen name="text_size_12x">12sp</dimen>
+    <dimen name="padding_8x">8dp</dimen>
 </resources>
