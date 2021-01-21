@@ -1,46 +1,69 @@
 package kz.stepanenkos.notes.common.firebasedatabase.data.datasource
 
 import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.database.DatabaseReference
-import kotlinx.coroutines.tasks.await
+import com.google.firebase.database.DataSnapshot
+import com.google.firebase.database.DatabaseError
+import com.google.firebase.database.FirebaseDatabase
+import com.google.firebase.database.ValueEventListener
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.cancel
+import kotlinx.coroutines.channels.awaitClose
+import kotlinx.coroutines.channels.sendBlocking
+import kotlinx.coroutines.flow.callbackFlow
+import kotlinx.coroutines.launch
 import kz.stepanenkos.notes.NoteData
 
+private const val USERS_NODE = "users"
 private const val NOTES_NODE_CHILD = "notes"
 
 class DefaultFirebaseDatabaseSource(
-    private val dbReference: DatabaseReference,
+    private val firebaseDatabase: FirebaseDatabase,
     private val auth: FirebaseAuth
 ) : FirebaseDatabaseSource {
+    private val usersNode = firebaseDatabase.getReference(USERS_NODE)
+
     override fun saveNote(noteData: NoteData) {
         auth.currentUser?.uid?.let {
-            dbReference.child(it).child(NOTES_NODE_CHILD).child(noteData.id).setValue(noteData)
+            firebaseDatabase.goOnline()
+            usersNode.child(it).child(NOTES_NODE_CHILD).child(noteData.id).setValue(noteData)
         }
     }
 
     override fun saveAllNotes(listNoteData: List<NoteData>) {
         auth.currentUser?.uid?.let {
-            dbReference.child(it).child(NOTES_NODE_CHILD).setValue(listNoteData)
+            firebaseDatabase.goOnline()
+            usersNode.child(it).child(NOTES_NODE_CHILD).setValue(listNoteData)
         }
     }
 
-    override suspend fun getAllNotes(): List<NoteData> {
-        val allNotes: MutableList<NoteData> = mutableListOf()
+    @ExperimentalCoroutinesApi
+    override suspend fun getAllNotes() = callbackFlow<List<NoteData>> {
         auth.currentUser?.uid?.let {
-            val await = dbReference.child(it).child(NOTES_NODE_CHILD).get().await()
-            if (await.exists()) {
-                await.children.forEach { dataS ->
-                    allNotes.add(
-                        dataS.getValue(NoteData::class.java)!!
-                    )
-                }
-            }
+            usersNode.child(it).child(NOTES_NODE_CHILD)
+                .addListenerForSingleValueEvent(object : ValueEventListener {
+                    override fun onDataChange(snapshot: DataSnapshot) {
+                        if (snapshot.exists()) {
+                            GlobalScope.launch(Dispatchers.IO) {
+                                val list: MutableList<NoteData> = mutableListOf()
+                                snapshot.children.forEach { dataSnapshot ->
+                                    list.add(dataSnapshot.getValue(NoteData::class.java)!!)
+                                }
+                                this@callbackFlow.sendBlocking(list)
+                            }
+                        }
+                    }
+                    override fun onCancelled(error: DatabaseError) {}
+                })
         }
-        return allNotes
+        awaitClose { cancel() }
     }
 
     override fun updateNote(noteData: NoteData) {
         auth.currentUser?.uid?.let {
-            dbReference.child(it).child(NOTES_NODE_CHILD).updateChildren(
+            firebaseDatabase.goOnline()
+            usersNode.child(it).child(NOTES_NODE_CHILD).updateChildren(
                 mapOf(noteData.id to noteData)
             )
         }
@@ -48,7 +71,8 @@ class DefaultFirebaseDatabaseSource(
 
     override fun deleteNote(noteData: NoteData) {
         auth.currentUser?.uid?.let {
-            dbReference.child(it).child(NOTES_NODE_CHILD).child(noteData.id).removeValue()
+            firebaseDatabase.goOnline()
+            usersNode.child(it).child(NOTES_NODE_CHILD).child(noteData.id).removeValue()
         }
     }
 }

@@ -1,5 +1,7 @@
 package kz.stepanenkos.notes.common.firebasedatabase.data
 
+import androidx.lifecycle.LiveData
+import kotlinx.coroutines.flow.Flow
 import kz.stepanenkos.notes.NoteData
 import kz.stepanenkos.notes.common.firebasedatabase.data.datasource.FirebaseDatabaseSource
 import kz.stepanenkos.notes.common.firebasedatabase.domain.FirebaseDatabaseRepository
@@ -14,7 +16,7 @@ class DefaultFirebaseDatabaseRepository(
     override fun saveAllNotes(listNoteData: List<NoteData>) {
     }
 
-    override suspend fun getAllNotes(): List<NoteData> {
+    override suspend fun getAllNotes(): Flow<List<NoteData>> {
         return firebaseDatabaseSource.getAllNotes()
     }
 

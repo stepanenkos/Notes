@@ -18,7 +18,7 @@ class NotesApplication : Application() {
         super.onCreate()
         AndroidThreeTen.init(this)
         FirebaseApp.initializeApp(this)
-        //FirebaseDatabase.getInstance().setPersistenceEnabled(true)
+        FirebaseDatabase.getInstance().setPersistenceEnabled(true)
         startKoin{
             androidContext(this@NotesApplication)
             modules(

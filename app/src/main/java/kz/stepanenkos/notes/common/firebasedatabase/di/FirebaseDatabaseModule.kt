@@ -17,13 +17,9 @@ val firebaseDatabaseModule: Module = module {
 
     factory<FirebaseDatabaseSource> {
         DefaultFirebaseDatabaseSource(
-            dbReference = get(),
+            firebaseDatabase = get(),
             auth = get()
         )
-    }
-
-    single {
-        get<FirebaseDatabase>().getReference("users")
     }
 
     factory<FirebaseDatabaseRepository> {

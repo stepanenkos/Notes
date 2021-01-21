@@ -1,5 +1,6 @@
 package kz.stepanenkos.notes.common.firebasedatabase.domain
 
+import kotlinx.coroutines.flow.Flow
 import kz.stepanenkos.notes.NoteData
 
 interface FirebaseDatabaseRepository {
@@ -7,7 +8,7 @@ interface FirebaseDatabaseRepository {
 
     fun saveAllNotes(listNoteData: List<NoteData>)
 
-    suspend fun getAllNotes(): List<NoteData>
+    suspend fun getAllNotes(): Flow<List<NoteData>>
 
     fun updateNote(noteData: NoteData)
 

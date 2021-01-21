@@ -28,6 +28,7 @@
         android:id="@+id/editorFragment"
         android:name="kz.stepanenkos.notes.editor.presentation.EditorFragment"
         android:label="AddNoteFragment"
+        app:launchSingleTop="true"
         tools:layout="@layout/fragment_editor"
         >
         <action
@@ -44,6 +45,7 @@
             />
     </fragment>
     <fragment
+
         android:id="@+id/settingsFragment"
         android:name="kz.stepanenkos.notes.settings.SettingsFragment"
         android:label="fragment_settings"
