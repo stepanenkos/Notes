@@ -1,4 +1,4 @@
-package kz.stepanenkos.notes.login.presentation
+package kz.stepanenkos.notes.authorization.presentation
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -41,7 +41,7 @@ class SignedFragment : DialogFragment() {
         }
 
         closeButton.setOnClickListener {
-            dismiss()
+            findNavController().popBackStack()
         }
     }
 

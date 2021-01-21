@@ -1,4 +1,4 @@
-package kz.stepanenkos.notes.login.presentation
+package kz.stepanenkos.notes.authorization.presentation
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -18,10 +18,6 @@ class ForgotPasswordFragment : DialogFragment() {
     private lateinit var sendButton: Button
     private lateinit var closeButton: Button
     private lateinit var informationTextView: TextView
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-    }
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -53,5 +49,4 @@ class ForgotPasswordFragment : DialogFragment() {
             findNavController().popBackStack()
         }
     }
-
 }

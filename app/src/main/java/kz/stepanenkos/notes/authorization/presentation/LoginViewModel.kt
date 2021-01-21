@@ -1,5 +1,6 @@
-package kz.stepanenkos.notes.login.presentation
+package kz.stepanenkos.notes.authorization.presentation
 
+import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -7,10 +8,10 @@ import androidx.lifecycle.viewModelScope
 import com.google.firebase.auth.FirebaseUser
 import kotlinx.coroutines.launch
 import kz.stepanenkos.notes.common.model.LoginData
-import kz.stepanenkos.notes.login.domain.LoginRepository
+import kz.stepanenkos.notes.authorization.domain.AuthRepository
 
 class LoginViewModel(
-    private val loginRepository: LoginRepository
+    private val authRepository: AuthRepository
 ) : ViewModel() {
     private val _signIn: MutableLiveData<FirebaseUser> = MutableLiveData()
     private val _errorSignIn: MutableLiveData<Throwable> = MutableLiveData()
@@ -24,7 +25,7 @@ class LoginViewModel(
 
     fun signIn(email: String, password: String) {
         viewModelScope.launch {
-            when (val signInData = loginRepository.signIn(email, password)) {
+            when (val signInData = authRepository.signIn(email, password)) {
                 is LoginData.Success -> {
                     _signIn.postValue(signInData.result)
                 }
@@ -34,11 +35,12 @@ class LoginViewModel(
                 }
             }
         }
+        Log.d("TAG", "signIn: inViewModel")
     }
 
     fun signUp(email: String, password: String) {
         viewModelScope.launch {
-            when (val signUpData = loginRepository.signUp(email, password)) {
+            when (val signUpData = authRepository.signUp(email, password)) {
                 is LoginData.Success -> {
                     _signUp.postValue(signUpData.result)
                 }
@@ -51,14 +53,14 @@ class LoginViewModel(
     }
 
     fun forgotPassword(email: String) {
-        loginRepository.forgotPassword(email)
+        authRepository.forgotPassword(email)
     }
 
     fun getCurrentUser(): FirebaseUser? {
-        return loginRepository.currentUser()
+        return authRepository.currentUser()
     }
 
     fun signOut() {
-        loginRepository.signOut()
+        authRepository.signOut()
     }
 }

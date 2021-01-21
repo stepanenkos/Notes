@@ -1,27 +1,27 @@
-package kz.stepanenkos.notes.login.di
+package kz.stepanenkos.notes.authorization.di
 
-import androidx.core.content.ContentProviderCompat.requireContext
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInClient
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
-import kz.stepanenkos.notes.R
-import kz.stepanenkos.notes.login.data.datasource.DefaultFirebaseSource
-import kz.stepanenkos.notes.login.data.datasource.FirebaseSource
-import kz.stepanenkos.notes.login.data.DefaultLoginRepository
-import kz.stepanenkos.notes.login.domain.LoginRepository
-import kz.stepanenkos.notes.login.presentation.LoginViewModel
+import kz.stepanenkos.notes.authorization.data.datasource.DefaultFirebaseAuthSource
+import kz.stepanenkos.notes.authorization.data.datasource.FirebaseAuthSource
+import kz.stepanenkos.notes.authorization.data.DefaultAuthRepository
+import kz.stepanenkos.notes.authorization.domain.AuthRepository
+import kz.stepanenkos.notes.authorization.presentation.LoginViewModel
 import org.koin.android.ext.koin.androidContext
 import org.koin.androidx.viewmodel.dsl.viewModel
 import org.koin.core.module.Module
 import org.koin.dsl.module
+
 private const val REQUEST_ID_TOKEN = "714054521708-vv77ccoadld79eh0n3f5o74nknas7qse.apps.googleusercontent.com"
+
 val loginModule: Module = module {
-    factory<LoginRepository> {
-        DefaultLoginRepository(get())
+    factory<AuthRepository> {
+        DefaultAuthRepository(get())
     }
 
-    factory<FirebaseSource> {
-        DefaultFirebaseSource(get())
+    factory<FirebaseAuthSource> {
+        DefaultFirebaseAuthSource(get())
     }
 
     viewModel {

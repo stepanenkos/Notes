@@ -1,22 +1,22 @@
-package kz.stepanenkos.notes.login.data
+package kz.stepanenkos.notes.authorization.data
 
 import com.google.firebase.FirebaseException
 import com.google.firebase.auth.FirebaseAuthException
 import com.google.firebase.auth.FirebaseUser
-import kz.stepanenkos.notes.login.data.datasource.FirebaseSource
+import kz.stepanenkos.notes.authorization.data.datasource.FirebaseAuthSource
+import kz.stepanenkos.notes.authorization.domain.AuthRepository
 import kz.stepanenkos.notes.common.model.LoginData
-import kz.stepanenkos.notes.login.domain.LoginRepository
 
-class DefaultLoginRepository(
-    private val firebaseSource: FirebaseSource
-) : LoginRepository {
+class DefaultAuthRepository(
+    private val firebaseAuthSource: FirebaseAuthSource
+) : AuthRepository {
 
     override suspend fun signIn(
         email: String,
         password: String
     ): LoginData<FirebaseUser?, Throwable> {
         return try {
-            firebaseSource.signIn(email, password)
+            firebaseAuthSource.signIn(email, password)
         } catch (e: FirebaseAuthException) {
             LoginData.Error(e)
         } catch (e: FirebaseException) {
@@ -29,7 +29,7 @@ class DefaultLoginRepository(
         password: String
     ): LoginData<FirebaseUser, Throwable> {
         return try {
-            firebaseSource.signUp(email, password)
+            firebaseAuthSource.signUp(email, password)
         } catch (e: FirebaseAuthException) {
             LoginData.Error(e)
         } catch (e: FirebaseException) {
@@ -38,13 +38,12 @@ class DefaultLoginRepository(
     }
 
     override fun forgotPassword(email: String) {
-        firebaseSource.forgotPassword(email)
+        firebaseAuthSource.forgotPassword(email)
     }
 
     override fun signOut() {
-        firebaseSource.signOut()
+        firebaseAuthSource.signOut()
     }
 
-    override fun currentUser(): FirebaseUser? = firebaseSource.currentUser()
-
+    override fun currentUser(): FirebaseUser? = firebaseAuthSource.currentUser()
 }

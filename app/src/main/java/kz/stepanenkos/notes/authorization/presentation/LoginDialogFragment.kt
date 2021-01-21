@@ -1,8 +1,9 @@
-package kz.stepanenkos.notes.login.presentation
+package kz.stepanenkos.notes.authorization.presentation
 
 import android.content.Intent
 import android.os.Bundle
 import android.text.Editable
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -29,21 +30,16 @@ import kz.stepanenkos.notes.R
 import kz.stepanenkos.notes.common.presentation.AbstractTextWatcher
 import org.koin.android.ext.android.inject
 
+private const val RC_SIGN_IN = 9001
 
 class LoginDialogFragment : DialogFragment() {
     private val loginViewModel: LoginViewModel by inject()
 
-    companion object {
-        private const val RC_SIGN_IN = 9001
-    }
-
     private var currentUser: FirebaseUser? = null
-
     private var email: String = ""
     private var password: String = ""
-    private lateinit var emailTextView: TextView
+
     private lateinit var emailEditText: EditText
-    private lateinit var passwordTextView: TextView
     private lateinit var passwordEditText: EditText
     private lateinit var signUpButton: Button
     private lateinit var signInButton: Button
@@ -62,9 +58,7 @@ class LoginDialogFragment : DialogFragment() {
         savedInstanceState: Bundle?
     ): View? {
         val view = inflater.inflate(R.layout.fragment_login, container, false)
-        emailTextView = view.findViewById(R.id.fragment_login_text_view_email)
         emailEditText = view.findViewById(R.id.fragment_login_edit_text_email)
-        passwordTextView = view.findViewById(R.id.fragment_login_text_view_password)
         passwordEditText = view.findViewById(R.id.fragment_login_edit_text_password)
         signUpButton = view.findViewById(R.id.fragment_login_button_sign_up)
         signInButton = view.findViewById(R.id.fragment_login_button_sign_in)
@@ -107,6 +101,7 @@ class LoginDialogFragment : DialogFragment() {
 
         signInButton.setOnClickListener {
             if (email.isNotBlank() && password.isNotBlank()) {
+                Log.d("TAG", "setListeners: $email $password")
                 loginViewModel.signIn(email, password)
             } else {
                 informationTextView.visibility = View.VISIBLE
@@ -128,10 +123,10 @@ class LoginDialogFragment : DialogFragment() {
         }
 
         signOutButton.setOnClickListener {
-            auth.signOut()
             googleSignInClient.signOut()
+            auth.signOut()
             currentUser = null
-            showUnSigned()
+            //showUnSigned()
         }
 
         forgetPasswordTextViewButton.setOnClickListener {
@@ -201,9 +196,7 @@ class LoginDialogFragment : DialogFragment() {
     }
 
     private fun showUnSigned() {
-        emailTextView.visibility = View.VISIBLE
         emailEditText.visibility = View.VISIBLE
-        passwordTextView.visibility = View.VISIBLE
         passwordEditText.visibility = View.VISIBLE
         signUpButton.visibility = View.VISIBLE
         signInButton.visibility = View.VISIBLE

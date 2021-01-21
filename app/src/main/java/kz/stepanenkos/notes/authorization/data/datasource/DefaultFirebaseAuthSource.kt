@@ -1,14 +1,15 @@
-package kz.stepanenkos.notes.login.data.datasource
+package kz.stepanenkos.notes.authorization.data.datasource
 
+import android.util.Log
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseAuthException
 import com.google.firebase.auth.FirebaseUser
 import kotlinx.coroutines.tasks.await
 import kz.stepanenkos.notes.common.model.LoginData
 
-class DefaultFirebaseSource(
+class DefaultFirebaseAuthSource(
     private val auth: FirebaseAuth
-) : FirebaseSource {
+) : FirebaseAuthSource {
     override suspend fun signIn(email: String, password: String): LoginData<FirebaseUser?, Throwable> {
         auth.signInWithEmailAndPassword(email, password).await()
         return if (auth.currentUser != null) {
