@@ -67,7 +67,7 @@ class NotesFragment : Fragment(), NoteClickListener {
 
     override fun onNoteClick(noteData: NoteData) {
         val bundle = Bundle().apply {
-            putLong("ID", noteData.id)
+            putString("ID", noteData.id)
         }
         findNavController().navigate(R.id.editorFragment, bundle)
     }

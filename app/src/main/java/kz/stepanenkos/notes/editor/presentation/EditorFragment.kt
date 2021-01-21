@@ -1,14 +1,10 @@
 package kz.stepanenkos.notes.editor.presentation
 
-import android.graphics.Typeface
 import android.os.Bundle
-import android.text.Editable
 import android.text.Html
 import android.text.Spannable
 import android.text.SpannableString
-import android.text.style.StyleSpan
 import android.text.style.UnderlineSpan
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -17,7 +13,6 @@ import android.widget.ImageView
 import androidx.fragment.app.Fragment
 import kz.stepanenkos.notes.NoteData
 import kz.stepanenkos.notes.R
-import kz.stepanenkos.notes.common.presentation.AbstractTextWatcher
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import org.threeten.bp.Instant
 import org.threeten.bp.ZoneId
@@ -59,64 +54,16 @@ class EditorFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        arguments?.getLong("ID")?.let { editorViewModel.getNoteById(it) }
-        editorViewModel.noteById.observe(viewLifecycleOwner, {
+        arguments?.getString("ID")?.let { editorViewModel.getNoteById(it) }
+        editorViewModel.noteById.observe(viewLifecycleOwner, { it ->
             isForEdit = true
             noteData = it
             titleNote.isEnabled = false
             contentNote.isEnabled = false
             titleNote.setText(it.titleNote)
-            contentNote.setText(Html.fromHtml(it.contentNote))
-        })
-        contentNote.addTextChangedListener(object : AbstractTextWatcher() {
-            override fun afterTextChanged(s: Editable?) {
-                if (isBold) {
-                    contentNote.text.setSpan(
-                        StyleSpan(Typeface.BOLD),
-                        0,
-                        contentNote.text.length,
-                        Spannable.SPAN_EXCLUSIVE_INCLUSIVE
-                    )
-                    var leftSpan: StyleSpan? = null
-                    val leftSpans = contentNote.text.getSpans(contentNote.selectionStart, contentNote.selectionStart, StyleSpan::class.java)
-                    if (leftSpans.isNotEmpty()) {
-                        leftSpan = leftSpans[0]
-                    }
-                    var rightSpan: StyleSpan? = null
-                    val rightSpans = contentNote.text.getSpans(contentNote.selectionEnd, contentNote.selectionEnd, StyleSpan::class.java)
-                    if (rightSpans.isNotEmpty()) {
-                        rightSpan = rightSpans[0]
-                    }
-                    val leftSpanStart = contentNote.text.getSpanStart(leftSpan)
-                    val rightSpanEnd = contentNote.text.getSpanEnd(rightSpan)
-                    Log.d("TAG", "afterTextChanged: if getSpanStart $leftSpanStart")
-                    Log.d("TAG", "afterTextChanged: if getSpanEnd $rightSpanEnd")
-                    Log.d("TAG", "afterTextChanged: if getSpans ${contentNote.text.getSpans(0, contentNote.text.length, StyleSpan::class.java)}")
-                } else {
-                    var leftSpan: StyleSpan? = null
-                    val leftSpans = contentNote.text.getSpans(contentNote.selectionStart, contentNote.selectionStart, StyleSpan::class.java)
-                    if (leftSpans.isNotEmpty()) {
-                        leftSpan = leftSpans[0]
-                    }
-                    var rightSpan: StyleSpan? = null
-                    val rightSpans = contentNote.text.getSpans(contentNote.selectionEnd, contentNote.selectionEnd, StyleSpan::class.java)
-                    if (rightSpans.isNotEmpty()) {
-                        rightSpan = rightSpans[0]
-                    }
-                    val leftSpanStart = contentNote.text.getSpanStart(leftSpan)
-                    val rightSpanEnd = contentNote.text.getSpanEnd(rightSpan)
-                    Log.d("TAG", "afterTextChanged: else getSpanStart $leftSpanStart")
-                    Log.d("TAG", "afterTextChanged: else getSpanEnd $rightSpanEnd")
-                    Log.d("TAG", "afterTextChanged: else getSpans ${contentNote.text.getSpans(0, contentNote.text.length, StyleSpan::class.java)}")
-                    contentNote.text.removeSpan(
-                        contentNote.text.getSpans(
-                            rightSpanEnd,
-                            rightSpanEnd,
-                            StyleSpan::class.java
-                        )[0]
-                    )
-                }
-            }
+            //val contentText = it.contentNote.trim()
+            contentNote.setText(Html.fromHtml(it.contentNote).trim())
+
         })
         setOnClickListeners()
     }
@@ -126,9 +73,9 @@ class EditorFragment : Fragment() {
             if (titleNote.text.toString().isNotBlank() &&
                 contentNote.text.toString().isNotBlank() && !isForEdit
             ) {
-                editorViewModel.addNote(
+                editorViewModel.saveNote(
                     titleNote = titleNote.text.toString(),
-                    contentNote = Html.toHtml(contentNote.text)
+                    contentNote = Html.toHtml(contentNote.text),
                 )
                 titleNote.isEnabled = false
                 contentNote.isEnabled = false
@@ -142,7 +89,7 @@ class EditorFragment : Fragment() {
                             Instant.now()
                         ).toString()
                     )
-                )
+                ).toString()
                 editorViewModel.updateNote(noteData)
                 titleNote.isEnabled = false
                 contentNote.isEnabled = false

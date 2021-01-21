@@ -2,20 +2,20 @@ package kz.stepanenkos.notes
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey
-import org.threeten.bp.Instant
-import org.threeten.bp.ZoneId
-import org.threeten.bp.ZonedDateTime
+import java.util.*
 
 @Entity(tableName = "notes")
-data class NoteData(
-    @PrimaryKey(autoGenerate = true) val id: Long = 0,
+data class NoteData @JvmOverloads constructor(
+    @PrimaryKey
+    var id: String = UUID.randomUUID().toString(),
     var titleNote: String = "",
     var contentNote: String = "",
-    var dateOfNote: ZonedDateTime = ZonedDateTime.now(
+/*    var dateOfNote: ZonedDateTime = ZonedDateTime.now(
         ZoneId.of(
             ZoneId.systemDefault().rules.getOffset(
                 Instant.now()
             ).toString()
         )
-    )
+    )*/
+    var dateOfNote: String = ""
 )

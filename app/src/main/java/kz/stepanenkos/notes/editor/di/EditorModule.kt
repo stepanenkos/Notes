@@ -8,7 +8,10 @@ import org.koin.dsl.module
 val addNoteModule: Module = module {
 
     viewModel {
-        EditorViewModel(get())
+        EditorViewModel(
+            databaseRepository = get(),
+            firebaseDatabaseRepository = get()
+        )
     }
 
 }

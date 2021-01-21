@@ -10,9 +10,11 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import kz.stepanenkos.notes.NoteData
 import kz.stepanenkos.notes.common.domain.DatabaseRepository
+import kz.stepanenkos.notes.common.firebasedatabase.domain.FirebaseDatabaseRepository
 
 class NotesViewModel(
-    private val databaseRepository: DatabaseRepository
+    private val databaseRepository: DatabaseRepository,
+    private val firebaseDatabaseRepository: FirebaseDatabaseRepository
 ) : ViewModel() {
     private val _allNotes: MutableLiveData<List<NoteData>> = MutableLiveData()
 
@@ -24,9 +26,14 @@ class NotesViewModel(
 
     private fun getAllNotes() {
         viewModelScope.launch(Dispatchers.IO) {
-            withContext(Dispatchers.Main) {
-                databaseRepository.getAllNotes().collect {
-                    _allNotes.value = it
+            val allNotesInFirebaseDatabase: MutableList<NoteData> = getAllNotesInFirebaseDatabase() as MutableList<NoteData>
+            databaseRepository.getAllNotes().collect {
+                if (it.isEmpty() && allNotesInFirebaseDatabase.isNotEmpty()) {
+                    _allNotes.postValue(allNotesInFirebaseDatabase)
+                    databaseRepository.fillRoomDatabaseFromFirebaseDatabase(allNotesInFirebaseDatabase)
+                } else {
+                    _allNotes.postValue(it)
+                    allNotesInFirebaseDatabase.clear()
                 }
             }
         }
@@ -35,6 +42,15 @@ class NotesViewModel(
     fun deleteNote(noteData: NoteData) {
         viewModelScope.launch(Dispatchers.IO) {
             databaseRepository.deleteNote(noteData)
+            deleteNoteFromFirebaseDatabase(noteData)
         }
+    }
+
+    private fun deleteNoteFromFirebaseDatabase(noteData: NoteData) {
+        firebaseDatabaseRepository.deleteNote(noteData)
+    }
+
+    private suspend fun getAllNotesInFirebaseDatabase(): List<NoteData> {
+        return firebaseDatabaseRepository.getAllNotes()
     }
 }

@@ -1,7 +1,7 @@
 package kz.stepanenkos.notes.editor.presentation
 
-import android.text.SpannableString
 import android.text.Spanned
+import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -12,12 +12,14 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import kz.stepanenkos.notes.NoteData
 import kz.stepanenkos.notes.common.domain.DatabaseRepository
+import kz.stepanenkos.notes.common.firebasedatabase.domain.FirebaseDatabaseRepository
 import org.threeten.bp.Instant
 import org.threeten.bp.ZoneId
 import org.threeten.bp.ZonedDateTime
 
 class EditorViewModel(
-    private val databaseRepository: DatabaseRepository
+    private val databaseRepository: DatabaseRepository,
+    private val firebaseDatabaseRepository: FirebaseDatabaseRepository
 ) : ViewModel() {
     private val _noteById: MutableLiveData<NoteData> = MutableLiveData()
     private val _onBold: MutableLiveData<Spanned> = MutableLiveData()
@@ -25,38 +27,30 @@ class EditorViewModel(
     private var toHtml: String? = null
     val noteById: LiveData<NoteData> = _noteById
     val onBold: LiveData<Spanned> = _onBold
-    private var spannableString: SpannableString? = null
-    private var oldStartIndex = 0
-    private var oldEndIndex = 0
-    fun addNote(titleNote: String, contentNote: String) {
-        addNoteToDatabase(
-            NoteData(
-                titleNote = titleNote,
-                contentNote = contentNote,
-                dateOfNote = ZonedDateTime.now(
-                    ZoneId.of(
-                        ZoneId.systemDefault().rules.getOffset(
-                            Instant.now()
-                        ).toString()
-                    )
+    fun saveNote(titleNote: String, contentNote: String) {
+        val noteData = NoteData(
+            titleNote = titleNote,
+            contentNote = contentNote,
+            dateOfNote = ZonedDateTime.now(
+                ZoneId.of(
+                    ZoneId.systemDefault().rules.getOffset(
+                        Instant.now()
+                    ).toString()
                 )
-            )
+            ).toString()
         )
-    }
-
-    private fun addNoteToDatabase(noteData: NoteData) {
-        viewModelScope.launch(Dispatchers.IO) {
-            databaseRepository.addNote(noteData)
-        }
+        saveNoteToRoomDatabase(noteData)
+        saveNoteToFirebaseDatabase(noteData)
     }
 
     fun updateNote(noteData: NoteData) {
         viewModelScope.launch(Dispatchers.IO) {
             databaseRepository.updateNote(noteData)
         }
+        updateNoteInFirebaseDatabase(noteData)
     }
 
-    fun getNoteById(noteId: Long) {
+    fun getNoteById(noteId: String) {
         viewModelScope.launch(Dispatchers.IO) {
             databaseRepository.getNoteById(noteId).collect {
                 withContext(Dispatchers.Main) { _noteById.value = it }
@@ -64,4 +58,17 @@ class EditorViewModel(
         }
     }
 
+    private fun saveNoteToRoomDatabase(noteData: NoteData) {
+        viewModelScope.launch(Dispatchers.IO) {
+            databaseRepository.addNote(noteData)
+        }
+    }
+
+    private fun saveNoteToFirebaseDatabase(noteData: NoteData) {
+        firebaseDatabaseRepository.saveNote(noteData)
+    }
+
+    private fun updateNoteInFirebaseDatabase(noteData: NoteData) {
+        firebaseDatabaseRepository.updateNote(noteData)
+    }
 }
