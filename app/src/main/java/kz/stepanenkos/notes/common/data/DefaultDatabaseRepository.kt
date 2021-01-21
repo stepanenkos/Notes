@@ -16,11 +16,15 @@ class DefaultDatabaseRepository(
         notesDao.addNote(noteData)
     }
 
+    override fun fillRoomDatabaseFromFirebaseDatabase(listNoteData: List<NoteData>) {
+        notesDao.fillRoomDatabaseFromFirebaseDatabase(listNoteData)
+    }
+
     override fun getAllNotes(): Flow<List<NoteData>> {
         return notesDao.getAllNotes()
     }
 
-    override fun getNoteById(noteId: Long): Flow<NoteData> {
+    override fun getNoteById(noteId: String): Flow<NoteData> {
         return notesDao.getNoteById(noteId)
     }
 
