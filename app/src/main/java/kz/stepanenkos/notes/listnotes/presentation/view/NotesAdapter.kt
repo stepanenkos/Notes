@@ -21,8 +21,4 @@ class NotesAdapter(
     override fun onBindViewHolder(holder: NotesViewHolder, position: Int) {
         holder.onBind(getItem(position))
     }
-
-    fun removeItem(position: Int) {
-        notifyItemRemoved(position)
-    }
 }

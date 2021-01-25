@@ -26,7 +26,6 @@ class SignedFragment : DialogFragment() {
     ): View? {
         val view = inflater.inflate(R.layout.fragment_signed, container, false)
         userLoggedTextView = view.findViewById(R.id.fragment_signed_text_view_you_are_logged_in_as)
-        signOutButton = view.findViewById(R.id.fragment_signed_button_sign_out)
         closeButton = view.findViewById(R.id.fragment_signed_button_close)
         return view
     }
@@ -35,13 +34,9 @@ class SignedFragment : DialogFragment() {
         super.onViewCreated(view, savedInstanceState)
         val currentUser = loginViewModel.getCurrentUser()
         updateUI(currentUser)
-        signOutButton.setOnClickListener {
-            loginViewModel.signOut()
-            findNavController().popBackStack()
-        }
 
         closeButton.setOnClickListener {
-            findNavController().popBackStack()
+            findNavController().navigate(R.id.notesFragment)
         }
     }
 

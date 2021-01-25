@@ -1,6 +1,5 @@
 package kz.stepanenkos.notes.listnotes.presentation
 
-import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -10,12 +9,14 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 import kz.stepanenkos.notes.NoteData
-import kz.stepanenkos.notes.common.domain.DatabaseRepository
+import kz.stepanenkos.notes.common.roomdatabase.domain.DatabaseRepository
 import kz.stepanenkos.notes.common.firebasedatabase.domain.FirebaseDatabaseRepository
+import kz.stepanenkos.notes.user.data.datasource.UserCredentialsDataSource
 
 class NotesViewModel(
     private val databaseRepository: DatabaseRepository,
-    private val firebaseDatabaseRepository: FirebaseDatabaseRepository
+    private val firebaseDatabaseRepository: FirebaseDatabaseRepository,
+    private val userCredentialsDataSource: UserCredentialsDataSource
 ) : ViewModel() {
     private var _allNotesFromDB: MutableLiveData<List<NoteData>> = MutableLiveData()
     var allNotes: LiveData<List<NoteData>> = _allNotesFromDB
@@ -24,22 +25,30 @@ class NotesViewModel(
         getAllNotes()
     }
 
-    private fun getAllNotes() {
-
+    private fun deleteAllNotes() {
         viewModelScope.launch(Dispatchers.IO) {
-            databaseRepository.getAllNotes().collect {listNoteDataFromRoomDB ->
-                if (listNoteDataFromRoomDB.isEmpty()) {
-                    getAllNotesInFirebaseDatabase().collect {listNoteDataFromFirebaseDB ->
-                        _allNotesFromDB.postValue(listNoteDataFromFirebaseDB)
-                        if(listNoteDataFromFirebaseDB.size > listNoteDataFromRoomDB.size) {
-                            databaseRepository.fillRoomDatabaseFromFirebaseDatabase(listNoteDataFromFirebaseDB)
-                        }
-                    }
+            databaseRepository.deleteAllNotes()
+        }
+    }
+
+    private fun getAllNotes() {
+        viewModelScope.launch(Dispatchers.IO) {
+            if (userCredentialsDataSource.getEmail() != userCredentialsDataSource.getLastUserEmail()) {
+                deleteAllNotes()
+            }
+            databaseRepository.getAllNotes().collect { listNoteDataFromRoomDB ->
+                if (listNoteDataFromRoomDB.isNotEmpty()) {
+                    _allNotesFromDB.postValue(listNoteDataFromRoomDB.sortedWith{noteData1, noteData2 -> (noteData2.dateOfNote - noteData1.dateOfNote).toInt()})
                 } else {
-                    _allNotesFromDB.postValue(listNoteDataFromRoomDB)
+                    getAllNotesInFirebaseDatabase().collect { listNoteDataFromFirebaseDB ->
+                        databaseRepository.fillRoomDatabaseFromFirebaseDatabase(
+                            listNoteDataFromFirebaseDB
+                        )
+                        _allNotesFromDB.postValue(listNoteDataFromFirebaseDB)
+
+                    }
                 }
             }
-
         }
     }
 
@@ -57,4 +66,6 @@ class NotesViewModel(
     private suspend fun getAllNotesInFirebaseDatabase(): Flow<List<NoteData>> {
         return firebaseDatabaseRepository.getAllNotes()
     }
+
+
 }

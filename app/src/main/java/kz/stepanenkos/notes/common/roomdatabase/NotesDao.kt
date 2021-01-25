@@ -20,11 +20,17 @@ interface NotesDao {
     fun updateNote(noteData: NoteData)
 
     @Insert
-    fun addNote(noteData: NoteData)
+    fun saveNote(noteData: NoteData)
+
+    @Insert
+    fun saveAllNotes(listNoteData: List<NoteData>)
 
     @Insert
     fun fillRoomDatabaseFromFirebaseDatabase(listNoteData: List<NoteData>)
 
     @Delete
     fun deleteNote(noteData: NoteData)
+
+    @Query("DELETE FROM notes")
+    fun deleteAllNotes()
 }

@@ -1,6 +1,7 @@
 {
   "project_info": {
     "project_number": "714054521708",
+    "firebase_url": "https://notes-32ace-default-rtdb.firebaseio.com",
     "project_id": "notes-32ace",
     "storage_bucket": "notes-32ace.appspot.com"
   },
@@ -13,6 +14,14 @@
         }
       },
       "oauth_client": [
+        {
+          "client_id": "714054521708-57bkkko3d5ptg48n66ce9ug0r48d7ub8.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "kz.stepanenkos.notes",
+            "certificate_hash": "339db56989db621b1caf674ba6af2ae9ecb50184"
+          }
+        },
         {
           "client_id": "714054521708-e36rfl0u8or951clp71sqiilohvqu5mc.apps.googleusercontent.com",
           "client_type": 3

@@ -9,9 +9,11 @@ import com.google.firebase.auth.FirebaseUser
 import kotlinx.coroutines.launch
 import kz.stepanenkos.notes.common.model.LoginData
 import kz.stepanenkos.notes.authorization.domain.AuthRepository
+import kz.stepanenkos.notes.user.data.datasource.UserCredentialsDataSource
 
 class LoginViewModel(
-    private val authRepository: AuthRepository
+    private val authRepository: AuthRepository,
+    private val userCredentialsDataSource: UserCredentialsDataSource
 ) : ViewModel() {
     private val _signIn: MutableLiveData<FirebaseUser> = MutableLiveData()
     private val _errorSignIn: MutableLiveData<Throwable> = MutableLiveData()
@@ -35,7 +37,6 @@ class LoginViewModel(
                 }
             }
         }
-        Log.d("TAG", "signIn: inViewModel")
     }
 
     fun signUp(email: String, password: String) {
@@ -62,5 +63,23 @@ class LoginViewModel(
 
     fun signOut() {
         authRepository.signOut()
+    }
+
+    fun signOutGoogle() {
+        authRepository.signOutGoogle()
+    }
+
+    fun firebaseAuthWithGoogle(token: String) {
+        viewModelScope.launch {
+            when(val sigInGoogleData = authRepository.firebaseAuthWithGoogle(token)) {
+                is LoginData.Success -> {
+                    _signIn.postValue(sigInGoogleData.result)
+                }
+
+                is LoginData.Error -> {
+                    _errorSignIn.postValue(sigInGoogleData.error)
+                }
+            }
+        }
     }
 }

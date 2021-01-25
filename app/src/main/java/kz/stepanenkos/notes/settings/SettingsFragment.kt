@@ -1,6 +1,7 @@
 package kz.stepanenkos.notes.settings
 
 import android.os.Bundle
+import android.preference.PreferenceFragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -10,7 +11,7 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import kz.stepanenkos.notes.R
 
-class SettingsFragment : Fragment() {
+class SettingsFragment : Fragment(){
 
     private lateinit var settingsViewModel: SettingsViewModel
 

@@ -8,6 +8,8 @@ import androidx.recyclerview.widget.RecyclerView
 import kz.stepanenkos.notes.NoteData
 import kz.stepanenkos.notes.R
 import kz.stepanenkos.notes.listnotes.listeners.NoteClickListener
+import org.threeten.bp.Instant
+import org.threeten.bp.ZoneId
 import org.threeten.bp.ZonedDateTime
 import org.threeten.bp.format.DateTimeFormatter
 
@@ -24,8 +26,11 @@ class NotesViewHolder(
     fun onBind(noteData: NoteData) {
         titleNote.text = noteData.titleNote
         contentNote.text = Html.fromHtml(noteData.contentNote).toString()
-        dateOfCreateNote.text =
-            ZonedDateTime.parse(noteData.dateOfNote).format(DateTimeFormatter.ofPattern("HH:mm dd MMMM yyyy"))
+        dateOfCreateNote.text = ZonedDateTime.ofInstant(Instant.ofEpochSecond(noteData.dateOfNote), ZoneId.of(
+            ZoneId.systemDefault().rules.getOffset(
+                Instant.now()
+            ).toString()
+        )).format(DateTimeFormatter.ofPattern("HH:mm dd MMMM yyyy"))
         noteContainer.setOnClickListener {
             noteClickListener.onNoteClick(noteData)
         }

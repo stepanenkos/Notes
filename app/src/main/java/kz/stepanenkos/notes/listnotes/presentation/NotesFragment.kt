@@ -1,6 +1,7 @@
 package kz.stepanenkos.notes.listnotes.presentation
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -11,21 +12,28 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import kz.stepanenkos.notes.NoteData
 import kz.stepanenkos.notes.R
+import kz.stepanenkos.notes.authorization.presentation.LoginViewModel
+import kz.stepanenkos.notes.editor.presentation.EditorViewModel
 import kz.stepanenkos.notes.listnotes.listeners.NoteClickListener
 import kz.stepanenkos.notes.listnotes.presentation.view.NotesAdapter
+import kz.stepanenkos.notes.user.data.datasource.UserCredentialsDataSource
+import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class NotesFragment : Fragment(), NoteClickListener {
     private val notesViewModel: NotesViewModel by viewModel()
+
     private lateinit var recyclerView: RecyclerView
     private val notesAdapter = NotesAdapter(this)
-    private val noteData: MutableList<NoteData> = mutableListOf()
 
     override fun onStart() {
         super.onStart()
         notesViewModel.onStart()
-        notesViewModel.allNotes.observe(viewLifecycleOwner, ::updateUI)
+        notesViewModel.allNotes.observe(viewLifecycleOwner) {
+            notesAdapter.submitList(it)
+        }
     }
+
     override fun onCreateView(
             inflater: LayoutInflater,
             container: ViewGroup?,
@@ -41,14 +49,9 @@ class NotesFragment : Fragment(), NoteClickListener {
         return root
     }
 
-    private fun updateUI(noteData: List<NoteData>) {
-        this.noteData.clear()
-        this.noteData.addAll(noteData)
-        notesAdapter.submitList(this.noteData)
-    }
-
     private fun getSwapHelper(): ItemTouchHelper {
-        return ItemTouchHelper(object : ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.RIGHT or ItemTouchHelper.LEFT) {
+        return ItemTouchHelper(object :
+            ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.RIGHT or ItemTouchHelper.LEFT) {
             override fun onMove(
                 recyclerView: RecyclerView,
                 viewHolder: RecyclerView.ViewHolder,
@@ -58,9 +61,7 @@ class NotesFragment : Fragment(), NoteClickListener {
             }
 
             override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
-                notesViewModel.deleteNote(noteData[viewHolder.adapterPosition])
-                noteData.removeAt(viewHolder.adapterPosition)
-                notesAdapter.removeItem(viewHolder.adapterPosition)
+                notesViewModel.deleteNote(notesAdapter.currentList[viewHolder.adapterPosition])
             }
         })
     }

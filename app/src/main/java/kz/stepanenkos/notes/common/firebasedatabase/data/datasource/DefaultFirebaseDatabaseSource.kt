@@ -5,9 +5,9 @@ import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ValueEventListener
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.channels.sendBlocking
@@ -26,34 +26,35 @@ class DefaultFirebaseDatabaseSource(
 
     override fun saveNote(noteData: NoteData) {
         auth.currentUser?.uid?.let {
-            firebaseDatabase.goOnline()
             usersNode.child(it).child(NOTES_NODE_CHILD).child(noteData.id).setValue(noteData)
         }
     }
 
     override fun saveAllNotes(listNoteData: List<NoteData>) {
         auth.currentUser?.uid?.let {
-            firebaseDatabase.goOnline()
             usersNode.child(it).child(NOTES_NODE_CHILD).setValue(listNoteData)
         }
     }
 
     @ExperimentalCoroutinesApi
     override suspend fun getAllNotes() = callbackFlow<List<NoteData>> {
-        auth.currentUser?.uid?.let {
-            usersNode.child(it).child(NOTES_NODE_CHILD)
+        auth.currentUser?.uid?.let { it ->
+
+            usersNode.child(it).child(NOTES_NODE_CHILD).orderByChild("dateOfNote")
                 .addListenerForSingleValueEvent(object : ValueEventListener {
                     override fun onDataChange(snapshot: DataSnapshot) {
                         if (snapshot.exists()) {
-                            GlobalScope.launch(Dispatchers.IO) {
+                            CoroutineScope(Dispatchers.IO).launch {
                                 val list: MutableList<NoteData> = mutableListOf()
                                 snapshot.children.forEach { dataSnapshot ->
                                     list.add(dataSnapshot.getValue(NoteData::class.java)!!)
                                 }
+                                //list.sortWith { o1, o2 -> -(o2.dateOfNote - o1.dateOfNote).toInt() }
                                 this@callbackFlow.sendBlocking(list)
                             }
                         }
                     }
+
                     override fun onCancelled(error: DatabaseError) {}
                 })
         }

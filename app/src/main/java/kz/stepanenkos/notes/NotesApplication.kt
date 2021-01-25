@@ -10,6 +10,7 @@ import kz.stepanenkos.notes.common.di.applicationModule
 import kz.stepanenkos.notes.listnotes.di.notesModule
 import kz.stepanenkos.notes.authorization.di.loginModule
 import kz.stepanenkos.notes.common.firebasedatabase.di.firebaseDatabaseModule
+import kz.stepanenkos.notes.user.di.userCredentialsModule
 import org.koin.android.ext.koin.androidContext
 import org.koin.core.context.startKoin
 
@@ -27,6 +28,7 @@ class NotesApplication : Application() {
                 notesModule,
                 loginModule,
                 firebaseDatabaseModule,
+                userCredentialsModule,
             )
         }
     }

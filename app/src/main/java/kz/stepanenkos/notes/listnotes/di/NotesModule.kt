@@ -10,6 +10,7 @@ val notesModule: Module = module {
         NotesViewModel(
             databaseRepository = get(),
             firebaseDatabaseRepository = get(),
+            userCredentialsDataSource = get()
         )
     }
 }

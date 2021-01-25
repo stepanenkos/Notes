@@ -1,7 +1,6 @@
 package kz.stepanenkos.notes.editor.presentation
 
 import android.text.Spanned
-import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -11,7 +10,7 @@ import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import kz.stepanenkos.notes.NoteData
-import kz.stepanenkos.notes.common.domain.DatabaseRepository
+import kz.stepanenkos.notes.common.roomdatabase.domain.DatabaseRepository
 import kz.stepanenkos.notes.common.firebasedatabase.domain.FirebaseDatabaseRepository
 import org.threeten.bp.Instant
 import org.threeten.bp.ZoneId
@@ -27,6 +26,7 @@ class EditorViewModel(
     private var toHtml: String? = null
     val noteById: LiveData<NoteData> = _noteById
     val onBold: LiveData<Spanned> = _onBold
+
     fun saveNote(titleNote: String, contentNote: String) {
         val noteData = NoteData(
             titleNote = titleNote,
@@ -37,10 +37,16 @@ class EditorViewModel(
                         Instant.now()
                     ).toString()
                 )
-            ).toString()
+            ).toEpochSecond()
         )
         saveNoteToRoomDatabase(noteData)
         saveNoteToFirebaseDatabase(noteData)
+    }
+
+    fun saveAllNotes(listNoteData: List<NoteData>) {
+        viewModelScope.launch(Dispatchers.IO) {
+            databaseRepository.saveAllNotes(listNoteData)
+        }
     }
 
     fun updateNote(noteData: NoteData) {
@@ -60,7 +66,7 @@ class EditorViewModel(
 
     private fun saveNoteToRoomDatabase(noteData: NoteData) {
         viewModelScope.launch(Dispatchers.IO) {
-            databaseRepository.addNote(noteData)
+            databaseRepository.saveNote(noteData)
         }
     }
 

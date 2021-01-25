@@ -31,15 +31,6 @@
         />
 
     <Button
-        android:id="@+id/fragment_signed_button_sign_out"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginHorizontal="@dimen/margin_32x"
-        android:layout_marginTop="@dimen/margin_8x"
-        android:text="@string/action_exit"
-        />
-
-    <Button
         android:id="@+id/fragment_signed_button_close"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

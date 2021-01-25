@@ -1,19 +1,23 @@
-package kz.stepanenkos.notes.common.data
+package kz.stepanenkos.notes.common.roomdatabase.data
 
 import kotlinx.coroutines.flow.Flow
 import kz.stepanenkos.notes.NoteData
 import kz.stepanenkos.notes.common.roomdatabase.NotesDao
-import kz.stepanenkos.notes.common.domain.DatabaseRepository
+import kz.stepanenkos.notes.common.roomdatabase.domain.DatabaseRepository
 
 class DefaultDatabaseRepository(
     private val notesDao: NotesDao
-) : DatabaseRepository{
+) : DatabaseRepository {
     override fun updateNote(noteData: NoteData) {
         notesDao.updateNote(noteData)
     }
 
-    override fun addNote(noteData: NoteData) {
-        notesDao.addNote(noteData)
+    override fun saveNote(noteData: NoteData) {
+        notesDao.saveNote(noteData)
+    }
+
+    override fun saveAllNotes(listNoteData: List<NoteData>) {
+        notesDao.saveAllNotes(listNoteData)
     }
 
     override fun fillRoomDatabaseFromFirebaseDatabase(listNoteData: List<NoteData>) {
@@ -30,5 +34,9 @@ class DefaultDatabaseRepository(
 
     override fun deleteNote(noteData: NoteData) {
         notesDao.deleteNote(noteData)
+    }
+
+    override fun deleteAllNotes() {
+        notesDao.deleteAllNotes()
     }
 }

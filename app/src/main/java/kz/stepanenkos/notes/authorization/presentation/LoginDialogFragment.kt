@@ -12,10 +12,10 @@ import android.widget.EditText
 import android.widget.TextView
 import android.widget.Toast
 import androidx.fragment.app.DialogFragment
+import androidx.navigation.NavOptions
 import androidx.navigation.fragment.findNavController
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInClient
-import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.google.android.gms.common.SignInButton
 import com.google.android.gms.common.api.ApiException
 import com.google.firebase.FirebaseException
@@ -23,9 +23,6 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException
 import com.google.firebase.auth.FirebaseAuthInvalidUserException
 import com.google.firebase.auth.FirebaseUser
-import com.google.firebase.auth.GoogleAuthProvider
-import com.google.firebase.auth.ktx.auth
-import com.google.firebase.ktx.Firebase
 import kz.stepanenkos.notes.R
 import kz.stepanenkos.notes.common.presentation.AbstractTextWatcher
 import org.koin.android.ext.android.inject
@@ -34,7 +31,8 @@ private const val RC_SIGN_IN = 9001
 
 class LoginDialogFragment : DialogFragment() {
     private val loginViewModel: LoginViewModel by inject()
-
+    private val googleSignInClient: GoogleSignInClient by inject()
+    private val auth: FirebaseAuth by inject()
     private var currentUser: FirebaseUser? = null
     private var email: String = ""
     private var password: String = ""
@@ -49,8 +47,6 @@ class LoginDialogFragment : DialogFragment() {
     private lateinit var enterAsTextView: TextView
     private lateinit var signOutButton: Button
     private lateinit var forgetPasswordTextViewButton: TextView
-    private lateinit var auth: FirebaseAuth
-    private lateinit var googleSignInClient: GoogleSignInClient
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -69,15 +65,14 @@ class LoginDialogFragment : DialogFragment() {
         closeButton = view.findViewById(R.id.fragment_login_button_close)
         enterAsTextView = view.findViewById(R.id.fragment_login_you_enter_how)
         signOutButton = view.findViewById(R.id.fragment_login_sign_out)
-        forgetPasswordTextViewButton = view.findViewById(R.id.fragment_login_text_view_forgot_password)
+        forgetPasswordTextViewButton =
+            view.findViewById(R.id.fragment_login_text_view_forgot_password)
         return view
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setStyle(STYLE_NO_FRAME, R.style.ThemeOverlay_MaterialComponents_Dialog_Alert)
-        auth = Firebase.auth
-        googleSignInClient = GoogleSignIn.getClient(requireContext(), getGSO())
         observeViewModelLiveData()
     }
 
@@ -91,10 +86,7 @@ class LoginDialogFragment : DialogFragment() {
     private fun updateUI(currentUser: FirebaseUser?) {
         if (currentUser != null) {
             showSigned(currentUser)
-        } else {
-            showUnSigned()
         }
-
     }
 
     private fun setListeners() {
@@ -105,7 +97,8 @@ class LoginDialogFragment : DialogFragment() {
                 loginViewModel.signIn(email, password)
             } else {
                 informationTextView.visibility = View.VISIBLE
-                informationTextView.text = getString(R.string.fragment_login_dialog_information_text_all_fields_must_be_filled)
+                informationTextView.text =
+                    getString(R.string.fragment_login_dialog_information_text_all_fields_must_be_filled)
             }
         }
 
@@ -114,7 +107,8 @@ class LoginDialogFragment : DialogFragment() {
                 loginViewModel.signUp(email, password)
             } else {
                 informationTextView.visibility = View.VISIBLE
-                informationTextView.text = getString(R.string.fragment_login_dialog_information_text_all_fields_must_be_filled)
+                informationTextView.text =
+                    getString(R.string.fragment_login_dialog_information_text_all_fields_must_be_filled)
             }
         }
 
@@ -158,18 +152,11 @@ class LoginDialogFragment : DialogFragment() {
             val task = GoogleSignIn.getSignedInAccountFromIntent(data)
             try {
                 val account = task.getResult(ApiException::class.java)!!
-                firebaseAuthWithGoogle(account.idToken!!)
+                loginViewModel.firebaseAuthWithGoogle(account.idToken!!)
             } catch (e: ApiException) {
                 Toast.makeText(requireContext(), e.localizedMessage, Toast.LENGTH_SHORT).show()
             }
         }
-    }
-
-    private fun getGSO(): GoogleSignInOptions {
-        return GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
-            .requestIdToken(getString(R.string.fragment_login_dialog_request_id_token_for_google_sign_in))
-            .requestEmail()
-            .build()
     }
 
     private fun signInWithGoogle() {
@@ -178,34 +165,16 @@ class LoginDialogFragment : DialogFragment() {
 
     }
 
-    private fun firebaseAuthWithGoogle(idToken: String) {
-        val credential = GoogleAuthProvider.getCredential(idToken, null)
-        auth.signInWithCredential(credential)
-            .addOnCompleteListener { task ->
-                if (task.isSuccessful) {
-                    val user = loginViewModel.getCurrentUser()
-                    updateUI(user)
-                }
-            }
-    }
-
     private fun showSigned(currentUser: FirebaseUser) {
         if (currentUser.isEmailVerified) {
-            findNavController().navigate(R.id.signedFragment)
+            findNavController().navigate(
+                R.id.signedFragment,
+                null,
+                NavOptions.Builder().setLaunchSingleTop(true).build()
+            )
         }
     }
 
-    private fun showUnSigned() {
-        emailEditText.visibility = View.VISIBLE
-        passwordEditText.visibility = View.VISIBLE
-        signUpButton.visibility = View.VISIBLE
-        signInButton.visibility = View.VISIBLE
-        googleSignInButton.visibility = View.VISIBLE
-        informationTextView.visibility = View.VISIBLE
-        signOutButton.visibility = View.GONE
-        enterAsTextView.visibility = View.GONE
-        forgetPasswordTextViewButton.visibility = View.VISIBLE
-    }
 
     private fun observeViewModelLiveData() {
         loginViewModel.signIn.observe(this, ::showSigned)
@@ -219,7 +188,8 @@ class LoginDialogFragment : DialogFragment() {
         informationTextView.visibility = View.VISIBLE
         when (throwable.javaClass) {
             FirebaseException::class.java -> {
-                informationTextView.text = getString(R.string.fragment_login_dialog_error_text_no_internet_connection)
+                informationTextView.text =
+                    getString(R.string.fragment_login_dialog_error_text_no_internet_connection)
             }
 
             FirebaseAuthInvalidUserException::class.java -> {
@@ -234,6 +204,3 @@ class LoginDialogFragment : DialogFragment() {
         }
     }
 }
-
-
-

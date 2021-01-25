@@ -10,10 +10,12 @@
         android:name="kz.stepanenkos.notes.listnotes.presentation.NotesFragment"
         android:label="fragment_notes"
         tools:layout="@layout/fragment_notes"
+        app:launchSingleTop="true"
         >
         <action
             android:id="@+id/action_notesFragment2_to_editorFragment"
             app:destination="@id/editorFragment"
+            app:launchSingleTop="true"
             />
         <action
             android:id="@+id/action_notesFragment_to_settingsFragment"
@@ -34,6 +36,7 @@
         <action
             android:id="@+id/action_editorFragment_to_notesFragment2"
             app:destination="@id/notesFragment"
+            app:launchSingleTop="true"
             />
         <action
             android:id="@+id/action_editorFragment_to_settingsFragment"

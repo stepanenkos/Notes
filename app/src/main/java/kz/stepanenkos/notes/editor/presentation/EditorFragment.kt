@@ -10,6 +10,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.EditText
 import android.widget.ImageView
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import kz.stepanenkos.notes.NoteData
 import kz.stepanenkos.notes.R
@@ -52,6 +53,7 @@ class EditorFragment : Fragment() {
         return root
     }
 
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         arguments?.getString("ID")?.let { editorViewModel.getNoteById(it) }
@@ -61,7 +63,6 @@ class EditorFragment : Fragment() {
             titleNote.isEnabled = false
             contentNote.isEnabled = false
             titleNote.setText(it.titleNote)
-            //val contentText = it.contentNote.trim()
             contentNote.setText(Html.fromHtml(it.contentNote).trim())
 
         })
@@ -79,6 +80,7 @@ class EditorFragment : Fragment() {
                 )
                 titleNote.isEnabled = false
                 contentNote.isEnabled = false
+                doneNote.isEnabled = false
             } else {
 
                 noteData.titleNote = titleNote.text.toString()
@@ -89,11 +91,12 @@ class EditorFragment : Fragment() {
                             Instant.now()
                         ).toString()
                     )
-                ).toString()
+                ).toEpochSecond()
                 editorViewModel.updateNote(noteData)
                 titleNote.isEnabled = false
                 contentNote.isEnabled = false
                 isForEdit = false
+                doneNote.isEnabled = false
             }
 
         }
@@ -103,7 +106,7 @@ class EditorFragment : Fragment() {
             titleNote.isEnabled = true
 
             contentNote.isEnabled = true
-
+            doneNote.isEnabled = true
         }
 
 

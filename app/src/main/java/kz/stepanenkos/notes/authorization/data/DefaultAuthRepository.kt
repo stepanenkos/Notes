@@ -37,6 +37,16 @@ class DefaultAuthRepository(
         }
     }
 
+    override suspend fun firebaseAuthWithGoogle(token: String): LoginData<FirebaseUser?, Throwable> {
+        return try {
+            firebaseAuthSource.firebaseAuthWithGoogle(token)
+        } catch (e: FirebaseAuthException) {
+            LoginData.Error(e)
+        } catch (e: FirebaseException) {
+            LoginData.Error(e)
+        }
+    }
+
     override fun forgotPassword(email: String) {
         firebaseAuthSource.forgotPassword(email)
     }
@@ -46,4 +56,8 @@ class DefaultAuthRepository(
     }
 
     override fun currentUser(): FirebaseUser? = firebaseAuthSource.currentUser()
+
+    override fun signOutGoogle() {
+        firebaseAuthSource.signOutGoogle()
+    }
 }
