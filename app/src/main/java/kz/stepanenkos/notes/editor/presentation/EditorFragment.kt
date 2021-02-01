@@ -5,6 +5,7 @@ import android.text.Html
 import android.text.Spannable
 import android.text.SpannableString
 import android.text.style.UnderlineSpan
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -36,7 +37,7 @@ class EditorFragment : Fragment() {
     private var endSelectionIndex: Int = -1
     private var isBold = false
     private var spannableString: SpannableString = SpannableString("")
-
+    private var idNote: String? = null
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -53,18 +54,24 @@ class EditorFragment : Fragment() {
         return root
     }
 
-
+    override fun onStart() {
+        super.onStart()
+        idNote = arguments?.getString("ID")
+        idNote?.let { editorViewModel.getNoteById(it) }
+    }
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        arguments?.getString("ID")?.let { editorViewModel.getNoteById(it) }
-        editorViewModel.noteById.observe(viewLifecycleOwner, { it ->
+        idNote = arguments?.getString("ID")
+        idNote?.let { editorViewModel.getNoteById(it) }
+        editorViewModel.noteById.observe(viewLifecycleOwner, {noteDataInDB ->
             isForEdit = true
-            noteData = it
-            titleNote.isEnabled = false
-            contentNote.isEnabled = false
-            titleNote.setText(it.titleNote)
-            contentNote.setText(Html.fromHtml(it.contentNote).trim())
-
+            if(noteDataInDB != null) {
+                noteData = noteDataInDB
+                titleNote.isEnabled = false
+                contentNote.isEnabled = false
+                titleNote.setText(noteDataInDB.titleNote)
+                contentNote.setText(noteDataInDB.contentNote.trim())
+            }
         })
         setOnClickListeners()
     }
@@ -76,7 +83,7 @@ class EditorFragment : Fragment() {
             ) {
                 editorViewModel.saveNote(
                     titleNote = titleNote.text.toString(),
-                    contentNote = Html.toHtml(contentNote.text),
+                    contentNote = contentNote.text.toString(),
                 )
                 titleNote.isEnabled = false
                 contentNote.isEnabled = false
@@ -84,7 +91,7 @@ class EditorFragment : Fragment() {
             } else {
 
                 noteData.titleNote = titleNote.text.toString()
-                noteData.contentNote = Html.toHtml(contentNote.text)
+                noteData.contentNote = contentNote.text.toString()
                 noteData.dateOfNote = ZonedDateTime.now(
                     ZoneId.of(
                         ZoneId.systemDefault().rules.getOffset(

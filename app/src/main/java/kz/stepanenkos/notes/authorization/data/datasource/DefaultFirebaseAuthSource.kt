@@ -1,5 +1,6 @@
 package kz.stepanenkos.notes.authorization.data.datasource
 
+import android.util.Log
 import com.google.android.gms.auth.api.signin.GoogleSignInClient
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseAuthException
@@ -72,7 +73,7 @@ class DefaultFirebaseAuthSource(
     override suspend fun firebaseAuthWithGoogle(idToken: String): LoginData<FirebaseUser?, Throwable> {
         val credential = GoogleAuthProvider.getCredential(idToken, null)
         auth.signInWithCredential(credential).await()
-            return if (auth.currentUser != null) {
+        return if (auth.currentUser != null) {
                 userCredentialsDataSource.saveUserCredentials(auth.currentUser)
                 if (userCredentialsDataSource.getEmail() != auth.currentUser?.email) {
                     auth.currentUser?.email?.let { userCredentialsDataSource.setLastUserEmail(it) }

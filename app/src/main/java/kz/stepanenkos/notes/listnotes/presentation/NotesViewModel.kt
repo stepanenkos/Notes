@@ -38,7 +38,7 @@ class NotesViewModel(
             }
             databaseRepository.getAllNotes().collect { listNoteDataFromRoomDB ->
                 if (listNoteDataFromRoomDB.isNotEmpty()) {
-                    _allNotesFromDB.postValue(listNoteDataFromRoomDB.sortedWith{noteData1, noteData2 -> (noteData2.dateOfNote - noteData1.dateOfNote).toInt()})
+                    _allNotesFromDB.postValue(listNoteDataFromRoomDB)
                 } else {
                     getAllNotesInFirebaseDatabase().collect { listNoteDataFromFirebaseDB ->
                         databaseRepository.fillRoomDatabaseFromFirebaseDatabase(

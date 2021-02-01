@@ -10,4 +10,5 @@
     <dimen name="text_size_12x">12sp</dimen>
     <dimen name="padding_8x">8dp</dimen>
     <dimen name="padding_16x">16dp</dimen>
+    <dimen name="margin_64x">64dp</dimen>
 </resources>

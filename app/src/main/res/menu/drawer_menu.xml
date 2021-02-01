@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:android="http://schemas.android.com/apk/res/android">
     <item
         android:id="@+id/notesFragment"
@@ -11,4 +12,10 @@
         android:id="@+id/settingsFragment"
         android:title="@string/drawer_menu_settings"
         android:icon="@drawable/ic_settings"/>
+    <item
+        android:id="@+id/nav_night_mode"
+        app:actionLayout="@layout/night_mode_switch"
+        app:actionViewClass="com.google.android.material.switchmaterial.SwitchMaterial"
+        android:title="@string/night_mode"
+        />
 </menu>

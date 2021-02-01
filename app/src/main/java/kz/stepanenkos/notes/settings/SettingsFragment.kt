@@ -1,32 +1,19 @@
 package kz.stepanenkos.notes.settings
 
+import android.content.Intent
 import android.os.Bundle
-import android.preference.PreferenceFragment
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
-import android.widget.TextView
-import androidx.fragment.app.Fragment
-import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProvider
+import androidx.preference.PreferenceFragmentCompat
+import androidx.preference.PreferenceManager
 import kz.stepanenkos.notes.R
 
-class SettingsFragment : Fragment(){
+class SettingsFragment : PreferenceFragmentCompat() {
 
-    private lateinit var settingsViewModel: SettingsViewModel
+    override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
+        setPreferencesFromResource(R.xml.settings, rootKey)
+    }
 
-    override fun onCreateView(
-            inflater: LayoutInflater,
-            container: ViewGroup?,
-            savedInstanceState: Bundle?
-    ): View? {
-        settingsViewModel =
-                ViewModelProvider(this).get(SettingsViewModel::class.java)
-        val root = inflater.inflate(R.layout.fragment_settings, container, false)
-        val textView: TextView = root.findViewById(R.id.text_notifications)
-        settingsViewModel.text.observe(viewLifecycleOwner, {
-            textView.text = it
-        })
-        return root
+    override fun onActivityCreated(savedInstanceState: Bundle?) {
+        super.onActivityCreated(savedInstanceState)
+
     }
 }

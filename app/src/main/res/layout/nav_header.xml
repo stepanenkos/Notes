@@ -6,7 +6,6 @@
     android:layout_height="wrap_content"
     android:orientation="vertical"
     android:padding="@dimen/padding_16x"
-    android:theme="@style/ThemeOverlay.AppCompat.Dark"
     android:background="@color/primary"
     >
 
@@ -22,9 +21,21 @@
         android:id="@+id/nav_header_text_view_you_sign_in_as"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/margin_16x"
+        android:gravity="start"
+        />
+    <TextView
+        android:id="@+id/nav_header_button_profile_settings"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:clickable="true"
+        android:focusable="true"
         android:gravity="center"
-        android:text="Вы вошли как example@gmail.com"
-        android:textColor="@color/primary_text"
+        android:layout_marginTop="@dimen/margin_16x"
+        android:visibility="gone"
+        android:text="@string/nav_header_text_view_profile_settings"
+        android:textColor="@color/white"
         />
 
     <TextView
@@ -36,10 +47,8 @@
         android:focusable="true"
         android:gravity="center"
         android:layout_marginTop="@dimen/margin_16x"
-        android:linksClickable="true"
         android:text="@string/sign_in"
         android:textColor="@color/white"
-        android:textStyle=""
         />
     <TextView
         android:id="@+id/nav_header_button_sign_out"
@@ -51,10 +60,8 @@
         android:gravity="center"
         android:visibility="gone"
         android:layout_marginTop="@dimen/margin_16x"
-        android:linksClickable="true"
         android:text="@string/sign_out"
         android:textColor="@color/white"
-        android:textStyle=""
         />
 
 </LinearLayout>

@@ -1,6 +1,7 @@
 package kz.stepanenkos.notes
 
 import android.app.Application
+import androidx.appcompat.app.AppCompatDelegate
 import com.google.firebase.FirebaseApp
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.ktx.Firebase
@@ -20,6 +21,7 @@ class NotesApplication : Application() {
         AndroidThreeTen.init(this)
         FirebaseApp.initializeApp(this)
         FirebaseDatabase.getInstance().setPersistenceEnabled(true)
+        //AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.getDefaultNightMode())
         startKoin{
             androidContext(this@NotesApplication)
             modules(

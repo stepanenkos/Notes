@@ -17,11 +17,11 @@
     <string name="action_close">Закрыть</string>
     <string name="action_send">Отправить</string>
     <string name="fragment_forgot_password_title_password_recovery">Восстановление пароля</string>
-    <string name="fragment_forgot_password_information_text_letter_send">Письмо отправлено на указанную почту</string>
+    <string name="fragment_forgot_password_information_text_letter_send">Письмо для подтверждения отправлено на указанную почту</string>
     <string name="fragment_forgot_password_information_text_enter_email">Введите адрес электронной почты</string>
     <string name="fragment_forgot_password_information_text_enter_correct_email">Введите корректный адрес электронной почты</string>
     <string name="fragment_login_dialog_information_text_all_fields_must_be_filled">Все поля должны быть заполнены.</string>
-    <string name="fragment_login_dialog_information_text_you_are_logged_in_as">"Вы вошли как:\n\n%1s\n%2s"</string>
+    <string name="fragment_login_dialog_information_text_you_are_logged_in_as">"%1s\n%2s"</string>
     <string name="fragment_login_dialog_information_text_you_are_not_logged_in">Вы не вошли в свой аккаунт</string>
     <string name="fragment_login_dialog_error_text_no_internet_connection">Нет соединения с интернетом</string>
     <string name="fragment_login_dialog_error_text_user_not_registered">Пользователь с таким адресом электронной почты не зарегистрирован.</string>
@@ -35,6 +35,10 @@
     <string name="drawer_menu_settings">Настройки</string>
     <string name="nav_open">Открыть</string>
     <string name="nav_close">Закрыть</string>
-    <string name="sign_in"><u>Войти</u></string>
-    <string name="sign_out"><u>Выйти</u></string>
+    <string name="sign_in"><b><u>Войти</u></b></string>
+    <string name="sign_out"><b><u>Выйти</u></b></string>
+    <string name="nav_header_text_view_profile_settings"><b><u>Настройки профиля</u></b></string>
+    <string name="night_mode">Ночная тема</string>
+    <string name="activity_main_content_description_floating_action_button">Добавить заметку</string>
+
 </resources>
