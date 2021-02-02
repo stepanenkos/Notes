@@ -59,7 +59,7 @@
             app:destination="@id/loginDialogFragment"
             />
     </fragment>
-    <dialog
+    <fragment
         android:id="@+id/loginDialogFragment"
         android:name="kz.stepanenkos.notes.authorization.presentation.LoginDialogFragment"
         android:label="LoginDialogFragment"
@@ -73,7 +73,7 @@
             android:id="@+id/action_loginDialogFragment_to_signedFragment"
             app:destination="@id/signedFragment"
             />
-    </dialog>
+    </fragment>
     <fragment
         android:id="@+id/forgotPasswordFragment"
         android:name="kz.stepanenkos.notes.authorization.presentation.ForgotPasswordFragment"

@@ -13,11 +13,7 @@
         <item name="toolbarStyle">@style/Widget.MaterialComponents.Toolbar.PrimarySurface</item>
         <!-- Status bar color. -->
         <item name="android:statusBarColor" tools:targetApi="l">?attr/colorPrimaryVariant</item>
-        <item name="backgroundcolor">#E3E3E3</item>
-        <item name="cardbackground">#FFFFFF</item>
-        <item name="textcolor">#212121</item>
-        <item name="tintcolor">#FFFFFF</item>
-        <item name="buttoncolor">@color/primary</item>
+
         <!-- Customize your theme here. -->
     </style>
 

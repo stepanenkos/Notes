@@ -13,7 +13,9 @@ import android.view.inputmethod.InputMethodManager
 import android.widget.Button
 import android.widget.EditText
 import android.widget.TextView
+import androidx.appcompat.app.AppCompatDelegate
 import androidx.fragment.app.DialogFragment
+import androidx.fragment.app.Fragment
 import androidx.navigation.NavOptions
 import androidx.navigation.fragment.findNavController
 import com.google.android.gms.auth.api.signin.GoogleSignIn
@@ -32,7 +34,7 @@ import org.koin.android.ext.android.inject
 
 private const val RC_SIGN_IN = 9001
 
-class LoginDialogFragment : DialogFragment() {
+class LoginDialogFragment : Fragment() {
     private val loginViewModel: LoginViewModel by inject()
     private val googleSignInClient: GoogleSignInClient by inject()
     private val auth: FirebaseAuth by inject()
@@ -60,6 +62,11 @@ class LoginDialogFragment : DialogFragment() {
         signInButton = view.findViewById(R.id.fragment_login_button_sign_in)
         closeButton = view.findViewById(R.id.fragment_login_button_close)
         googleSignInButton = view.findViewById(R.id.fragment_login_button_google_login)
+        if(AppCompatDelegate.getDefaultNightMode() == AppCompatDelegate.MODE_NIGHT_YES) {
+            googleSignInButton.setColorScheme(SignInButton.COLOR_DARK)
+        } else {
+            googleSignInButton.setColorScheme(SignInButton.COLOR_LIGHT)
+        }
         closeButton = view.findViewById(R.id.fragment_login_button_close)
         forgetPasswordTextViewButton =
             view.findViewById(R.id.fragment_login_text_view_forgot_password)
@@ -68,7 +75,7 @@ class LoginDialogFragment : DialogFragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setStyle(STYLE_NO_FRAME, R.style.ThemeOverlay_MaterialComponents_Dialog_Alert)
+        //setStyle(STYLE_NO_FRAME, R.style.ThemeOverlay_MaterialComponents_Dialog_Alert)
         observeViewModelLiveData()
     }
 
@@ -95,7 +102,7 @@ class LoginDialogFragment : DialogFragment() {
             hideKeyboardFrom(requireContext(), requireView())
             if (isValidCredentials(email, password)) {
                 loginViewModel.signIn(email, password)
-                dismiss()
+                //dismiss()
             } else {
                 Snackbar.make(
                     requireView(),
@@ -114,7 +121,7 @@ class LoginDialogFragment : DialogFragment() {
                     getString(R.string.fragment_forgot_password_information_text_letter_send),
                     Snackbar.LENGTH_LONG
                 ).show()
-                dismiss()
+                //dismiss()
             } else {
                 Snackbar.make(
                     requireView(),
@@ -125,7 +132,12 @@ class LoginDialogFragment : DialogFragment() {
         }
 
         closeButton.setOnClickListener {
-            dismiss()
+           // dismiss()
+            findNavController().navigate(
+                R.id.notesFragment,
+                null,
+                NavOptions.Builder().setLaunchSingleTop(true).build()
+            )
         }
 
         forgetPasswordTextViewButton.setOnClickListener {
@@ -169,7 +181,6 @@ class LoginDialogFragment : DialogFragment() {
             val task = GoogleSignIn.getSignedInAccountFromIntent(data)
             try {
                 val account = task.getResult(ApiException::class.java)!!
-                Log.d("TAG", "onActivityResult: ${account.email}")
                 loginViewModel.firebaseAuthWithGoogle(account.idToken!!)
             } catch (e: ApiException) {
                 Snackbar.make(
@@ -214,7 +225,6 @@ class LoginDialogFragment : DialogFragment() {
             }
 
             FirebaseAuthInvalidCredentialsException::class.java -> {
-                Log.d("TAG", "showErrorMessage: ${throwable.localizedMessage}")
                 Snackbar.make(
                     requireView(),
                     throwable.localizedMessage,
