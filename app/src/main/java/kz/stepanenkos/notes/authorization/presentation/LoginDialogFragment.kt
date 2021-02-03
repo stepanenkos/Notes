@@ -75,7 +75,6 @@ class LoginDialogFragment : Fragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        //setStyle(STYLE_NO_FRAME, R.style.ThemeOverlay_MaterialComponents_Dialog_Alert)
         observeViewModelLiveData()
     }
 
@@ -88,11 +87,7 @@ class LoginDialogFragment : Fragment() {
 
     private fun updateUI(currentUser: FirebaseUser?) {
         if (currentUser != null) {
-            findNavController().navigate(
-                R.id.notesFragment,
-                null,
-                NavOptions.Builder().setLaunchSingleTop(true).build()
-            )
+            findNavController().popBackStack()
         }
     }
 
@@ -102,7 +97,6 @@ class LoginDialogFragment : Fragment() {
             hideKeyboardFrom(requireContext(), requireView())
             if (isValidCredentials(email, password)) {
                 loginViewModel.signIn(email, password)
-                //dismiss()
             } else {
                 Snackbar.make(
                     requireView(),
@@ -132,12 +126,7 @@ class LoginDialogFragment : Fragment() {
         }
 
         closeButton.setOnClickListener {
-           // dismiss()
-            findNavController().navigate(
-                R.id.notesFragment,
-                null,
-                NavOptions.Builder().setLaunchSingleTop(true).build()
-            )
+            findNavController().popBackStack()
         }
 
         forgetPasswordTextViewButton.setOnClickListener {
@@ -152,12 +141,7 @@ class LoginDialogFragment : Fragment() {
         googleSignInButton.setOnClickListener {
             signInWithGoogle()
             if (currentUser != null) {
-
-                findNavController().navigate(
-                    R.id.notesFragment,
-                    null,
-                    NavOptions.Builder().setLaunchSingleTop(true).build()
-                )
+                findNavController().popBackStack()
             }
         }
 

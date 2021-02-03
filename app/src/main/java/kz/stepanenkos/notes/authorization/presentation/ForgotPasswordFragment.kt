@@ -8,11 +8,12 @@ import android.widget.Button
 import android.widget.EditText
 import android.widget.TextView
 import androidx.fragment.app.DialogFragment
+import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import kz.stepanenkos.notes.R
 import org.koin.android.ext.android.inject
 
-class ForgotPasswordFragment : DialogFragment() {
+class ForgotPasswordFragment : Fragment() {
     private val loginViewModel: LoginViewModel by inject()
     private lateinit var emailEditText: EditText
     private lateinit var sendButton: Button

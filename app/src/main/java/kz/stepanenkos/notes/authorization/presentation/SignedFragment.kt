@@ -16,7 +16,6 @@ class SignedFragment : DialogFragment() {
     private val loginViewModel: LoginViewModel by inject()
 
     private lateinit var userLoggedTextView: TextView
-    private lateinit var signOutButton: Button
     private lateinit var closeButton: Button
 
 
@@ -36,7 +35,7 @@ class SignedFragment : DialogFragment() {
         updateUI(currentUser)
 
         closeButton.setOnClickListener {
-            findNavController().navigate(R.id.notesFragment)
+            findNavController().popBackStack()
         }
     }
 
