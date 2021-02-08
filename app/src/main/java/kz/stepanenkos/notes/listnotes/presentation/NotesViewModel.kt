@@ -9,8 +9,8 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 import kz.stepanenkos.notes.NoteData
-import kz.stepanenkos.notes.common.roomdatabase.domain.DatabaseRepository
 import kz.stepanenkos.notes.common.firebasedatabase.domain.FirebaseDatabaseRepository
+import kz.stepanenkos.notes.common.roomdatabase.domain.DatabaseRepository
 import kz.stepanenkos.notes.user.data.datasource.UserCredentialsDataSource
 
 class NotesViewModel(
@@ -37,15 +37,15 @@ class NotesViewModel(
                 deleteAllNotes()
             }
             databaseRepository.getAllNotes().collect { listNoteDataFromRoomDB ->
-                if (listNoteDataFromRoomDB.isNotEmpty()) {
-                    _allNotesFromDB.postValue(listNoteDataFromRoomDB)
-                } else {
-                    getAllNotesInFirebaseDatabase().collect { listNoteDataFromFirebaseDB ->
+                getAllNotesInFirebaseDatabase().collect { listNoteDataFromFirebaseDB ->
+                    if (listNoteDataFromRoomDB.isNotEmpty() && listNoteDataFromRoomDB.size == listNoteDataFromFirebaseDB.size) {
+                        _allNotesFromDB.postValue(listNoteDataFromRoomDB)
+                    } else if (listNoteDataFromRoomDB.size < listNoteDataFromFirebaseDB.size) {
+                        databaseRepository.deleteAllNotes()
                         databaseRepository.fillRoomDatabaseFromFirebaseDatabase(
                             listNoteDataFromFirebaseDB
                         )
                         _allNotesFromDB.postValue(listNoteDataFromFirebaseDB)
-
                     }
                 }
             }

@@ -1,13 +1,17 @@
 package kz.stepanenkos.notes
 
+import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
 import android.os.Bundle
 import android.util.Log
 import android.view.MenuItem
 import android.view.View
+import android.widget.AbsSeekBar
 import android.widget.ImageView
+import android.widget.SeekBar
 import android.widget.TextView
+import android.widget.Toast
 import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
@@ -19,12 +23,16 @@ import androidx.navigation.NavController
 import androidx.navigation.NavOptions
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.setupWithNavController
+import androidx.preference.PreferenceManager
 import com.bumptech.glide.Glide
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.android.material.navigation.NavigationView
+import com.google.android.material.snackbar.Snackbar
 import com.google.android.material.switchmaterial.SwitchMaterial
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
+import io.github.inflationx.viewpump.ViewPump
+import io.github.inflationx.viewpump.ViewPumpContextWrapper
 import kz.stepanenkos.notes.authorization.presentation.LoginViewModel
 import kz.stepanenkos.notes.user.data.datasource.UserCredentialsDataSource
 import org.koin.android.ext.android.inject
@@ -72,6 +80,10 @@ class MainActivity : AppCompatActivity(), FirebaseAuth.AuthStateListener,
         initViews()
         setListeners()
 
+    }
+
+    override fun attachBaseContext(newBase: Context?) {
+        super.attachBaseContext(newBase?.let { ViewPumpContextWrapper.wrap(it) })
     }
 
     override fun onStart() {
@@ -134,9 +146,7 @@ class MainActivity : AppCompatActivity(), FirebaseAuth.AuthStateListener,
             ActionBarDrawerToggle(this, drawerLayout, R.string.nav_open, R.string.nav_close)
         actionBarDrawerToggle.isDrawerIndicatorEnabled = true
         actionBarDrawerToggle.syncState()
-
         drawerLayout.addDrawerListener(actionBarDrawerToggle)
-
     }
 
     private fun setListeners() {
@@ -233,17 +243,14 @@ class MainActivity : AppCompatActivity(), FirebaseAuth.AuthStateListener,
     }
 
     override fun onSharedPreferenceChanged(sharedPreferences: SharedPreferences?, key: String?) {
-        if (key == NIGHT_MODE_KEY) {
-            if (sharedPrefs.getBoolean(NIGHT_MODE_KEY, false) || !sharedPrefs.getBoolean(
-                    NIGHT_MODE_KEY, false
-                )
-            ) {
-                finish()
+
+        recreate()
+                /*finish()
                 overridePendingTransition(R.anim.none, R.anim.none)
                 val intent = intent
                 intent?.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
-                startActivity(intent)
-            }
-        }
+                startActivity(intent)*/
+
+
     }
 }

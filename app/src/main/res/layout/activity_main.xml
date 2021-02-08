@@ -34,7 +34,10 @@
                 android:layout_height="match_parent"
                 app:defaultNavHost="true"
                 app:navGraph="@navigation/mobile_navigation"
-                />
+                >
+
+
+            </androidx.fragment.app.FragmentContainerView>
         </LinearLayout>
 
         <androidx.coordinatorlayout.widget.CoordinatorLayout

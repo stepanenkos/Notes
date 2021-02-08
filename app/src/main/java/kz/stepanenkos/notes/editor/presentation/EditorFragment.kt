@@ -5,16 +5,16 @@ import android.text.Html
 import android.text.Spannable
 import android.text.SpannableString
 import android.text.style.UnderlineSpan
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.EditText
 import android.widget.ImageView
-import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import kz.stepanenkos.notes.NoteData
 import kz.stepanenkos.notes.R
+import kz.stepanenkos.notes.common.presentation.ContentNoteEditText
+import kz.stepanenkos.notes.common.presentation.TitleNoteEditText
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import org.threeten.bp.Instant
 import org.threeten.bp.ZoneId
@@ -23,8 +23,8 @@ import org.threeten.bp.ZonedDateTime
 class EditorFragment : Fragment() {
     private val editorViewModel: EditorViewModel by viewModel()
 
-    private lateinit var titleNote: EditText
-    private lateinit var contentNote: EditText
+    private lateinit var titleNote: TitleNoteEditText
+    private lateinit var contentNote: ContentNoteEditText
     private lateinit var doneNote: ImageView
     private lateinit var editNote: ImageView
     private lateinit var boldButton: ImageView
@@ -148,12 +148,12 @@ class EditorFragment : Fragment() {
                     Spannable.SPAN_INCLUSIVE_EXCLUSIVE
                 )
                 val toHtml = Html.toHtml(spannableString)
-                contentNote.text.replace(0, contentNote.text.length, Html.fromHtml(toHtml))
+                contentNote.text?.replace(0, contentNote.text!!.length, Html.fromHtml(toHtml))
             } else if (spans.isNotEmpty()) {
                 spannableString.removeSpan(spans.first())
                 contentNote.setSelection(endSelectionIndex)
                 val toHtml = Html.toHtml(spannableString)
-                contentNote.text.replace(0, contentNote.text.length, Html.fromHtml(toHtml))
+                contentNote.text?.replace(0, contentNote.text!!.length, Html.fromHtml(toHtml))
             }
         }
 

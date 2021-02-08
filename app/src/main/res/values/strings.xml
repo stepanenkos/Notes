@@ -41,4 +41,36 @@
     <string name="night_mode">Ночная тема</string>
     <string name="activity_main_content_description_floating_action_button">Добавить заметку</string>
 
+    <string-array name="title_note_font_size">
+        <item>Очень маленький</item>
+        <item>Маленький</item>
+        <item>Средний</item>
+        <item>Большой</item>
+        <item>Очень большой</item>
+    </string-array>
+
+    <string-array name="title_note_font_size_values">
+        <item>10</item>
+        <item>14</item>
+        <item>18</item>
+        <item>22</item>
+        <item>30</item>
+    </string-array>
+
+    <string-array name="content_note_font_size">
+        <item>Очень маленький</item>
+        <item>Маленький</item>
+        <item>Средний</item>
+        <item>Большой</item>
+        <item>Очень большой</item>
+    </string-array>
+
+    <string-array name="content_note_font_size_values">
+        <item>8</item>
+        <item>12</item>
+        <item>16</item>
+        <item>20</item>
+        <item>28</item>
+    </string-array>
+
 </resources>

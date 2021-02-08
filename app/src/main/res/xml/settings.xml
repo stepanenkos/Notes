@@ -1,4 +1,23 @@
 <?xml version="1.0" encoding="utf-8"?>
-<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+<PreferenceScreen
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    >
+<ListPreference
+    android:entries="@array/title_note_font_size"
+    android:entryValues="@array/title_note_font_size_values"
+    android:key="title_note_font_size"
+    android:summary="Выберите размер шрифта заголовка заметки"
+    android:title="Размер шрифта заголовка заметки"
+    android:defaultValue="20"
+    />
 
+    <ListPreference
+        android:entries="@array/content_note_font_size"
+        android:entryValues="@array/content_note_font_size_values"
+        android:key="content_note_font_size"
+        android:summary="Выберите размер шрифта заметки"
+        android:title="Размер шрифта для заметки"
+        app:defaultValue="18"
+        />
 </PreferenceScreen>

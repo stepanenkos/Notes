@@ -62,6 +62,10 @@ class NotesFragment : Fragment(), NoteClickListener {
 
             override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
                 notesViewModel.deleteNote(notesAdapter.currentList[viewHolder.adapterPosition])
+                notesViewModel.onStart()
+                notesViewModel.allNotes.observe(viewLifecycleOwner) {
+                    notesAdapter.submitList(it)
+                }
             }
         })
     }

@@ -6,6 +6,8 @@ import com.google.firebase.FirebaseApp
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.ktx.Firebase
 import com.jakewharton.threetenabp.AndroidThreeTen
+import io.github.inflationx.viewpump.ViewPump
+import kz.stepanenkos.TextSizeUpdatingInterceptor
 import kz.stepanenkos.notes.editor.di.addNoteModule
 import kz.stepanenkos.notes.common.di.applicationModule
 import kz.stepanenkos.notes.listnotes.di.notesModule
@@ -21,6 +23,9 @@ class NotesApplication : Application() {
         AndroidThreeTen.init(this)
         FirebaseApp.initializeApp(this)
         FirebaseDatabase.getInstance().setPersistenceEnabled(true)
+        ViewPump.init(ViewPump.builder()
+            .addInterceptor(TextSizeUpdatingInterceptor())
+            .build())
         //AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.getDefaultNightMode())
         startKoin{
             androidContext(this@NotesApplication)
