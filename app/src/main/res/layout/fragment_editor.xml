@@ -89,8 +89,8 @@
             android:padding="4dp"
             android:paddingStart="8dp"
             android:paddingEnd="8dp"
+            android:focusableInTouchMode="true"
             android:singleLine="true"
-            android:textSize="18sp"
             />
 
         <kz.stepanenkos.notes.common.presentation.ContentNoteEditText
@@ -101,10 +101,10 @@
             android:background="@drawable/bg_edit_text"
             android:gravity="start|top"
             android:hint="Текст заметки"
-            android:inputType="textMultiLine"
+            android:inputType="textMultiLine|textWebEditText"
             android:padding="8dp"
+            android:focusableInTouchMode="true"
             android:textAlignment="viewStart"
-            android:textSize="14sp"
             />
 
     </LinearLayout>
