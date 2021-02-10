@@ -1,6 +1,5 @@
 package kz.stepanenkos.notes.listnotes.presentation
 
-import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -10,6 +9,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import kz.stepanenkos.notes.NoteData
 import kz.stepanenkos.notes.common.firebasedatabase.domain.FirebaseDatabaseRepository
 import kz.stepanenkos.notes.common.roomdatabase.domain.DatabaseRepository
@@ -35,20 +35,33 @@ class NotesViewModel(
     }
 
     private fun getAllNotes() {
-        if (auth.currentUser == null) {
-            viewModelScope.launch(Dispatchers.IO) {
-                databaseRepository.getAllNotes().collect { listNoteDataFromRoomDB ->
-                    _allNotesFromDB.postValue(listNoteDataFromRoomDB)
+        when (auth.currentUser) {
+            null -> {
+                viewModelScope.launch(Dispatchers.IO) {
+                    databaseRepository.getAllNotes().collect { listNoteDataFromRoomDB ->
+                        _allNotesFromDB.postValue(listNoteDataFromRoomDB)
+                    }
                 }
             }
-        } else {
-            viewModelScope.launch(Dispatchers.IO) {
-                /*if (userCredentialsDataSource.getEmail() != userCredentialsDataSource.getLastUserEmail()) {
-                    deleteAllNotes()
-                }*/
-                databaseRepository.getAllNotes().collect { listNoteDataFromRoomDB ->
-                    getAllNotesInFirebaseDatabase().collect { listNoteDataFromFirebaseDB ->
-                        _allNotesFromDB.postValue(prepareListWithAllNotes(listNoteDataFromRoomDB, listNoteDataFromFirebaseDB))
+
+            else -> {
+                viewModelScope.launch(Dispatchers.IO) {
+                    if (userCredentialsDataSource.getLastUserEmail()
+                            .isNotBlank() && userCredentialsDataSource.getEmail() != userCredentialsDataSource.getLastUserEmail()
+                    ) {
+                        deleteAllNotes()
+                    }
+                    databaseRepository.getAllNotes().collect { listNoteDataFromRoomDB ->
+                        getAllNotesInFirebaseDatabase().collect { listNoteDataFromFirebaseDB ->
+                            withContext(Dispatchers.Main) {
+                                _allNotesFromDB.postValue(
+                                    prepareListWithAllNotes(
+                                        listNoteDataFromRoomDB,
+                                        listNoteDataFromFirebaseDB
+                                    )
+                                )
+                            }
+                        }
                     }
                 }
             }
@@ -70,41 +83,43 @@ class NotesViewModel(
         return firebaseDatabaseRepository.getAllNotes()
     }
 
-    private fun prepareListWithAllNotes(listFromRoomDB: List<NoteData>, listFromFirebaseDB: List<NoteData>): List<NoteData> {
-        val combinedList: MutableList<NoteData> = mutableListOf()
-        combinedList.clear()
+    private suspend fun prepareListWithAllNotes(
+        listFromRoomDB: List<NoteData>,
+        listFromFirebaseDB: List<NoteData>
+    ): List<NoteData> {
+        val combinedList: MutableSet<NoteData> = mutableSetOf()
+        val uniqueNotesForFirebase: MutableList<NoteData> = mutableListOf()
+        val uniqueNotesForRoom: MutableList<NoteData> = mutableListOf()
+
         when {
 
             listFromRoomDB.isNotEmpty() && listFromRoomDB == listFromFirebaseDB -> {
                 return listFromRoomDB
             }
 
-            listFromRoomDB.size < listFromFirebaseDB.size -> {
-                combinedList.addAll(listFromRoomDB)
-                listFromFirebaseDB.forEach {
-                    if(!combinedList.contains(it)) combinedList.add(it)
-                }
-                databaseRepository.fillRoomDatabaseFromFirebaseDatabase(
-                    combinedList
-                )
-                return combinedList
-            }
-
-            listFromRoomDB.size > listFromFirebaseDB.size -> {
+            listFromRoomDB.size > listFromFirebaseDB.size || listFromRoomDB.size < listFromFirebaseDB.size -> {
                 combinedList.addAll(listFromFirebaseDB)
-                listFromRoomDB.forEach {
-                    if(!combinedList.contains(it)) {
-                        combinedList.add(it)
-                        firebaseDatabaseRepository.saveNote(it)
+                combinedList.addAll(listFromRoomDB)
+
+                combinedList.forEach {
+                    if (!listFromRoomDB.contains(it)) {
+                        uniqueNotesForRoom.add(it)
+                    }
+
+                    if (!listFromFirebaseDB.contains(it)) {
+                        uniqueNotesForFirebase.add(it)
                     }
                 }
-                return combinedList
+
+                withContext(Dispatchers.IO) {
+                    databaseRepository.saveAllNotes(uniqueNotesForRoom)
+                    firebaseDatabaseRepository.saveAllNotes(uniqueNotesForFirebase)
+                }
+                return combinedList.toList()
             }
 
             else -> {
-                combinedList.addAll(listFromRoomDB)
-                listFromFirebaseDB.forEach { if (!combinedList.contains(it)) combinedList.add(it) }
-                return combinedList
+                return listFromRoomDB
             }
         }
     }
