@@ -46,8 +46,10 @@ class NotesViewModel(
 
             else -> {
                 viewModelScope.launch(Dispatchers.IO) {
-                    if (userCredentialsDataSource.getLastUserEmail()
-                            .isNotBlank() && userCredentialsDataSource.getEmail() != userCredentialsDataSource.getLastUserEmail()
+                    if (userCredentialsDataSource.getLastUserEmail().isNotBlank() &&
+                        userCredentialsDataSource.getEmail().isNotBlank() &&
+                        userCredentialsDataSource.getEmail() !=
+                        userCredentialsDataSource.getLastUserEmail()
                     ) {
                         deleteAllNotes()
                     }
