@@ -9,7 +9,6 @@ val addNoteModule: Module = module {
 
     viewModel {
         EditorViewModel(
-            databaseRepository = get(),
             firebaseDatabaseRepository = get()
         )
     }

@@ -8,18 +8,15 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.collect
-import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import kz.stepanenkos.notes.NoteData
-import kz.stepanenkos.notes.common.roomdatabase.domain.DatabaseRepository
 import kz.stepanenkos.notes.common.firebasedatabase.domain.FirebaseDatabaseRepository
 import org.threeten.bp.Instant
 import org.threeten.bp.ZoneId
 import org.threeten.bp.ZonedDateTime
 
 class EditorViewModel(
-    private val databaseRepository: DatabaseRepository,
     private val firebaseDatabaseRepository: FirebaseDatabaseRepository
 ) : ViewModel() {
     private val _noteById: MutableLiveData<NoteData> = MutableLiveData()
@@ -41,34 +38,27 @@ class EditorViewModel(
                 )
             ).toEpochSecond()
         )
-        saveNoteToRoomDatabase(noteData)
         saveNoteToFirebaseDatabase(noteData)
     }
 
     fun saveAllNotes(listNoteData: List<NoteData>) {
         viewModelScope.launch(Dispatchers.IO) {
-            databaseRepository.saveAllNotes(listNoteData)
+            firebaseDatabaseRepository.saveAllNotes(listNoteData)
         }
     }
 
     fun updateNote(noteData: NoteData) {
         viewModelScope.launch(Dispatchers.IO) {
-            databaseRepository.updateNote(noteData)
+            firebaseDatabaseRepository.updateNote(noteData)
         }
-        updateNoteInFirebaseDatabase(noteData)
+
     }
 
     fun getNoteById(noteId: String) {
         viewModelScope.launch(Dispatchers.IO) {
-            databaseRepository.getNoteById(noteId).collect {
+            firebaseDatabaseRepository.getNoteById(noteId).collect {
                 withContext(Dispatchers.Main) { _noteById.value = it }
             }
-        }
-    }
-
-    private fun saveNoteToRoomDatabase(noteData: NoteData) {
-        viewModelScope.launch(Dispatchers.IO) {
-            databaseRepository.saveNote(noteData)
         }
     }
 
@@ -76,7 +66,4 @@ class EditorViewModel(
         firebaseDatabaseRepository.saveNote(noteData)
     }
 
-    private fun updateNoteInFirebaseDatabase(noteData: NoteData) {
-        firebaseDatabaseRepository.updateNote(noteData)
-    }
 }

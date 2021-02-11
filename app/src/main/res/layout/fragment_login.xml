@@ -84,6 +84,7 @@
         android:layout_marginHorizontal="@dimen/margin_32x"
         android:fontFamily="@font/roboto_mono_bold"
         android:text="@string/fragment_login_button_sign_in"
+        android:elevation="8dp"
         />
 
     <com.google.android.material.button.MaterialButton
@@ -92,29 +93,18 @@
         android:layout_height="wrap_content"
         android:layout_marginHorizontal="@dimen/margin_32x"
         app:cornerRadius="@dimen/corner_radius_16x"
-        android:layout_marginTop="@dimen/margin_8x"
+        android:layout_marginTop="@dimen/margin_16x"
+        android:elevation="8dp"
         android:fontFamily="@font/roboto_mono_bold"
 
         android:text="@string/fragment_login_button_sign_up"
-        />
-
-    <com.google.android.material.button.MaterialButton
-        android:id="@+id/fragment_login_button_close"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        app:cornerRadius="@dimen/corner_radius_16x"
-        android:layout_marginHorizontal="@dimen/margin_32x"
-        android:layout_marginTop="@dimen/margin_8x"
-
-        android:fontFamily="@font/roboto_mono_bold"
-        android:text="@string/fragment_login_button_close"
         />
 
     <com.google.android.gms.common.SignInButton
         android:id="@+id/fragment_login_button_google_login"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/margin_8x"
+        android:layout_marginTop="@dimen/margin_16x"
         android:layout_marginHorizontal="@dimen/margin_32x"
         />
 

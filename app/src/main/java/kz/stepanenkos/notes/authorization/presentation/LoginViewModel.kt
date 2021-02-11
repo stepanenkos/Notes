@@ -33,6 +33,7 @@ class LoginViewModel(
                 }
 
                 is LoginData.Error -> {
+                    Log.d("TAG", "signIn: ${signInData.error}")
                     _errorSignIn.postValue(signInData.error)
                 }
             }
@@ -47,6 +48,7 @@ class LoginViewModel(
                 }
 
                 is LoginData.Error -> {
+                    Log.d("TAG", "signUp: ${signUpData.error}")
                     _errorSignUp.postValue(signUpData.error)
                 }
             }

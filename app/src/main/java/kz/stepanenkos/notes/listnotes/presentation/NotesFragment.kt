@@ -10,6 +10,9 @@ import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.ktx.auth
+import com.google.firebase.ktx.Firebase
 import kz.stepanenkos.notes.NoteData
 import kz.stepanenkos.notes.R
 import kz.stepanenkos.notes.authorization.presentation.LoginViewModel
@@ -32,6 +35,9 @@ class NotesFragment : Fragment(), NoteClickListener {
         notesViewModel.allNotes.observe(viewLifecycleOwner) {
             notesAdapter.submitList(it)
         }
+        if(Firebase.auth.currentUser == null) {
+            findNavController().navigate(R.id.loginFragment)
+        }
     }
 
     override fun onCreateView(
@@ -46,6 +52,7 @@ class NotesFragment : Fragment(), NoteClickListener {
         val swapHelper = getSwapHelper()
         swapHelper.attachToRecyclerView(recyclerView)
         recyclerView.adapter = notesAdapter
+
         return root
     }
 

@@ -1,17 +1,12 @@
 package kz.stepanenkos.notes
 
 import android.content.Context
-import android.content.Intent
 import android.content.SharedPreferences
 import android.os.Bundle
-import android.util.Log
 import android.view.MenuItem
 import android.view.View
-import android.widget.AbsSeekBar
 import android.widget.ImageView
-import android.widget.SeekBar
 import android.widget.TextView
-import android.widget.Toast
 import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
@@ -23,15 +18,12 @@ import androidx.navigation.NavController
 import androidx.navigation.NavOptions
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.setupWithNavController
-import androidx.preference.PreferenceManager
 import com.bumptech.glide.Glide
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.android.material.navigation.NavigationView
-import com.google.android.material.snackbar.Snackbar
 import com.google.android.material.switchmaterial.SwitchMaterial
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
-import io.github.inflationx.viewpump.ViewPump
 import io.github.inflationx.viewpump.ViewPumpContextWrapper
 import kz.stepanenkos.notes.authorization.presentation.LoginViewModel
 import kz.stepanenkos.notes.user.data.datasource.UserCredentialsDataSource
@@ -92,6 +84,8 @@ class MainActivity : AppCompatActivity(), FirebaseAuth.AuthStateListener,
 
         if (currentUser != null) {
             updateUI(currentUser)
+        } else {
+            toLoginScreen()
         }
         firebaseAuth.addAuthStateListener(this)
         sharedPrefs.registerOnSharedPreferenceChangeListener(this)
@@ -161,7 +155,7 @@ class MainActivity : AppCompatActivity(), FirebaseAuth.AuthStateListener,
 
         signInButton.setOnClickListener {
             navController.navigate(
-                R.id.loginDialogFragment,
+                R.id.loginFragment,
                 null,
                 NavOptions.Builder().setLaunchSingleTop(true).build()
             )
@@ -236,12 +230,17 @@ class MainActivity : AppCompatActivity(), FirebaseAuth.AuthStateListener,
     override fun onAuthStateChanged(p0: FirebaseAuth) {
         if (p0.currentUser != null) {
             updateUI(p0.currentUser)
+        } else {
+            toLoginScreen()
         }
         if (drawerLayout.isDrawerVisible(GravityCompat.START)) {
             drawerLayout.closeDrawers()
         }
     }
 
+    private fun toLoginScreen() {
+        navController.navigate(R.id.loginFragment)
+    }
     override fun onSharedPreferenceChanged(sharedPreferences: SharedPreferences?, key: String?) {
 
         recreate()

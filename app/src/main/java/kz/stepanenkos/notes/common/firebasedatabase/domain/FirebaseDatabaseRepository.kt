@@ -8,6 +8,8 @@ interface FirebaseDatabaseRepository {
 
     fun saveAllNotes(listNoteData: List<NoteData>)
 
+    suspend fun getNoteById(noteId: String): Flow<NoteData>
+
     suspend fun getAllNotes(): Flow<List<NoteData>>
 
     fun updateNote(noteData: NoteData)

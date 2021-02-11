@@ -20,7 +20,7 @@
     <string name="fragment_forgot_password_information_text_letter_send">Письмо для подтверждения отправлено на указанную почту</string>
     <string name="fragment_forgot_password_information_text_enter_email">Введите адрес электронной почты</string>
     <string name="fragment_forgot_password_information_text_enter_correct_email">Введите корректный адрес электронной почты</string>
-    <string name="fragment_login_dialog_information_text_all_fields_must_be_filled">Все поля должны быть заполнены.</string>
+    <string name="fragment_login_dialog_information_text_all_fields_must_be_filled">Все поля должны быть заполнены корректно.</string>
     <string name="fragment_login_dialog_information_text_you_are_logged_in_as">"%1s\n%2s"</string>
     <string name="fragment_login_dialog_information_text_you_are_not_logged_in">Вы не вошли в свой аккаунт</string>
     <string name="fragment_login_dialog_error_text_no_internet_connection">Нет соединения с интернетом</string>

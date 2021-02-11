@@ -27,6 +27,8 @@ import com.google.firebase.FirebaseException
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException
 import com.google.firebase.auth.FirebaseAuthInvalidUserException
+import com.google.firebase.auth.FirebaseAuthUserCollisionException
+import com.google.firebase.auth.FirebaseAuthWeakPasswordException
 import com.google.firebase.auth.FirebaseUser
 import kz.stepanenkos.notes.R
 import kz.stepanenkos.notes.common.presentation.AbstractTextWatcher
@@ -34,7 +36,7 @@ import org.koin.android.ext.android.inject
 
 private const val RC_SIGN_IN = 9001
 
-class LoginDialogFragment : Fragment() {
+class LoginFragment : Fragment() {
     private val loginViewModel: LoginViewModel by inject()
     private val googleSignInClient: GoogleSignInClient by inject()
     private val auth: FirebaseAuth by inject()
@@ -46,7 +48,6 @@ class LoginDialogFragment : Fragment() {
     private lateinit var passwordEditText: EditText
     private lateinit var signUpButton: Button
     private lateinit var signInButton: Button
-    private lateinit var closeButton: Button
     private lateinit var googleSignInButton: SignInButton
     private lateinit var forgetPasswordTextViewButton: TextView
 
@@ -60,14 +61,12 @@ class LoginDialogFragment : Fragment() {
         passwordEditText = view.findViewById(R.id.fragment_login_edit_text_password)
         signUpButton = view.findViewById(R.id.fragment_login_button_sign_up)
         signInButton = view.findViewById(R.id.fragment_login_button_sign_in)
-        closeButton = view.findViewById(R.id.fragment_login_button_close)
         googleSignInButton = view.findViewById(R.id.fragment_login_button_google_login)
         if(AppCompatDelegate.getDefaultNightMode() == AppCompatDelegate.MODE_NIGHT_YES) {
             googleSignInButton.setColorScheme(SignInButton.COLOR_DARK)
         } else {
             googleSignInButton.setColorScheme(SignInButton.COLOR_LIGHT)
         }
-        closeButton = view.findViewById(R.id.fragment_login_button_close)
         forgetPasswordTextViewButton =
             view.findViewById(R.id.fragment_login_text_view_forgot_password)
         return view
@@ -110,12 +109,11 @@ class LoginDialogFragment : Fragment() {
             hideKeyboardFrom(requireContext(), requireView())
             if (isValidCredentials(email, password)) {
                 loginViewModel.signUp(email, password)
-                Snackbar.make(
+               /* Snackbar.make(
                     requireView(),
                     getString(R.string.fragment_forgot_password_information_text_letter_send),
                     Snackbar.LENGTH_LONG
-                ).show()
-                //dismiss()
+                ).show()*/
             } else {
                 Snackbar.make(
                     requireView(),
@@ -123,10 +121,6 @@ class LoginDialogFragment : Fragment() {
                     Snackbar.LENGTH_LONG
                 ).show()
             }
-        }
-
-        closeButton.setOnClickListener {
-            findNavController().popBackStack()
         }
 
         forgetPasswordTextViewButton.setOnClickListener {
@@ -192,13 +186,7 @@ class LoginDialogFragment : Fragment() {
 
     private fun showErrorMessage(throwable: Throwable) {
         when (throwable.javaClass) {
-            FirebaseException::class.java -> {
-                Snackbar.make(
-                    requireView(),
-                    getString(R.string.fragment_login_dialog_error_text_no_internet_connection),
-                    Snackbar.LENGTH_LONG
-                ).show()
-            }
+
 
             FirebaseAuthInvalidUserException::class.java -> {
                 Snackbar.make(
@@ -211,8 +199,32 @@ class LoginDialogFragment : Fragment() {
             FirebaseAuthInvalidCredentialsException::class.java -> {
                 Snackbar.make(
                     requireView(),
-                    throwable.localizedMessage,
-                    //getString(R.string.fragment_login_dialog_error_text_invalid_email_or_password),
+                    //throwable.localizedMessage,
+                    getString(R.string.fragment_login_dialog_error_text_invalid_email_or_password),
+                    Snackbar.LENGTH_LONG
+                ).show()
+            }
+
+            FirebaseException::class.java -> {
+                Snackbar.make(
+                    requireView(),
+                    getString(R.string.fragment_login_dialog_error_text_no_internet_connection),
+                    Snackbar.LENGTH_LONG
+                ).show()
+            }
+
+            FirebaseAuthUserCollisionException::class.java -> {
+                Snackbar.make(
+                    requireView(),
+                    "Пользователь с таким адресом электронной почты уже зарегистрирован",
+                    Snackbar.LENGTH_LONG
+                ).show()
+            }
+
+            FirebaseAuthWeakPasswordException::class.java -> {
+                Snackbar.make(
+                    requireView(),
+                    "Пароль должен быть не менее 6 символов",
                     Snackbar.LENGTH_LONG
                 ).show()
             }

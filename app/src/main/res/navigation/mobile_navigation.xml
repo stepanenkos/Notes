@@ -23,7 +23,7 @@
             />
         <action
             android:id="@+id/action_notesFragment_to_loginDialogFragment"
-            app:destination="@id/loginDialogFragment"
+            app:destination="@id/loginFragment"
             />
     </fragment>
     <fragment
@@ -44,7 +44,7 @@
             />
         <action
             android:id="@+id/action_editorFragment_to_loginDialogFragment"
-            app:destination="@id/loginDialogFragment"
+            app:destination="@id/loginFragment"
             />
     </fragment>
     <fragment
@@ -56,12 +56,12 @@
         >
         <action
             android:id="@+id/action_settingsFragment_to_loginDialogFragment"
-            app:destination="@id/loginDialogFragment"
+            app:destination="@id/loginFragment"
             />
     </fragment>
     <fragment
-        android:id="@+id/loginDialogFragment"
-        android:name="kz.stepanenkos.notes.authorization.presentation.LoginDialogFragment"
+        android:id="@+id/loginFragment"
+        android:name="kz.stepanenkos.notes.authorization.presentation.LoginFragment"
         android:label="LoginDialogFragment"
         tools:layout="@layout/fragment_login"
         >
@@ -82,7 +82,7 @@
         >
         <action
             android:id="@+id/action_forgotPasswordFragment_to_loginDialogFragment"
-            app:destination="@id/loginDialogFragment"
+            app:destination="@id/loginFragment"
             />
     </fragment>
     <fragment

@@ -26,7 +26,7 @@ class NotesApplication : Application() {
         ViewPump.init(ViewPump.builder()
             .addInterceptor(TextSizeUpdatingInterceptor())
             .build())
-        //AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.getDefaultNightMode())
+        AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM)
         startKoin{
             androidContext(this@NotesApplication)
             modules(
