@@ -56,6 +56,7 @@ class NotesViewModel(
                     databaseRepository.getAllNotes().collect { listNoteDataFromRoomDB ->
                         getAllNotesInFirebaseDatabase().collect { listNoteDataFromFirebaseDB ->
                             withContext(Dispatchers.Main) {
+                                updateDB(listNoteDataFromRoomDB, listNoteDataFromFirebaseDB)
                                 _allNotesFromDB.postValue(
                                     prepareListWithAllNotes(
                                         listNoteDataFromRoomDB,
@@ -90,8 +91,6 @@ class NotesViewModel(
         listFromFirebaseDB: List<NoteData>
     ): List<NoteData> {
         val combinedList: MutableSet<NoteData> = mutableSetOf()
-        val uniqueNotesForFirebase: MutableList<NoteData> = mutableListOf()
-        val uniqueNotesForRoom: MutableList<NoteData> = mutableListOf()
 
         when {
 
@@ -103,26 +102,36 @@ class NotesViewModel(
                 combinedList.addAll(listFromFirebaseDB)
                 combinedList.addAll(listFromRoomDB)
 
-                combinedList.forEach {
-                    if (!listFromRoomDB.contains(it)) {
-                        uniqueNotesForRoom.add(it)
-                    }
-
-                    if (!listFromFirebaseDB.contains(it)) {
-                        uniqueNotesForFirebase.add(it)
-                    }
-                }
-
-                withContext(Dispatchers.IO) {
-                    databaseRepository.saveAllNotes(uniqueNotesForRoom)
-                    firebaseDatabaseRepository.saveAllNotes(uniqueNotesForFirebase)
-                }
                 return combinedList.toList()
             }
 
             else -> {
                 return listFromRoomDB
             }
+        }
+    }
+
+    private suspend fun updateDB(listFromRoomDB: List<NoteData>, listFromFirebaseDB: List<NoteData>) {
+        val combinedList: MutableSet<NoteData> = mutableSetOf()
+        combinedList.addAll(listFromFirebaseDB)
+        combinedList.addAll(listFromRoomDB)
+
+        val uniqueNotesForFirebase: MutableList<NoteData> = mutableListOf()
+        val uniqueNotesForRoom: MutableList<NoteData> = mutableListOf()
+
+        combinedList.forEach {
+            if (!listFromRoomDB.contains(it)) {
+                uniqueNotesForRoom.add(it)
+            }
+
+            if (!listFromFirebaseDB.contains(it)) {
+                uniqueNotesForFirebase.add(it)
+            }
+        }
+
+        withContext(Dispatchers.IO) {
+            databaseRepository.saveAllNotes(uniqueNotesForRoom)
+            firebaseDatabaseRepository.saveAllNotes(uniqueNotesForFirebase)
         }
     }
 }
