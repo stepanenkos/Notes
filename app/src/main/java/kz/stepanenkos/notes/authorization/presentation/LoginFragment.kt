@@ -5,16 +5,13 @@ import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.text.Editable
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
 import android.widget.Button
-import android.widget.EditText
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatDelegate
-import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.Fragment
 import androidx.navigation.NavOptions
 import androidx.navigation.fragment.findNavController
@@ -23,7 +20,9 @@ import com.google.android.gms.auth.api.signin.GoogleSignInClient
 import com.google.android.gms.common.SignInButton
 import com.google.android.gms.common.api.ApiException
 import com.google.android.material.snackbar.Snackbar
+import com.google.android.material.textfield.TextInputEditText
 import com.google.firebase.FirebaseException
+import com.google.firebase.FirebaseTooManyRequestsException
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException
 import com.google.firebase.auth.FirebaseAuthInvalidUserException
@@ -44,8 +43,8 @@ class LoginFragment : Fragment() {
     private var email: String = ""
     private var password: String = ""
 
-    private lateinit var emailEditText: EditText
-    private lateinit var passwordEditText: EditText
+    private lateinit var emailEditText: TextInputEditText
+    private lateinit var passwordEditText: TextInputEditText
     private lateinit var signUpButton: Button
     private lateinit var signInButton: Button
     private lateinit var googleSignInButton: SignInButton
@@ -62,7 +61,7 @@ class LoginFragment : Fragment() {
         signUpButton = view.findViewById(R.id.fragment_login_button_sign_up)
         signInButton = view.findViewById(R.id.fragment_login_button_sign_in)
         googleSignInButton = view.findViewById(R.id.fragment_login_button_google_login)
-        if(AppCompatDelegate.getDefaultNightMode() == AppCompatDelegate.MODE_NIGHT_YES) {
+        if (AppCompatDelegate.getDefaultNightMode() == AppCompatDelegate.MODE_NIGHT_YES) {
             googleSignInButton.setColorScheme(SignInButton.COLOR_DARK)
         } else {
             googleSignInButton.setColorScheme(SignInButton.COLOR_LIGHT)
@@ -94,26 +93,30 @@ class LoginFragment : Fragment() {
 
         signInButton.setOnClickListener {
             hideKeyboardFrom(requireContext(), requireView())
-            if (isValidCredentials(email, password)) {
-                loginViewModel.signIn(email, password)
-            } else {
-                Snackbar.make(
-                    requireView(),
-                    getString(R.string.fragment_login_dialog_information_text_all_fields_must_be_filled),
-                    Snackbar.LENGTH_LONG
-                ).show()
-            }
+
+                if (isValidCredentials(email, password)) {
+                    loginViewModel.signIn(email, password)
+                } else {
+                    Snackbar.make(
+                        requireView(),
+                        getString(R.string.fragment_login_dialog_information_text_all_fields_must_be_filled),
+                        Snackbar.LENGTH_LONG
+                    ).show()
+                }
+
         }
 
         signUpButton.setOnClickListener {
             hideKeyboardFrom(requireContext(), requireView())
             if (isValidCredentials(email, password)) {
                 loginViewModel.signUp(email, password)
-               /* Snackbar.make(
-                    requireView(),
-                    getString(R.string.fragment_forgot_password_information_text_letter_send),
-                    Snackbar.LENGTH_LONG
-                ).show()*/
+                if (auth.currentUser != null && !auth.currentUser?.isEmailVerified!!) {
+                    Snackbar.make(
+                        requireView(),
+                        getString(R.string.fragment_forgot_password_information_text_letter_send),
+                        Snackbar.LENGTH_LONG
+                    ).show()
+                }
             } else {
                 Snackbar.make(
                     requireView(),
@@ -225,6 +228,14 @@ class LoginFragment : Fragment() {
                 Snackbar.make(
                     requireView(),
                     "Пароль должен быть не менее 6 символов",
+                    Snackbar.LENGTH_LONG
+                ).show()
+            }
+
+            FirebaseTooManyRequestsException::class.java -> {
+                Snackbar.make(
+                    requireView(),
+                    "Были много раз введены не корректные данные. На данный момент доступ заблокирован. Попробуйте позже или если вы забыли пароль, воспользуйтесь кнопкой \"Забыли пароль\"",
                     Snackbar.LENGTH_LONG
                 ).show()
             }

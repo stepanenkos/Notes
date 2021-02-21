@@ -7,8 +7,6 @@ import kz.stepanenkos.notes.NoteData
 interface FirebaseDatabaseSource {
     fun saveNote(noteData: NoteData)
 
-    fun saveAllNotes(listNoteData: List<NoteData>)
-
     suspend fun getNoteById(noteId: String): Flow<NoteData>
 
     suspend fun getAllNotes(): Flow<List<NoteData>>

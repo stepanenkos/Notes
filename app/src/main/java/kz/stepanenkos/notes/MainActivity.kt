@@ -26,6 +26,8 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
 import io.github.inflationx.viewpump.ViewPumpContextWrapper
 import kz.stepanenkos.notes.authorization.presentation.LoginViewModel
+import kz.stepanenkos.notes.common.extensions.view.gone
+import kz.stepanenkos.notes.common.extensions.view.show
 import kz.stepanenkos.notes.user.data.datasource.UserCredentialsDataSource
 import org.koin.android.ext.android.inject
 
@@ -82,7 +84,7 @@ class MainActivity : AppCompatActivity(), FirebaseAuth.AuthStateListener,
         super.onStart()
         val currentUser = firebaseAuth.currentUser
 
-        if (currentUser != null) {
+        if (currentUser != null && currentUser.isEmailVerified) {
             updateUI(currentUser)
         } else {
             toLoginScreen()
@@ -199,21 +201,22 @@ class MainActivity : AppCompatActivity(), FirebaseAuth.AuthStateListener,
     }
 
     private fun updateUI(firebaseUser: FirebaseUser?) {
-        if (firebaseUser != null) {
+        if (firebaseUser != null && firebaseUser.isEmailVerified) {
             userEnterAsTextView.text = getString(
                 R.string.fragment_login_dialog_information_text_you_are_logged_in_as,
                 firebaseUser.displayName ?: "",
                 firebaseUser.email
             )
-            signInButton.visibility = View.GONE
-            userProfileSettingsTextView.visibility = View.VISIBLE
-            signOutButton.visibility = View.VISIBLE
+            signInButton.gone()
+            userProfileSettingsTextView.show()
+            signOutButton.show()
             Glide.with(applicationContext)
                 .load(firebaseUser.photoUrl)
                 .circleCrop()
                 .placeholder(R.drawable.ic_account_photo)
                 .fallback(R.drawable.ic_account_photo)
                 .into(userProfilePhoto)
+            addNoteButton.show()
         } else {
             userEnterAsTextView.text =
                 getString(R.string.fragment_login_dialog_information_text_you_are_not_logged_in)
@@ -221,14 +224,15 @@ class MainActivity : AppCompatActivity(), FirebaseAuth.AuthStateListener,
                 .load(R.drawable.ic_account_photo)
                 .circleCrop()
                 .into(userProfilePhoto)
-            signInButton.visibility = View.VISIBLE
-            userProfileSettingsTextView.visibility = View.GONE
-            signOutButton.visibility = View.GONE
+            signInButton.show()
+            userProfileSettingsTextView.gone()
+            signOutButton.gone()
+            addNoteButton.hide()
         }
     }
 
     override fun onAuthStateChanged(p0: FirebaseAuth) {
-        if (p0.currentUser != null) {
+        if (p0.currentUser != null && p0.currentUser!!.isEmailVerified) {
             updateUI(p0.currentUser)
         } else {
             toLoginScreen()

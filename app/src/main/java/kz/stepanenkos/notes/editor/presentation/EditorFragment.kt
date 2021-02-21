@@ -5,20 +5,18 @@ import android.text.Html
 import android.text.Spannable
 import android.text.SpannableString
 import android.text.style.UnderlineSpan
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.EditText
 import android.widget.ImageView
 import androidx.fragment.app.Fragment
 import kz.stepanenkos.notes.NoteData
 import kz.stepanenkos.notes.R
+import kz.stepanenkos.notes.common.extensions.view.disabled
 import kz.stepanenkos.notes.common.presentation.ContentNoteEditText
 import kz.stepanenkos.notes.common.presentation.TitleNoteEditText
 import org.koin.androidx.viewmodel.ext.android.viewModel
-import org.threeten.bp.Instant
-import org.threeten.bp.ZoneId
-import org.threeten.bp.ZonedDateTime
 
 class EditorFragment : Fragment() {
     private val editorViewModel: EditorViewModel by viewModel()
@@ -31,6 +29,7 @@ class EditorFragment : Fragment() {
     private lateinit var underlinedButton: ImageView
 
     private var noteData: NoteData = NoteData()
+    private var noteDataId = ""
     private var isChecked = false
     private var isForEdit = false
     private var startSelectionIndex: Int = -1
@@ -59,16 +58,18 @@ class EditorFragment : Fragment() {
         idNote = arguments?.getString("ID")
         idNote?.let { editorViewModel.getNoteById(it) }
     }
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         idNote = arguments?.getString("ID")
         idNote?.let { editorViewModel.getNoteById(it) }
-        editorViewModel.noteById.observe(viewLifecycleOwner, {noteDataInDB ->
+        editorViewModel.noteById.observe(viewLifecycleOwner, { noteDataInDB ->
             isForEdit = true
-            if(noteDataInDB != null) {
+            Log.d("TAG", "onViewCreated: $noteDataInDB")
+            if (noteDataInDB != null) {
                 noteData = noteDataInDB
-                titleNote.isEnabled = false
-                contentNote.isEnabled = false
+                titleNote.disabled()
+                contentNote.disabled()
                 titleNote.setText(noteDataInDB.titleNote)
                 contentNote.setText(noteDataInDB.contentNote.trim())
             }
@@ -81,37 +82,36 @@ class EditorFragment : Fragment() {
             if (titleNote.text.toString().isNotBlank() &&
                 contentNote.text.toString().isNotBlank() && !isForEdit
             ) {
-                editorViewModel.saveNote(
-                    titleNote = titleNote.text.toString(),
-                    contentNote = contentNote.text.toString(),
-                )
-                titleNote.isEnabled = false
-                contentNote.isEnabled = false
-                doneNote.isEnabled = false
-            } else {
-
                 noteData.titleNote = titleNote.text.toString()
                 noteData.contentNote = contentNote.text.toString()
-                noteData.dateOfNote = ZonedDateTime.now(
-                    ZoneId.of(
-                        ZoneId.systemDefault().rules.getOffset(
-                            Instant.now()
-                        ).toString()
-                    )
-                ).toEpochSecond()
+
+                editorViewModel.saveNote(noteData)
+
+                titleNote.disabled()
+                contentNote.disabled()
+                doneNote.disabled()
+
+            } else {
+                noteData.titleNote = titleNote.text.toString()
+                noteData.contentNote = contentNote.text.toString()
+
                 editorViewModel.updateNote(noteData)
-                titleNote.isEnabled = false
-                contentNote.isEnabled = false
+
+                titleNote.disabled()
+                contentNote.disabled()
+                doneNote.disabled()
+
                 isForEdit = false
-                doneNote.isEnabled = false
             }
 
         }
 
         editNote.setOnClickListener {
+            editorViewModel.getNoteById(noteDataId)
+            Log.d("TAG", "editNote: $noteData")
 
             titleNote.isEnabled = true
-
+            isForEdit = true
             contentNote.isEnabled = true
             doneNote.isEnabled = true
         }

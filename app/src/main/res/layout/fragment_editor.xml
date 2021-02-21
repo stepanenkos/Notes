@@ -89,6 +89,7 @@
             android:padding="4dp"
             android:paddingStart="8dp"
             android:paddingEnd="8dp"
+            android:autoLink="all"
             android:focusableInTouchMode="true"
             android:singleLine="true"
             />
@@ -103,6 +104,7 @@
             android:hint="Текст заметки"
             android:inputType="textMultiLine|textWebEditText"
             android:padding="8dp"
+            android:autoLink="all"
             android:focusableInTouchMode="true"
             android:textAlignment="viewStart"
             />

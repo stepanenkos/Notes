@@ -13,9 +13,6 @@ class DefaultFirebaseDatabaseRepository(
         firebaseDatabaseSource.saveNote(noteData)
     }
 
-    override fun saveAllNotes(listNoteData: List<NoteData>) {
-    }
-
     override suspend fun getNoteById(noteId: String): Flow<NoteData> {
         return firebaseDatabaseSource.getNoteById(noteId)
     }

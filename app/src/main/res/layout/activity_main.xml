@@ -51,12 +51,13 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="end"
-                android:layout_marginEnd="8dp"
-                android:layout_marginBottom="8dp"
-                android:elevation="4dp"
+                android:layout_marginEnd="@dimen/margin_16x"
+                android:layout_marginBottom="@dimen/margin_16x"
+                android:elevation="8dp"
                 android:src="@drawable/ic_note_add"
                 android:contentDescription="@string/activity_main_content_description_floating_action_button"
-                app:borderWidth="1dp"
+                app:borderWidth="4dp"
+                android:visibility="invisible"
                 app:fabSize="mini"
                 />
 

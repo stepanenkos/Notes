@@ -26,25 +26,8 @@ class EditorViewModel(
     val noteById: LiveData<NoteData> = _noteById
     val onBold: LiveData<Spanned> = _onBold
 
-    fun saveNote(titleNote: String, contentNote: String) {
-        val noteData = NoteData(
-            titleNote = titleNote,
-            contentNote = contentNote,
-            dateOfNote = ZonedDateTime.now(
-                ZoneId.of(
-                    ZoneId.systemDefault().rules.getOffset(
-                        Instant.now()
-                    ).toString()
-                )
-            ).toEpochSecond()
-        )
+    fun saveNote(noteData: NoteData) {
         saveNoteToFirebaseDatabase(noteData)
-    }
-
-    fun saveAllNotes(listNoteData: List<NoteData>) {
-        viewModelScope.launch(Dispatchers.IO) {
-            firebaseDatabaseRepository.saveAllNotes(listNoteData)
-        }
     }
 
     fun updateNote(noteData: NoteData) {
