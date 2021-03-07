@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <item
+        android:id="@+id/notesFragment"
+        android:icon="@drawable/ic_sticky_note"
+        />
+
+    <item android:id="@+id/placeholder2" />
+
+    <item android:id="@+id/placeholder3" />
+
+    <item
+        android:id="@+id/searchNotesFragment"
+        android:icon="@drawable/ic_search"
+        />
+
+    <item
+        android:id="@+id/menuFragment"
+        android:icon="@drawable/ic_left_menu"
+        />
+</menu>

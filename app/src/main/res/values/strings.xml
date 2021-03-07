@@ -40,6 +40,8 @@
     <string name="nav_header_text_view_profile_settings"><b><u>Настройки профиля</u></b></string>
     <string name="night_mode">Ночная тема</string>
     <string name="activity_main_content_description_floating_action_button">Добавить заметку</string>
+    <string name="search_hint">Введите текст для поиска</string>
+    <string name="app_label">Notes</string>
 
     <string-array name="title_note_font_size">
         <item>Очень маленький</item>
@@ -72,5 +74,7 @@
         <item>20</item>
         <item>28</item>
     </string-array>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 
 </resources>

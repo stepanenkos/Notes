@@ -7,6 +7,8 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.channels.sendBlocking
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.callbackFlow
 import kz.stepanenkos.notes.NoteData
 
@@ -77,5 +79,12 @@ class DefaultFirebaseDatabaseSource(
         auth.currentUser?.uid?.let { uid ->
             usersNode.document(uid).collection(NOTES_NODE_CHILD).document(noteData.id).delete()
         }
+    }
+
+    override suspend fun searchNoteByText(searchText: String): Flow<List<NoteData>> {
+        auth.currentUser?.uid?.let {uid ->
+            usersNode.document(uid).collection(NOTES_NODE_CHILD).get()
+        }
+        return MutableSharedFlow()
     }
 }

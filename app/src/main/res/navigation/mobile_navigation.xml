@@ -20,10 +20,20 @@
         <action
             android:id="@+id/action_notesFragment_to_settingsFragment"
             app:destination="@id/settingsFragment"
+            app:launchSingleTop="true"
             />
         <action
             android:id="@+id/action_notesFragment_to_loginDialogFragment"
             app:destination="@id/loginFragment"
+            />
+        <action
+            android:id="@+id/action_notesFragment_to_searchNotesFragment"
+            app:destination="@id/searchNotesFragment"
+            app:launchSingleTop="true"
+            />
+        <action
+            android:id="@+id/action_notesFragment_to_menuFragment"
+            app:destination="@id/menuFragment"
             />
     </fragment>
     <fragment
@@ -46,17 +56,33 @@
             android:id="@+id/action_editorFragment_to_loginDialogFragment"
             app:destination="@id/loginFragment"
             />
+        <action
+            android:id="@+id/action_editorFragment_to_searchNotesFragment"
+            app:destination="@id/searchNotesFragment"
+            />
+        <action
+            android:id="@+id/action_editorFragment_to_menuFragment"
+            app:destination="@id/menuFragment"
+            />
     </fragment>
     <fragment
 
         android:id="@+id/settingsFragment"
-        android:name="kz.stepanenkos.notes.settings.SettingsFragment"
+        android:name="kz.stepanenkos.notes.settings.presentation.SettingsFragment"
         android:label="fragment_settings"
         tools:layout="@layout/fragment_settings"
         >
         <action
             android:id="@+id/action_settingsFragment_to_loginDialogFragment"
             app:destination="@id/loginFragment"
+            />
+        <action
+            android:id="@+id/action_settingsFragment_to_searchNotesFragment"
+            app:destination="@id/searchNotesFragment"
+            />
+        <action
+            android:id="@+id/action_settingsFragment_to_menuFragment"
+            app:destination="@id/menuFragment"
             />
     </fragment>
     <fragment
@@ -93,6 +119,32 @@
         >
         <action
             android:id="@+id/action_signedFragment_to_notesFragment"
+            app:destination="@id/notesFragment"
+            />
+    </fragment>
+    <fragment
+        android:id="@+id/searchNotesFragment"
+        android:name="kz.stepanenkos.notes.searchnotes.presentation.SearchNotesFragment"
+        android:label="fragment_search_notes"
+        tools:layout="@layout/fragment_search_notes"
+        >
+        <action
+            android:id="@+id/action_searchNotesFragment_to_notesFragment"
+            app:destination="@id/notesFragment"
+            />
+        <action
+            android:id="@+id/action_searchNotesFragment_to_menuFragment"
+            app:destination="@id/menuFragment"
+            />
+    </fragment>
+    <fragment
+        android:id="@+id/menuFragment"
+        android:name="kz.stepanenkos.notes.menu.presentation.MenuFragment"
+        android:label="MenuFragment"
+        tools:layout="@layout/fragment_menu"
+        >
+        <action
+            android:id="@+id/action_menuFragment_to_notesFragment"
             app:destination="@id/notesFragment"
             />
     </fragment>

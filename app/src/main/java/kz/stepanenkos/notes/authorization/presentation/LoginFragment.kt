@@ -19,6 +19,7 @@ import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInClient
 import com.google.android.gms.common.SignInButton
 import com.google.android.gms.common.api.ApiException
+import com.google.android.material.navigation.NavigationView
 import com.google.android.material.snackbar.Snackbar
 import com.google.android.material.textfield.TextInputEditText
 import com.google.firebase.FirebaseException
@@ -90,7 +91,6 @@ class LoginFragment : Fragment() {
     }
 
     private fun setListeners() {
-
         signInButton.setOnClickListener {
             hideKeyboardFrom(requireContext(), requireView())
 

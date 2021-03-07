@@ -11,6 +11,8 @@ interface FirebaseDatabaseSource {
 
     suspend fun getAllNotes(): Flow<List<NoteData>>
 
+    suspend fun searchNoteByText(searchText: String): Flow<List<NoteData>>
+
     fun updateNote(noteData: NoteData)
 
     fun deleteNote(noteData: NoteData)

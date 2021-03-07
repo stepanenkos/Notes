@@ -10,7 +10,7 @@
     >
 
     <ImageView
-        android:id="@+id/nav_header_profile_photo"
+        android:id="@+id/nav_header_profile_photo2"
         android:layout_width="80dp"
         android:layout_height="80dp"
         android:layout_marginTop="@dimen/margin_16x"
@@ -18,14 +18,14 @@
         />
 
     <TextView
-        android:id="@+id/nav_header_text_view_you_sign_in_as"
+        android:id="@+id/nav_header_text_view_you_sign_in_as2"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/margin_16x"
         android:gravity="start"
         />
     <TextView
-        android:id="@+id/nav_header_button_profile_settings"
+        android:id="@+id/nav_header_button_profile_settings2"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
@@ -39,7 +39,7 @@
         />
 
     <TextView
-        android:id="@+id/nav_header_button_sign_in"
+        android:id="@+id/nav_header_button_sign_in2"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
@@ -51,7 +51,7 @@
         android:textColor="@color/white"
         />
     <TextView
-        android:id="@+id/nav_header_button_sign_out"
+        android:id="@+id/nav_header_button_sign_out2"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center"

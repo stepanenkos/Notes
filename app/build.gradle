@@ -10,6 +10,11 @@ android {
     compileSdkVersion 30
     buildToolsVersion "30.0.2"
 
+    packagingOptions {
+        exclude 'META-INF/DEPENDENCIES'
+        exclude("META-INF/*.kotlin_module")
+    }
+
     defaultConfig {
         applicationId "kz.stepanenkos.notes"
         minSdkVersion 21
@@ -50,7 +55,7 @@ dependencies {
 
     //Firebase
     implementation 'com.google.firebase:firebase-database:19.6.0'
-    implementation 'com.google.firebase:firebase-auth:20.0.2'
+    implementation 'com.google.firebase:firebase-auth:20.0.3'
     implementation 'com.google.firebase:firebase-auth-ktx'
     implementation 'com.google.android.gms:play-services-auth:19.0.0'
     implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-play-services:1.4.2'
@@ -64,7 +69,7 @@ dependencies {
     //Navigation
     implementation 'androidx.navigation:navigation-fragment-ktx:2.3.3'
     implementation 'androidx.navigation:navigation-ui-ktx:2.3.3'
-    implementation 'com.google.firebase:firebase-firestore:22.1.0'
+    implementation 'com.google.firebase:firebase-firestore:22.1.1'
 
     //Room
     def room_version = "2.2.6"
@@ -89,4 +94,8 @@ dependencies {
 
     //ViewPump
     implementation 'io.github.inflationx:viewpump:2.0.3'
+
+    //Algolia
+    implementation "com.algolia:algoliasearch-client-kotlin:1.4.0"
+    implementation "io.ktor:ktor-client-okhttp:1.4.0"
 }

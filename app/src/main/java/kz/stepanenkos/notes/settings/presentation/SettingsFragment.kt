@@ -1,4 +1,4 @@
-package kz.stepanenkos.notes.settings
+package kz.stepanenkos.notes.settings.presentation
 
 import android.content.SharedPreferences
 import android.os.Bundle
@@ -17,12 +17,7 @@ class SettingsFragment : PreferenceFragmentCompat(), SharedPreferences.OnSharedP
         val contentNoteFontSizePreference = preferenceManager.findPreference<ListPreference>("content_note_font_size")
         titleNoteFontSizePreference?.setDefaultValue(titleNoteFontSizePreference.entries[2])
         contentNoteFontSizePreference?.setDefaultValue(contentNoteFontSizePreference.entries[2])
-/*        Log.d("TAG", "entries: ${Arrays.toString(fontSizePreference?.entries)}")
-        Log.d("TAG", "entry values: ${
-            Arrays.toString(fontSizePreference?.entryValues)}")
-        Log.d("TAG", "entry: ${fontSizePreference?.entry}")
-        Log.d("TAG", "indexOfValue: ${fontSizePreference?.findIndexOfValue(fontSizePreference.value)}")
-        Log.d("TAG", "value: ${fontSizePreference?.value}")*/
+
         PreferenceManager.getDefaultSharedPreferences(requireContext()).edit {
 
             titleNoteFontSizePreference?.value?.let { putString("title_note_font_size", it) }
@@ -31,11 +26,6 @@ class SettingsFragment : PreferenceFragmentCompat(), SharedPreferences.OnSharedP
     }
 
     override fun onSharedPreferenceChanged(sharedPreferences: SharedPreferences?, key: String?) {
-        /* activity?.finish()
-        activity?.overridePendingTransition(R.anim.none, R.anim.none)
-        val intent = activity?.intent
-        intent?.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
-        startActivity(intent)*/
         activity?.recreate()
     }
 

@@ -1,7 +1,6 @@
 package kz.stepanenkos.notes.listnotes.presentation
 
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -10,40 +9,37 @@ import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
 import kz.stepanenkos.notes.NoteData
 import kz.stepanenkos.notes.R
-import kz.stepanenkos.notes.authorization.presentation.LoginViewModel
-import kz.stepanenkos.notes.editor.presentation.EditorViewModel
 import kz.stepanenkos.notes.listnotes.listeners.NoteClickListener
-import kz.stepanenkos.notes.listnotes.presentation.view.NotesAdapter
-import kz.stepanenkos.notes.user.data.datasource.UserCredentialsDataSource
-import org.koin.android.ext.android.inject
+import kz.stepanenkos.notes.searchnotes.presentation.view.SearchNotesAdapter
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class NotesFragment : Fragment(), NoteClickListener {
     private val notesViewModel: NotesViewModel by viewModel()
 
     private lateinit var recyclerView: RecyclerView
-    private val notesAdapter = NotesAdapter(this)
+    private val notesAdapter = SearchNotesAdapter(this)
 
     override fun onStart() {
         super.onStart()
+        setHasOptionsMenu(true)
         notesViewModel.onStart()
+
         notesViewModel.allNotes.observe(viewLifecycleOwner) {
             notesAdapter.submitList(it)
         }
-        if(Firebase.auth.currentUser == null) {
+        if (Firebase.auth.currentUser == null) {
             findNavController().navigate(R.id.loginFragment)
         }
     }
 
     override fun onCreateView(
-            inflater: LayoutInflater,
-            container: ViewGroup?,
-            savedInstanceState: Bundle?
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
     ): View? {
 
         val root = inflater.inflate(R.layout.fragment_notes, container, false)
@@ -83,4 +79,5 @@ class NotesFragment : Fragment(), NoteClickListener {
         }
         findNavController().navigate(R.id.editorFragment, bundle)
     }
+
 }
