@@ -11,7 +11,6 @@ import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.setupWithNavController
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.android.material.floatingactionbutton.FloatingActionButton
-import com.google.android.material.navigation.NavigationView
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
 import io.github.inflationx.viewpump.ViewPumpContextWrapper
@@ -87,8 +86,6 @@ class MainActivity : AppCompatActivity(), FirebaseAuth.AuthStateListener,
         sharedPrefs = getSharedPreferences(NIGHT_MODE_SHARED_PREFS, MODE_PRIVATE)
         addNoteButton = findViewById(R.id.fab)
 
-        val sideBar: NavigationView = findViewById(R.id.activity_main_nav_view)
-        sideBar.setupWithNavController(navController)
     }
 
     private fun setListeners() {
@@ -118,7 +115,7 @@ class MainActivity : AppCompatActivity(), FirebaseAuth.AuthStateListener,
         navController.navigate(R.id.loginFragment)
     }
 
-    private fun showUISignedUser(firebaseUser: FirebaseUser?) {
+    private fun showUISignedUser() {
         addNoteButton.show()
     }
 
@@ -128,7 +125,7 @@ class MainActivity : AppCompatActivity(), FirebaseAuth.AuthStateListener,
 
     private fun updateUI(firebaseUser: FirebaseUser?) {
         if (firebaseUser != null && firebaseUser.isEmailVerified) {
-            showUISignedUser(firebaseUser)
+            showUISignedUser()
         } else {
             showUIUnsignedUser()
         }
