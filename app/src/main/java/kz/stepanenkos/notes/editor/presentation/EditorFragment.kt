@@ -1,5 +1,6 @@
 package kz.stepanenkos.notes.editor.presentation
 
+import android.graphics.PorterDuff
 import android.os.Bundle
 import android.text.Html
 import android.text.Spannable
@@ -10,10 +11,13 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
+import androidx.core.content.ContextCompat
+import androidx.core.graphics.drawable.DrawableCompat
 import androidx.fragment.app.Fragment
 import kz.stepanenkos.notes.NoteData
 import kz.stepanenkos.notes.R
 import kz.stepanenkos.notes.common.extensions.view.disabled
+import kz.stepanenkos.notes.common.extensions.view.enabled
 import kz.stepanenkos.notes.common.presentation.ContentNoteEditText
 import kz.stepanenkos.notes.common.presentation.TitleNoteEditText
 import org.koin.androidx.viewmodel.ext.android.viewModel
@@ -47,6 +51,7 @@ class EditorFragment : Fragment() {
         titleNote = root.findViewById(R.id.fragment_editor_title_note)
         contentNote = root.findViewById(R.id.fragment_editor_content_note)
         doneNote = root.findViewById(R.id.fragment_editor_apply_changed)
+        doneNote.setColorFilter(ContextCompat.getColor(requireContext(), R.color.primary), PorterDuff.Mode.MULTIPLY)
         editNote = root.findViewById(R.id.fragment_editor_edit_text)
         boldButton = root.findViewById(R.id.fragment_editor_format_bold)
         underlinedButton = root.findViewById(R.id.fragment_editor_format_underlined)
@@ -65,7 +70,7 @@ class EditorFragment : Fragment() {
         idNote?.let { editorViewModel.getNoteById(it) }
         editorViewModel.noteById.observe(viewLifecycleOwner, { noteDataInDB ->
             isForEdit = true
-            Log.d("TAG", "onViewCreated: $noteDataInDB")
+
             if (noteDataInDB != null) {
                 noteData = noteDataInDB
                 titleNote.disabled()
@@ -73,6 +78,7 @@ class EditorFragment : Fragment() {
                 titleNote.setText(noteDataInDB.titleNote)
                 contentNote.setText(noteDataInDB.contentNote.trim())
             }
+
         })
         setOnClickListeners()
     }
@@ -90,7 +96,8 @@ class EditorFragment : Fragment() {
                 titleNote.disabled()
                 contentNote.disabled()
                 doneNote.disabled()
-
+                doneNote.setColorFilter(ContextCompat.getColor(requireContext(), R.color.black), PorterDuff.Mode.MULTIPLY)
+                editNote.setColorFilter(ContextCompat.getColor(requireContext(), R.color.primary), PorterDuff.Mode.MULTIPLY)
             } else {
                 noteData.titleNote = titleNote.text.toString()
                 noteData.contentNote = contentNote.text.toString()
@@ -100,7 +107,8 @@ class EditorFragment : Fragment() {
                 titleNote.disabled()
                 contentNote.disabled()
                 doneNote.disabled()
-
+                doneNote.setColorFilter(ContextCompat.getColor(requireContext(), R.color.black), PorterDuff.Mode.MULTIPLY)
+                editNote.setColorFilter(ContextCompat.getColor(requireContext(), R.color.primary), PorterDuff.Mode.MULTIPLY)
                 isForEdit = false
             }
 
@@ -108,12 +116,12 @@ class EditorFragment : Fragment() {
 
         editNote.setOnClickListener {
             editorViewModel.getNoteById(noteDataId)
-            Log.d("TAG", "editNote: $noteData")
-
-            titleNote.isEnabled = true
+            titleNote.enabled()
             isForEdit = true
-            contentNote.isEnabled = true
-            doneNote.isEnabled = true
+            contentNote.enabled()
+            doneNote.enabled()
+            doneNote.setColorFilter(ContextCompat.getColor(requireContext(), R.color.primary), PorterDuff.Mode.MULTIPLY)
+            editNote.setColorFilter(ContextCompat.getColor(requireContext(), R.color.black), PorterDuff.Mode.MULTIPLY)
         }
 
 

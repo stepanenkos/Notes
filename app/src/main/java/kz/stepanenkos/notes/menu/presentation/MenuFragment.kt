@@ -1,5 +1,6 @@
 package kz.stepanenkos.notes.menu.presentation
 
+import android.content.Context
 import android.content.SharedPreferences
 import android.os.Bundle
 import androidx.fragment.app.Fragment
@@ -11,11 +12,15 @@ import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
+import androidx.core.content.ContextCompat
 import androidx.core.content.edit
 import androidx.core.view.GravityCompat
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.LifecycleOwner
 import androidx.navigation.NavOptions
 import androidx.navigation.fragment.findNavController
 import com.bumptech.glide.Glide
+import com.google.android.gms.common.api.internal.LifecycleFragment
 import com.google.android.material.switchmaterial.SwitchMaterial
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
@@ -120,6 +125,7 @@ class MenuFragment : Fragment(), FirebaseAuth.AuthStateListener,
         sharedPrefs.registerOnSharedPreferenceChangeListener(this)
     }
 
+
     override fun onSharedPreferenceChanged(sharedPreferences: SharedPreferences?, key: String?) {
         activity?.recreate()
     }
@@ -133,7 +139,7 @@ class MenuFragment : Fragment(), FirebaseAuth.AuthStateListener,
     }
 
     private fun showUISignedUser(firebaseUser: FirebaseUser?) {
-        userEnterAsTextView.text = getString(
+        userEnterAsTextView.text = activity?.getString(
             R.string.fragment_login_dialog_information_text_you_are_logged_in_as,
             firebaseUser?.displayName ?: "",
             firebaseUser?.email
@@ -141,21 +147,25 @@ class MenuFragment : Fragment(), FirebaseAuth.AuthStateListener,
         signInButton.gone()
         signOutButton.show()
         userProfileSettingsTextView.show()
-        Glide.with(requireContext())
-            .load(firebaseUser?.photoUrl)
-            .circleCrop()
-            .placeholder(R.drawable.ic_account_photo)
-            .fallback(R.drawable.ic_account_photo)
-            .into(userProfilePhoto)
+        if(lifecycle.currentState == Lifecycle.State.RESUMED) {
+            Glide.with(this)
+                .load(firebaseUser?.photoUrl)
+                .circleCrop()
+                .placeholder(R.drawable.ic_account_photo)
+                .fallback(R.drawable.ic_account_photo)
+                .into(userProfilePhoto)
+        }
     }
 
     private fun showUIUnsignedUser() {
         userEnterAsTextView.text =
-            getString(R.string.fragment_login_dialog_information_text_you_are_not_logged_in)
-        Glide.with(this)
-            .load(R.drawable.ic_account_photo)
-            .circleCrop()
-            .into(userProfilePhoto)
+            activity?.getString(R.string.fragment_login_dialog_information_text_you_are_not_logged_in)
+        if(lifecycle.currentState == Lifecycle.State.RESUMED) {
+            Glide.with(this)
+                .load(R.drawable.ic_account_photo)
+                .circleCrop()
+                .into(userProfilePhoto)
+        }
         signInButton.show()
         signOutButton.gone()
         userProfileSettingsTextView.gone()

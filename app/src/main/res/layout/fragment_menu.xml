@@ -2,6 +2,7 @@
 <LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
 
@@ -75,27 +76,22 @@
             />
 
     </LinearLayout>
-    <LinearLayout
+
+
+    <TextView
+        android:id="@+id/fragment_menu_button_text_view_settings"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/margin_16x"
-        android:layout_marginEnd="@dimen/margin_16x"
-        android:layout_marginTop="@dimen/margin_8x"
-        android:orientation="horizontal">
-    <ImageView
-        android:layout_width="32dp"
-        android:layout_height="32dp"
-        android:src="@drawable/ic_settings"
-        android:layout_marginEnd="@dimen/margin_16x"
-        app:tint="@color/black"
-        />
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
         android:text="@string/title_settings"
-        android:layout_gravity="center"
+        android:layout_marginTop="@dimen/margin_16x"
+        android:layout_marginStart="@dimen/margin_16x"
+        android:drawablePadding="@dimen/padding_36x"
+        android:gravity="start|center"
+        app:drawableTint="@color/primaryTextColor"
+        android:clickable="true"
+        android:focusable="true"
+        app:drawableStartCompat="@drawable/ic_settings"
         />
-    </LinearLayout>
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -108,12 +104,12 @@
             android:id="@+id/fragment_menu_night_mode_switch"
             android:layout_width="wrap_content"
             android:contentDescription="@string/night_mode"
-            android:layout_height="wrap_content" />
-        <TextView
-            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/night_mode"
-            android:layout_gravity="center"/>
+            app:switchPadding="16dp"
+            android:layoutDirection="rtl"
+            />
+
 
     </LinearLayout>
 </LinearLayout>

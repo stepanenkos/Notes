@@ -1,14 +1,11 @@
 <resources>
     <string name="app_name">Notes</string>
-    <string name="title_notes">Заметки</string>
-    <string name="title_note_add">Новая заметка</string>
     <string name="title_settings">Настройки</string>
     <string name="fragment_login_button_close">Закрыть</string>
     <string name="fragment_login_button_sign_up">Регистрация</string>
     <string name="fragment_login_button_sign_in">Войти</string>
     <string name="fragment_login_text_view_forgot_password">Забыли пароль?</string>
     <string name="fragment_login_hint_enter_password">Введите пароль</string>
-    <string name="fragment_login_label_password">Пароль</string>
     <string name="fragment_login_hint_enter_email">Введите адрес электронной почты</string>
     <string name="fragment_login_label_email">Адрес электронной почты</string>
     <string name="fragment_login_title_authorization">Авторизация</string>
@@ -26,22 +23,13 @@
     <string name="fragment_login_dialog_error_text_no_internet_connection">Нет соединения с интернетом</string>
     <string name="fragment_login_dialog_error_text_user_not_registered">Пользователь с таким адресом электронной почты не зарегистрирован.</string>
     <string name="fragment_login_dialog_error_text_invalid_email_or_password">Неверный адрес электронной почты или пароль</string>
-    <string name="fragment_login_dialog_request_id_token_for_google_sign_in">714054521708-e36rfl0u8or951clp71sqiilohvqu5mc.apps.googleusercontent.com</string>
-    <string name="action_exit">Выйти</string>
     <string name="fragment_signed_title_profile">Профиль</string>
     <string name="fragment_editor_hint_title_note">Заголовок заметки</string>
-    <string name="drawer_menu_notes">Заметки</string>
-    <string name="drawer_menu_new_note">Новая заметка</string>
-    <string name="drawer_menu_settings">Настройки</string>
-    <string name="nav_open">Открыть</string>
-    <string name="nav_close">Закрыть</string>
     <string name="sign_in"><b><u>Войти</u></b></string>
     <string name="sign_out"><b><u>Выйти</u></b></string>
     <string name="nav_header_text_view_profile_settings"><b><u>Настройки профиля</u></b></string>
     <string name="night_mode">Ночная тема</string>
     <string name="activity_main_content_description_floating_action_button">Добавить заметку</string>
-    <string name="search_hint">Введите текст для поиска</string>
-    <string name="app_label">Notes</string>
 
     <string-array name="title_note_font_size">
         <item>Очень маленький</item>
@@ -75,6 +63,8 @@
         <item>28</item>
     </string-array>
     <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="fragment_editor_content_note_hint">Текст заметки</string>
+    <string name="fragment_editor_content_description_done_button">Кнопка сохранить заметку</string>
+    <string name="fragment_editor_content_description_edit_note_button">Кнопка редактировать заметку</string>
 
 </resources>
