@@ -1,5 +1,6 @@
 package kz.stepanenkos.notes.listnotes.presentation
 
+import android.app.AlertDialog
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -63,11 +64,23 @@ class NotesFragment : Fragment(), NoteClickListener {
             }
 
             override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
-                notesViewModel.deleteNote(notesAdapter.currentList[viewHolder.adapterPosition])
-                notesViewModel.onStart()
-                notesViewModel.allNotes.observe(viewLifecycleOwner) {
-                    notesAdapter.submitList(it)
+                val oldPosition = viewHolder.oldPosition
+                val builder = AlertDialog.Builder(requireContext())
+                builder.setTitle("Удаление заметки")
+                builder.setMessage("Вы действительно хотите удалить заметку?")
+                builder.setPositiveButton("Да") {dialog, which ->
+                    notesViewModel.deleteNote(notesAdapter.currentList[viewHolder.adapterPosition])
+                    notesViewModel.onStart()
+                    notesViewModel.allNotes.observe(viewLifecycleOwner) {
+                        notesAdapter.submitList(it)
+                    }
                 }
+                builder.setNegativeButton("Нет") {dialog, which ->
+                    dialog.dismiss()
+                    notesAdapter.notifyItemChanged(viewHolder.adapterPosition)
+                }
+                val dialog = builder.create()
+                dialog.show()
             }
         })
     }
