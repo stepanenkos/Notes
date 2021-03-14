@@ -46,14 +46,6 @@ class NotesViewModel(
         firebaseDatabaseRepository.deleteNote(noteData)
     }
 
-    suspend fun searchNoteByText(searchText: String) {
-        viewModelScope.launch(Dispatchers.IO) {
-            firebaseDatabaseRepository.searchNoteByText(searchText).collect {allFoundNotesByTextList ->
-                withContext(Dispatchers.Main) {
-                    _allFoundNotesByText.postValue(allFoundNotesByTextList)
-                }
-            }
-        }
-    }
+
 
 }

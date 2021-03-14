@@ -9,8 +9,10 @@
     >
 
     <SearchView
+        android:id="@+id/fragment_search_notes_search_view"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:iconifiedByDefault="false"
         />
 
         <androidx.recyclerview.widget.RecyclerView

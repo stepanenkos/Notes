@@ -26,7 +26,7 @@ class EditorViewModel(
     val noteById: LiveData<NoteData> = _noteById
     val onBold: LiveData<Spanned> = _onBold
 
-    fun saveNote(noteData: NoteData) {
+    suspend fun saveNote(noteData: NoteData) {
         saveNoteToFirebaseDatabase(noteData)
     }
 
@@ -45,7 +45,7 @@ class EditorViewModel(
         }
     }
 
-    private fun saveNoteToFirebaseDatabase(noteData: NoteData) {
+    private suspend fun saveNoteToFirebaseDatabase(noteData: NoteData) {
         firebaseDatabaseRepository.saveNote(noteData)
     }
 

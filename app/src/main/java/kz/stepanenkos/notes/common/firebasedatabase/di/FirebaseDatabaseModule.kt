@@ -1,8 +1,6 @@
 package kz.stepanenkos.notes.common.firebasedatabase.di
 
 import com.google.firebase.database.FirebaseDatabase
-import com.google.firebase.ktx.Firebase
-import com.google.firebase.ktx.app
 import kz.stepanenkos.notes.common.firebasedatabase.data.DefaultFirebaseDatabaseRepository
 import kz.stepanenkos.notes.common.firebasedatabase.data.datasource.DefaultFirebaseDatabaseSource
 import kz.stepanenkos.notes.common.firebasedatabase.data.datasource.FirebaseDatabaseSource
@@ -18,7 +16,8 @@ val firebaseDatabaseModule: Module = module {
     factory<FirebaseDatabaseSource> {
         DefaultFirebaseDatabaseSource(
             firebaseDatabase = get(),
-            auth = get()
+            auth = get(),
+
         )
     }
 

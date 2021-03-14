@@ -1,14 +1,12 @@
 package kz.stepanenkos.notes.common.firebasedatabase.data.datasource
 
-import android.util.Log
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
+import java.util.*
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.channels.sendBlocking
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.callbackFlow
 import kz.stepanenkos.notes.NoteData
 
@@ -17,11 +15,12 @@ private const val NOTES_NODE_CHILD = "notes"
 
 class DefaultFirebaseDatabaseSource(
     private val firebaseDatabase: FirebaseFirestore,
-    private val auth: FirebaseAuth
+    private val auth: FirebaseAuth,
 ) : FirebaseDatabaseSource {
     private val usersNode = firebaseDatabase.collection(USERS_NODE)
 
-    override fun saveNote(noteData: NoteData) {
+
+    override suspend fun saveNote(noteData: NoteData) {
         auth.currentUser?.uid?.let { uid ->
             usersNode
                 .document(uid)
@@ -36,11 +35,11 @@ class DefaultFirebaseDatabaseSource(
         auth.currentUser?.uid?.let { uid ->
             usersNode.document(uid).collection(NOTES_NODE_CHILD).get()
                 .addOnSuccessListener {
-                        for (doc in it.documents) {
-                            if (doc.toObject(NoteData::class.java)?.id == noteId) {
-                                this@callbackFlow.sendBlocking(doc.toObject(NoteData::class.java)!!)
-                            }
+                    for (doc in it.documents) {
+                        if (doc.toObject(NoteData::class.java)?.id == noteId) {
+                            this@callbackFlow.sendBlocking(doc.toObject(NoteData::class.java)!!)
                         }
+                    }
                 }
         }
         awaitClose { cancel() }
@@ -54,8 +53,27 @@ class DefaultFirebaseDatabaseSource(
                 for (doc in it) {
                     listNoteData.add(doc.toObject(NoteData::class.java))
                 }
+
                 this@callbackFlow.sendBlocking(listNoteData)
             }
+        }
+        awaitClose { cancel() }
+    }
+
+    @ExperimentalCoroutinesApi
+    override suspend fun searchNoteByText(searchKeyword: String) = callbackFlow<List<NoteData>> {
+        auth.currentUser?.uid?.let { uid ->
+            usersNode.document(uid).collection(NOTES_NODE_CHILD)
+                .whereArrayContains("searchKeywords", searchKeyword.toLowerCase(Locale.ROOT))
+                .addSnapshotListener { value, error ->
+                    val listNoteData: MutableList<NoteData> = mutableListOf()
+                    if (value != null) {
+                        for (doc in value) {
+                            listNoteData.add(doc.toObject(NoteData::class.java))
+                        }
+                    }
+                    this@callbackFlow.sendBlocking(listNoteData)
+                }
         }
         awaitClose { cancel() }
     }
@@ -69,7 +87,8 @@ class DefaultFirebaseDatabaseSource(
                     mapOf(
                         "titleNote" to noteData.titleNote,
                         "contentNote" to noteData.contentNote,
-                        "dateOfNote" to noteData.dateOfNote
+                        "dateOfNote" to noteData.dateOfNote,
+                        "searchKeywords" to noteData.searchKeywords
                     )
                 )
         }
@@ -81,10 +100,4 @@ class DefaultFirebaseDatabaseSource(
         }
     }
 
-    override suspend fun searchNoteByText(searchText: String): Flow<List<NoteData>> {
-        auth.currentUser?.uid?.let {uid ->
-            usersNode.document(uid).collection(NOTES_NODE_CHILD).get()
-        }
-        return MutableSharedFlow()
-    }
 }

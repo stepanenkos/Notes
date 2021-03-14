@@ -10,7 +10,7 @@ import kz.stepanenkos.notes.common.firebasedatabase.domain.FirebaseDatabaseRepos
 class DefaultFirebaseDatabaseRepository(
     private val firebaseDatabaseSource: FirebaseDatabaseSource
 ) : FirebaseDatabaseRepository {
-    override fun saveNote(noteData: NoteData) {
+    override suspend fun saveNote(noteData: NoteData) {
         firebaseDatabaseSource.saveNote(noteData)
     }
 
@@ -22,8 +22,8 @@ class DefaultFirebaseDatabaseRepository(
         return firebaseDatabaseSource.getAllNotes()
     }
 
-    override suspend fun searchNoteByText(searchText: String): Flow<List<NoteData>> {
-        return MutableSharedFlow()
+    override suspend fun searchNoteByText(searchKeyword: String): Flow<List<NoteData>> {
+        return firebaseDatabaseSource.searchNoteByText(searchKeyword)
     }
 
     override fun updateNote(noteData: NoteData) {

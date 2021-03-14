@@ -19,7 +19,6 @@ import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class NotesFragment : Fragment(), NoteClickListener {
     private val notesViewModel: NotesViewModel by viewModel()
-
     private lateinit var recyclerView: RecyclerView
     private val notesAdapter = SearchNotesAdapter(this)
 

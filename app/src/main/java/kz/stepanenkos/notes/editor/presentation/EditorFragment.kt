@@ -6,14 +6,16 @@ import android.text.Html
 import android.text.Spannable
 import android.text.SpannableString
 import android.text.style.UnderlineSpan
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import androidx.core.content.ContextCompat
-import androidx.core.graphics.drawable.DrawableCompat
 import androidx.fragment.app.Fragment
+import java.util.*
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import kz.stepanenkos.notes.NoteData
 import kz.stepanenkos.notes.R
 import kz.stepanenkos.notes.common.extensions.view.disabled
@@ -90,8 +92,11 @@ class EditorFragment : Fragment() {
             ) {
                 noteData.titleNote = titleNote.text.toString()
                 noteData.contentNote = contentNote.text.toString()
+                fillSearchKeywordsList(titleNote.text.toString(), contentNote.text.toString())
 
-                editorViewModel.saveNote(noteData)
+                CoroutineScope(Dispatchers.IO).launch {
+                    editorViewModel.saveNote(noteData)
+                }
 
                 titleNote.disabled()
                 contentNote.disabled()
@@ -101,6 +106,8 @@ class EditorFragment : Fragment() {
             } else {
                 noteData.titleNote = titleNote.text.toString()
                 noteData.contentNote = contentNote.text.toString()
+                noteData.searchKeywords.clear()
+                fillSearchKeywordsList(titleNote.text.toString(), contentNote.text.toString())
 
                 editorViewModel.updateNote(noteData)
 
@@ -166,5 +173,19 @@ class EditorFragment : Fragment() {
         }
 
 
+    }
+
+    private fun fillSearchKeywordsList(titleNote: String, contentNote: String) {
+        for(index in titleNote.indices) {
+            noteData.searchKeywords.add(titleNote.substring(index).toLowerCase(Locale.ROOT))
+            noteData.searchKeywords.add(titleNote[index].toString())
+        }
+        for(index in contentNote.indices) {
+            noteData.searchKeywords.add(contentNote.substring(index).toLowerCase(Locale.ROOT))
+            noteData.searchKeywords.add(contentNote[index].toString())
+
+        }
+        noteData.searchKeywords.addAll(titleNote.toLowerCase(Locale.ROOT).split(Regex("[\\p{Punct}\\s]+")))
+        noteData.searchKeywords.addAll(contentNote.toLowerCase(Locale.ROOT).split(Regex("[\\p{Punct}\\s]+")))
     }
 }
