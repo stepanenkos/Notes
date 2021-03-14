@@ -2,8 +2,6 @@ plugins {
     id 'com.android.application'
     id 'kotlin-android'
     id 'com.google.gms.google-services'
-    id "kotlinx-serialization"
-
 }
 
 apply plugin: 'kotlin-kapt'
@@ -90,8 +88,4 @@ dependencies {
 
     //ViewPump
     implementation 'io.github.inflationx:viewpump:2.0.3'
-
-    //Algolia
-    implementation "com.algolia:algoliasearch-client-kotlin:1.4.0"
-    implementation "io.ktor:ktor-client-okhttp:1.5.2"
 }
