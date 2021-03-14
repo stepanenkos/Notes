@@ -63,13 +63,19 @@ class DefaultFirebaseDatabaseSource(
     @ExperimentalCoroutinesApi
     override suspend fun searchNoteByText(searchKeyword: String) = callbackFlow<List<NoteData>> {
         auth.currentUser?.uid?.let { uid ->
-            usersNode.document(uid).collection(NOTES_NODE_CHILD)
-                .whereArrayContains("searchKeywords", searchKeyword.toLowerCase(Locale.ROOT))
-                .addSnapshotListener { value, error ->
+            usersNode.document(uid).collection(NOTES_NODE_CHILD).get()
+                .addOnSuccessListener { value->
                     val listNoteData: MutableList<NoteData> = mutableListOf()
                     if (value != null) {
                         for (doc in value) {
-                            listNoteData.add(doc.toObject(NoteData::class.java))
+                            if (doc.toObject(NoteData::class.java).titleNote.toLowerCase(Locale.ROOT)
+                                    .contains(searchKeyword.toLowerCase(Locale.ROOT)) ||
+                                doc.toObject(NoteData::class.java).contentNote.contains(
+                                    searchKeyword.toLowerCase(Locale.ROOT)
+                                )
+                            ) {
+                                listNoteData.add(doc.toObject(NoteData::class.java))
+                            }
                         }
                     }
                     this@callbackFlow.sendBlocking(listNoteData)

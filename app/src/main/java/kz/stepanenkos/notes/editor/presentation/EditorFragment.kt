@@ -53,7 +53,10 @@ class EditorFragment : Fragment() {
         titleNote = root.findViewById(R.id.fragment_editor_title_note)
         contentNote = root.findViewById(R.id.fragment_editor_content_note)
         doneNote = root.findViewById(R.id.fragment_editor_apply_changed)
-        doneNote.setColorFilter(ContextCompat.getColor(requireContext(), R.color.primary), PorterDuff.Mode.MULTIPLY)
+        doneNote.setColorFilter(
+            ContextCompat.getColor(requireContext(), R.color.primary),
+            PorterDuff.Mode.MULTIPLY
+        )
         editNote = root.findViewById(R.id.fragment_editor_edit_text)
         boldButton = root.findViewById(R.id.fragment_editor_format_bold)
         underlinedButton = root.findViewById(R.id.fragment_editor_format_underlined)
@@ -101,8 +104,14 @@ class EditorFragment : Fragment() {
                 titleNote.disabled()
                 contentNote.disabled()
                 doneNote.disabled()
-                doneNote.setColorFilter(ContextCompat.getColor(requireContext(), R.color.black), PorterDuff.Mode.MULTIPLY)
-                editNote.setColorFilter(ContextCompat.getColor(requireContext(), R.color.primary), PorterDuff.Mode.MULTIPLY)
+                doneNote.setColorFilter(
+                    ContextCompat.getColor(requireContext(), R.color.black),
+                    PorterDuff.Mode.MULTIPLY
+                )
+                editNote.setColorFilter(
+                    ContextCompat.getColor(requireContext(), R.color.primary),
+                    PorterDuff.Mode.MULTIPLY
+                )
             } else {
                 noteData.titleNote = titleNote.text.toString()
                 noteData.contentNote = contentNote.text.toString()
@@ -114,8 +123,14 @@ class EditorFragment : Fragment() {
                 titleNote.disabled()
                 contentNote.disabled()
                 doneNote.disabled()
-                doneNote.setColorFilter(ContextCompat.getColor(requireContext(), R.color.black), PorterDuff.Mode.MULTIPLY)
-                editNote.setColorFilter(ContextCompat.getColor(requireContext(), R.color.primary), PorterDuff.Mode.MULTIPLY)
+                doneNote.setColorFilter(
+                    ContextCompat.getColor(requireContext(), R.color.black),
+                    PorterDuff.Mode.MULTIPLY
+                )
+                editNote.setColorFilter(
+                    ContextCompat.getColor(requireContext(), R.color.primary),
+                    PorterDuff.Mode.MULTIPLY
+                )
                 isForEdit = false
             }
 
@@ -127,8 +142,14 @@ class EditorFragment : Fragment() {
             isForEdit = true
             contentNote.enabled()
             doneNote.enabled()
-            doneNote.setColorFilter(ContextCompat.getColor(requireContext(), R.color.primary), PorterDuff.Mode.MULTIPLY)
-            editNote.setColorFilter(ContextCompat.getColor(requireContext(), R.color.black), PorterDuff.Mode.MULTIPLY)
+            doneNote.setColorFilter(
+                ContextCompat.getColor(requireContext(), R.color.primary),
+                PorterDuff.Mode.MULTIPLY
+            )
+            editNote.setColorFilter(
+                ContextCompat.getColor(requireContext(), R.color.black),
+                PorterDuff.Mode.MULTIPLY
+            )
         }
 
 
@@ -176,16 +197,28 @@ class EditorFragment : Fragment() {
     }
 
     private fun fillSearchKeywordsList(titleNote: String, contentNote: String) {
-        for(index in titleNote.indices) {
+        noteData.searchKeywords.add(titleNote.toLowerCase(Locale.ROOT))
+        noteData.searchKeywords.addAll(titleNote.toLowerCase(Locale.ROOT).split(Regex("[\\p{Punct}\\s]+")))
+
+        noteData.searchKeywords.add(contentNote.toLowerCase(Locale.ROOT))
+        noteData.searchKeywords.addAll(contentNote.toLowerCase(Locale.ROOT).split(Regex("[\\p{Punct}\\s]+")))
+/*        for (index in titleNote.indices) {
             noteData.searchKeywords.add(titleNote.substring(index).toLowerCase(Locale.ROOT))
             noteData.searchKeywords.add(titleNote[index].toString())
         }
-        for(index in contentNote.indices) {
+
+        for(index in titleNote.length downTo 0) {
+            noteData.searchKeywords.add(titleNote.substring(index).toLowerCase(Locale.ROOT))
+        }
+
+        for (index in contentNote.indices) {
             noteData.searchKeywords.add(contentNote.substring(index).toLowerCase(Locale.ROOT))
             noteData.searchKeywords.add(contentNote[index].toString())
 
         }
-        noteData.searchKeywords.addAll(titleNote.toLowerCase(Locale.ROOT).split(Regex("[\\p{Punct}\\s]+")))
-        noteData.searchKeywords.addAll(contentNote.toLowerCase(Locale.ROOT).split(Regex("[\\p{Punct}\\s]+")))
+
+        for(index in contentNote.length downTo 0) {
+            noteData.searchKeywords.add(contentNote.substring(index).toLowerCase(Locale.ROOT))
+        }*/
     }
 }

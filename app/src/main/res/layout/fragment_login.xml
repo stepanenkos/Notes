@@ -7,14 +7,15 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:padding="@dimen/padding_8x"
     android:orientation="vertical"
+
     >
 
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
-        android:layout_marginTop="@dimen/margin_8x"
-        android:layout_marginBottom="@dimen/margin_16x"
+        android:layout_marginTop="@dimen/margin_32x"
+        android:layout_marginBottom="@dimen/margin_32x"
         android:fontFamily="@font/roboto_mono_bold"
         android:gravity="center"
         android:text="@string/fragment_login_title_authorization"
@@ -79,7 +80,7 @@
         android:id="@+id/fragment_login_button_sign_in"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/margin_64x"
+        android:layout_marginTop="@dimen/margin_128x"
         app:cornerRadius="@dimen/corner_radius_16x"
         android:layout_marginHorizontal="@dimen/margin_32x"
         android:fontFamily="@font/roboto_mono_bold"

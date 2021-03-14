@@ -1,32 +1,29 @@
 package kz.stepanenkos.notes.menu.presentation
 
-import android.content.Context
 import android.content.SharedPreferences
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
-import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
-import androidx.core.content.ContextCompat
+import androidx.constraintlayout.widget.Group
+import androidx.coordinatorlayout.widget.CoordinatorLayout
 import androidx.core.content.edit
-import androidx.core.view.GravityCompat
+import androidx.fragment.app.Fragment
 import androidx.lifecycle.Lifecycle
-import androidx.lifecycle.LifecycleOwner
 import androidx.navigation.NavOptions
 import androidx.navigation.fragment.findNavController
 import com.bumptech.glide.Glide
-import com.google.android.gms.common.api.internal.LifecycleFragment
 import com.google.android.material.switchmaterial.SwitchMaterial
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
 import kz.stepanenkos.notes.R
 import kz.stepanenkos.notes.authorization.presentation.LoginViewModel
 import kz.stepanenkos.notes.common.extensions.view.gone
+import kz.stepanenkos.notes.common.extensions.view.hide
 import kz.stepanenkos.notes.common.extensions.view.show
 import org.koin.android.ext.android.inject
 
@@ -43,6 +40,7 @@ class MenuFragment : Fragment(), FirebaseAuth.AuthStateListener,
     private lateinit var signOutButton: TextView
     private lateinit var userEnterAsTextView: TextView
     private lateinit var userProfileSettingsTextView: TextView
+    private lateinit var buttonSettings: TextView
     private lateinit var switchMaterial: SwitchMaterial
     private lateinit var sharedPrefs: SharedPreferences
 
@@ -58,7 +56,7 @@ class MenuFragment : Fragment(), FirebaseAuth.AuthStateListener,
         userEnterAsTextView =
             view.findViewById(R.id.nav_header_text_view_you_sign_in_as)
         userProfilePhoto = view.findViewById(R.id.nav_header_profile_photo)
-
+        buttonSettings = view.findViewById(R.id.fragment_menu_button_text_view_settings)
         switchMaterial = view.findViewById(R.id.fragment_menu_night_mode_switch)
         sharedPrefs = activity?.getSharedPreferences(NIGHT_MODE_SHARED_PREFS, AppCompatActivity.MODE_PRIVATE)!!
         switchMaterial.isChecked = sharedPrefs.getBoolean(NIGHT_MODE_KEY, false)
@@ -68,9 +66,11 @@ class MenuFragment : Fragment(), FirebaseAuth.AuthStateListener,
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        buttonSettings.setOnClickListener {
+            findNavController().navigate(R.id.settingsFragment)
+        }
 
         signInButton.setOnClickListener {
-            Toast.makeText(requireContext(), "Войти", Toast.LENGTH_SHORT).show()
             findNavController().navigate(
                 R.id.loginFragment,
                 null,
@@ -87,7 +87,6 @@ class MenuFragment : Fragment(), FirebaseAuth.AuthStateListener,
         }
 
         signOutButton.setOnClickListener {
-            Toast.makeText(requireContext(), "Выйти", Toast.LENGTH_SHORT).show()
             loginViewModel.signOut()
             loginViewModel.signOutGoogle()
             updateUI(loginViewModel.getCurrentUser())
@@ -169,6 +168,7 @@ class MenuFragment : Fragment(), FirebaseAuth.AuthStateListener,
         signInButton.show()
         signOutButton.gone()
         userProfileSettingsTextView.gone()
+        activity?.findViewById<CoordinatorLayout>(R.id.activity_main_coordinator_layout)?.gone()
 
     }
 

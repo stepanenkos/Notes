@@ -3,9 +3,13 @@ package kz.stepanenkos.notes
 import android.content.Context
 import android.content.SharedPreferences
 import android.os.Bundle
+import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
+import androidx.constraintlayout.widget.Group
+import androidx.coordinatorlayout.widget.CoordinatorLayout
 import androidx.core.content.edit
+import androidx.core.view.isVisible
 import androidx.navigation.NavController
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.setupWithNavController
@@ -14,6 +18,9 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
 import io.github.inflationx.viewpump.ViewPumpContextWrapper
+import kz.stepanenkos.notes.common.extensions.view.gone
+import kz.stepanenkos.notes.common.extensions.view.hide
+import kz.stepanenkos.notes.common.extensions.view.show
 import org.koin.android.ext.android.inject
 
 private const val NIGHT_MODE_KEY = "night_mode_key"
@@ -27,6 +34,7 @@ class MainActivity : AppCompatActivity(), FirebaseAuth.AuthStateListener,
     private lateinit var navController: NavController
     private lateinit var addNoteButton: FloatingActionButton
     private lateinit var bottomNavigationView: BottomNavigationView
+    private lateinit var coordinatorLayout: CoordinatorLayout
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -82,10 +90,9 @@ class MainActivity : AppCompatActivity(), FirebaseAuth.AuthStateListener,
         bottomNavigationView = findViewById(R.id.bottomNavigationView)
         bottomNavigationView.setupWithNavController(navController)
         bottomNavigationView.background = null
-
         sharedPrefs = getSharedPreferences(NIGHT_MODE_SHARED_PREFS, MODE_PRIVATE)
         addNoteButton = findViewById(R.id.fab)
-
+        coordinatorLayout = findViewById(R.id.activity_main_coordinator_layout)
     }
 
     private fun setListeners() {
@@ -117,10 +124,14 @@ class MainActivity : AppCompatActivity(), FirebaseAuth.AuthStateListener,
 
     private fun showUISignedUser() {
         addNoteButton.show()
+        bottomNavigationView.show()
+        coordinatorLayout.show()
     }
 
     private fun showUIUnsignedUser() {
         addNoteButton.hide()
+        bottomNavigationView.hide()
+        coordinatorLayout.gone()
     }
 
     private fun updateUI(firebaseUser: FirebaseUser?) {
