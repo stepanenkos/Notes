@@ -25,8 +25,8 @@
     <string name="fragment_login_dialog_error_text_invalid_email_or_password">Неверный адрес электронной почты или пароль</string>
     <string name="fragment_signed_title_profile">Профиль</string>
     <string name="fragment_editor_hint_title_note">Заголовок заметки</string>
-    <string name="sign_in"><b><u>Войти</u></b></string>
-    <string name="sign_out"><b><u>Выйти</u></b></string>
+    <string name="nav_header_text_view_sign_in"><b><u>Войти</u></b></string>
+    <string name="nav_header_text_view_sign_out"><b><u>Выйти</u></b></string>
     <string name="nav_header_text_view_profile_settings"><b><u>Настройки профиля</u></b></string>
     <string name="night_mode">Ночная тема</string>
     <string name="activity_main_content_description_floating_action_button">Добавить заметку</string>
@@ -62,9 +62,11 @@
         <item>20</item>
         <item>28</item>
     </string-array>
-    <!-- TODO: Remove or change this placeholder text -->
+
     <string name="fragment_editor_content_note_hint">Текст заметки</string>
     <string name="fragment_editor_content_description_done_button">Кнопка сохранить заметку</string>
     <string name="fragment_editor_content_description_edit_note_button">Кнопка редактировать заметку</string>
+    <string name="date_time_format_pattern">HH:mm dd MMMM yyyy</string>
+    <string name="fragment_notes_select_all_notes">Выбрать все заметки</string>
 
 </resources>

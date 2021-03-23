@@ -13,68 +13,85 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@color/primary"
-        android:orientation="vertical"
-        android:padding="@dimen/padding_16x"
-        android:layout_marginBottom="@dimen/margin_8x"
+        android:orientation="horizontal"
         >
 
-        <ImageView
-            android:id="@+id/nav_header_profile_photo"
-            android:layout_width="80dp"
-            android:layout_height="80dp"
-            android:layout_marginTop="@dimen/margin_16x"
-            app:srcCompat="@drawable/ic_account_photo"
-            />
-
-        <TextView
-            android:id="@+id/nav_header_text_view_you_sign_in_as"
-            android:layout_width="match_parent"
+        <LinearLayout
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/margin_16x"
-            android:gravity="start"
-            />
+            android:layout_marginBottom="@dimen/margin_8x"
+            android:background="@color/primary"
+            android:orientation="vertical"
+            android:padding="@dimen/padding_16x"
+            >
 
-        <TextView
-            android:id="@+id/nav_header_button_profile_settings"
+            <ImageView
+                android:id="@+id/nav_header_profile_photo"
+                android:layout_width="80dp"
+                android:layout_height="80dp"
+                android:layout_marginTop="@dimen/margin_16x"
+                app:srcCompat="@drawable/ic_account_photo"
+                />
+
+            <TextView
+                android:id="@+id/nav_header_text_view_you_sign_in_as"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/margin_16x"
+                android:gravity="start"
+                />
+
+        </LinearLayout>
+
+        <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:layout_marginTop="@dimen/margin_16x"
-            android:clickable="true"
-            android:focusable="true"
             android:gravity="center"
-            android:text="@string/nav_header_text_view_profile_settings"
-            android:textColor="@color/white"
-            android:visibility="gone"
-            />
+            android:orientation="vertical"
+            >
 
-        <TextView
-            android:id="@+id/nav_header_button_sign_in"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:layout_marginTop="@dimen/margin_16x"
-            android:clickable="true"
-            android:focusable="true"
-            android:gravity="center"
-            android:text="@string/sign_in"
-            android:textColor="@color/white"
-            />
+            <TextView
+                android:id="@+id/nav_header_button_profile_settings"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginTop="@dimen/margin_16x"
+                android:clickable="true"
+                android:focusable="true"
+                android:gravity="center"
+                android:text="@string/nav_header_text_view_profile_settings"
+                android:textColor="@color/white"
+                android:visibility="gone"
+                />
 
-        <TextView
-            android:id="@+id/nav_header_button_sign_out"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:layout_marginTop="@dimen/margin_16x"
-            android:clickable="true"
-            android:focusable="true"
-            android:gravity="center"
-            android:text="@string/sign_out"
-            android:textColor="@color/white"
-            android:visibility="gone"
-            />
+            <TextView
+                android:id="@+id/nav_header_button_sign_in"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginTop="@dimen/margin_16x"
+                android:clickable="true"
+                android:focusable="true"
+                android:gravity="center"
+                android:text="@string/nav_header_text_view_sign_in"
+                android:textColor="@color/white"
+                />
 
+            <TextView
+                android:id="@+id/nav_header_button_sign_out"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginTop="@dimen/margin_16x"
+                android:clickable="true"
+                android:focusable="true"
+                android:gravity="center"
+                android:text="@string/nav_header_text_view_sign_out"
+                android:textColor="@color/white"
+                android:visibility="gone"
+                />
+        </LinearLayout>
     </LinearLayout>
 
 
@@ -82,34 +99,34 @@
         android:id="@+id/fragment_menu_button_text_view_settings"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="@string/title_settings"
-        android:layout_marginTop="@dimen/margin_16x"
         android:layout_marginStart="@dimen/margin_16x"
-        android:drawablePadding="@dimen/padding_36x"
-        android:gravity="start|center"
-        app:drawableTint="@color/primaryTextColor"
+        android:layout_marginTop="@dimen/margin_16x"
         android:clickable="true"
+        android:drawablePadding="@dimen/padding_36x"
         android:focusable="true"
+        android:gravity="start|center"
+        android:text="@string/title_settings"
         app:drawableStartCompat="@drawable/ic_settings"
+        app:drawableTint="@color/primaryTextColor"
         />
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/margin_16x"
-        android:layout_marginEnd="@dimen/margin_16x"
         android:layout_marginTop="@dimen/margin_16x"
-        android:orientation="horizontal">
+        android:layout_marginEnd="@dimen/margin_16x"
+        android:orientation="horizontal"
+        >
+
         <com.google.android.material.switchmaterial.SwitchMaterial
             android:id="@+id/fragment_menu_night_mode_switch"
             android:layout_width="wrap_content"
-            android:contentDescription="@string/night_mode"
             android:layout_height="wrap_content"
+            android:contentDescription="@string/night_mode"
+            android:layoutDirection="rtl"
             android:text="@string/night_mode"
             app:switchPadding="16dp"
-            android:layoutDirection="rtl"
             />
-
-
     </LinearLayout>
 </LinearLayout>

@@ -15,11 +15,11 @@
       },
       "oauth_client": [
         {
-          "client_id": "714054521708-57bkkko3d5ptg48n66ce9ug0r48d7ub8.apps.googleusercontent.com",
+          "client_id": "714054521708-of4omt2nr18rhk86cud3k9osjj9n0muf.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
             "package_name": "kz.stepanenkos.notes",
-            "certificate_hash": "339db56989db621b1caf674ba6af2ae9ecb50184"
+            "certificate_hash": "e6feb12df5c6cd62a3c3af060d4850a2bfef96eb"
           }
         },
         {

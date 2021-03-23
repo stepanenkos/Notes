@@ -13,4 +13,5 @@
     <dimen name="margin_28x">28dp</dimen>
     <dimen name="padding_36x">36dp</dimen>
     <dimen name="margin_128x">128dp</dimen>
+    <dimen name="padding_64x">64dp</dimen>
 </resources>

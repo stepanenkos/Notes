@@ -1,20 +1,63 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
     tools:context=".listnotes.presentation.NotesFragment"
 
     >
+
+    <com.google.android.material.appbar.MaterialToolbar
+        android:id="@+id/fragment_notes_toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="?actionBarSize"
+        android:background="@color/primary_dark"
+        android:visibility="gone"
+        >
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            >
+        <com.google.android.material.checkbox.MaterialCheckBox
+            android:id="@+id/fragment_notes_checkbox_select_all_notes"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/fragment_notes_select_all_notes"
+            android:layout_marginEnd="@dimen/margin_16x"
+            />
+
+        <com.google.android.material.textview.MaterialTextView
+            android:id="@+id/fragment_notes_text_view_info_select_item"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/margin_16x"
+            android:gravity="center"
+            android:layout_gravity="center"
+            tools:text="1/8"
+            />
+
+        <ImageView
+            android:id="@+id/fragment_notes_image_view_button_delete_note"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center|end"
+            android:layout_marginEnd="@dimen/margin_16x"
+            android:clickable="true"
+            android:focusable="true"
+            android:src="@drawable/ic_delete"
+            />
+        </FrameLayout>
+    </com.google.android.material.appbar.MaterialToolbar>
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/fragment_notes_recycler_view"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        tools:listitem="@layout/note_item"
         android:clipToPadding="true"
-        android:paddingBottom="64dp"
+        android:paddingBottom="@dimen/padding_64x"
+        tools:listitem="@layout/note_item"
         />
 </LinearLayout>

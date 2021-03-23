@@ -5,6 +5,7 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.EditText
 import android.widget.SearchView
 import android.widget.Toast
 import androidx.fragment.app.Fragment
@@ -35,6 +36,7 @@ class SearchNotesFragment : Fragment(), NoteClickListener {
         val root = inflater.inflate(R.layout.fragment_search_notes, container, false)
         recyclerView = root.findViewById(R.id.search_notes_recycler_view)
         recyclerView.layoutManager = LinearLayoutManager(requireContext())
+
         searchView = root.findViewById(R.id.fragment_search_notes_search_view)
         setupSearchView(searchView)
         recyclerView.adapter = notesAdapter
@@ -45,6 +47,7 @@ class SearchNotesFragment : Fragment(), NoteClickListener {
     private fun setupSearchView(searchView: SearchView) {
 
         searchView.queryHint = "Введите текст для поиска заметки"
+
         searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
             override fun onQueryTextChange(newText: String?): Boolean {
                 CoroutineScope(Dispatchers.IO).launch {
