@@ -13,7 +13,6 @@ import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.selection.SelectionPredicates
 import androidx.recyclerview.selection.SelectionTracker
-import androidx.recyclerview.selection.StableIdKeyProvider
 import androidx.recyclerview.selection.StorageStrategy
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -42,6 +41,7 @@ class NotesFragment : Fragment(), NoteClickListener {
     private lateinit var checkBoxSelectAllNotes: MaterialCheckBox
     private lateinit var deleteSelectedNotes: ImageView
     private lateinit var infoCountSelectedNotes: MaterialTextView
+
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
@@ -76,6 +76,7 @@ class NotesFragment : Fragment(), NoteClickListener {
         deleteSelectedNotes = root.findViewById(R.id.fragment_notes_image_view_button_delete_note)
         infoCountSelectedNotes = root.findViewById(R.id.fragment_notes_text_view_info_select_item)
 
+
         tracker = SelectionTracker.Builder(
             "mySelection",
             recyclerView,
@@ -100,6 +101,45 @@ class NotesFragment : Fragment(), NoteClickListener {
                     }
                 }
             })
+
+        checkBoxSelectAllNotes.setOnCheckedChangeListener { buttonView, isChecked ->
+            if (isChecked) {
+                notesAdapter.currentList.forEach {
+                    if (!tracker.isSelected(it)) {
+                        tracker.select(it)
+                    }
+                }
+            } else {
+                tracker.clearSelection()
+            }
+        }
+
+        deleteSelectedNotes.setOnClickListener {
+            val builder = AlertDialog.Builder(requireContext())
+            builder.setTitle("Удаление заметки")
+            builder.setMessage("Вы действительно хотите удалить заметку?")
+            builder.setPositiveButton("Да") { dialog, which ->
+                val newListNotes = notesAdapter.currentList.toMutableList()
+                tracker.selection.forEach {
+                    notesViewModel.deleteNote(it)
+                    newListNotes.remove(it)
+                }
+
+                notesAdapter.submitList(newListNotes)
+            }
+            builder.setNegativeButton("Нет") { dialog, which ->
+                dialog.dismiss()
+            }
+            val dialog = builder.create()
+            dialog.show()
+
+            /*tracker.selection.forEach {
+                notesViewModel.deleteNote(it)
+                val newListNotes = notesAdapter.currentList.toMutableList()
+                newListNotes.remove(it)
+                notesAdapter.submitList(newListNotes)
+            }*/
+        }
 
         return root
     }
