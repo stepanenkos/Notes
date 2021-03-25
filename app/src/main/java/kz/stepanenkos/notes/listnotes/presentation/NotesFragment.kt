@@ -51,12 +51,12 @@ class NotesFragment : Fragment(), NoteClickListener {
             object : OnBackPressedCallback(true) {
                 override fun handleOnBackPressed() {
                     if (tracker.selection.size() == 0) {
+                        isEnabled = false
                         requireActivity().onBackPressed()
                     } else {
                         tracker.clearSelection()
                     }
                 }
-
             })
     }
 
@@ -76,7 +76,6 @@ class NotesFragment : Fragment(), NoteClickListener {
         checkBoxSelectAllNotes = root.findViewById(R.id.fragment_notes_checkbox_select_all_notes)
         deleteSelectedNotes = root.findViewById(R.id.fragment_notes_image_view_button_delete_note)
         infoCountSelectedNotes = root.findViewById(R.id.fragment_notes_text_view_info_select_item)
-
 
         tracker = SelectionTracker.Builder(
             "mySelection",
