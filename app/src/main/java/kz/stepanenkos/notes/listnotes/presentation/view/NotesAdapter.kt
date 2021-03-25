@@ -32,9 +32,9 @@ class NotesAdapter(
 ) : ListAdapter<NoteData, NotesAdapter.NotesViewHolder>(NotesDiffUtilCallback()) {
     private var tracker: SelectionTracker<NoteData>? = null
 
-    init {
+/*    init {
         setHasStableIds(true)
-    }
+    }*/
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): NotesViewHolder {
         return NotesViewHolder(

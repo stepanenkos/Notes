@@ -48,12 +48,13 @@ class DefaultFirebaseDatabaseSource(
     @ExperimentalCoroutinesApi
     override suspend fun getAllNotes() = callbackFlow<List<NoteData>> {
         auth.currentUser?.uid?.let { uid ->
-            usersNode.document(uid).collection(NOTES_NODE_CHILD).get().addOnSuccessListener {
+            usersNode.document(uid).collection(NOTES_NODE_CHILD).addSnapshotListener { value, error ->
                 val listNoteData: MutableList<NoteData> = mutableListOf()
-                for (doc in it) {
-                    listNoteData.add(doc.toObject(NoteData::class.java))
+                if(value != null) {
+                    for (doc in value) {
+                        listNoteData.add(doc.toObject(NoteData::class.java))
+                    }
                 }
-
                 this@callbackFlow.sendBlocking(listNoteData)
             }
         }

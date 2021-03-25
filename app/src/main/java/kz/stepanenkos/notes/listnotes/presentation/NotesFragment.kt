@@ -3,6 +3,7 @@ package kz.stepanenkos.notes.listnotes.presentation
 import android.app.AlertDialog
 import android.content.Context
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -49,10 +50,10 @@ class NotesFragment : Fragment(), NoteClickListener {
             this,
             object : OnBackPressedCallback(true) {
                 override fun handleOnBackPressed() {
-                    if (tracker.selection.size() > 0) {
-                        tracker.clearSelection()
-                    } else {
+                    if (tracker.selection.size() == 0) {
                         requireActivity().onBackPressed()
+                    } else {
+                        tracker.clearSelection()
                     }
                 }
 
@@ -117,28 +118,17 @@ class NotesFragment : Fragment(), NoteClickListener {
         deleteSelectedNotes.setOnClickListener {
             val builder = AlertDialog.Builder(requireContext())
             builder.setTitle("Удаление заметки")
-            builder.setMessage("Вы действительно хотите удалить заметку?")
+            builder.setMessage("Вы действительно хотите удалить заметку(и)?")
             builder.setPositiveButton("Да") { dialog, which ->
-                val newListNotes = notesAdapter.currentList.toMutableList()
                 tracker.selection.forEach {
                     notesViewModel.deleteNote(it)
-                    newListNotes.remove(it)
                 }
-
-                notesAdapter.submitList(newListNotes)
             }
             builder.setNegativeButton("Нет") { dialog, which ->
                 dialog.dismiss()
             }
             val dialog = builder.create()
             dialog.show()
-
-            /*tracker.selection.forEach {
-                notesViewModel.deleteNote(it)
-                val newListNotes = notesAdapter.currentList.toMutableList()
-                newListNotes.remove(it)
-                notesAdapter.submitList(newListNotes)
-            }*/
         }
 
         return root
@@ -181,10 +171,6 @@ class NotesFragment : Fragment(), NoteClickListener {
                 builder.setMessage("Вы действительно хотите удалить заметку?")
                 builder.setPositiveButton("Да") { dialog, which ->
                     notesViewModel.deleteNote(notesAdapter.currentList[viewHolder.adapterPosition])
-                    notesViewModel.onStart()
-                    notesViewModel.allNotes.observe(viewLifecycleOwner) {
-                        notesAdapter.submitList(it)
-                    }
                 }
                 builder.setNegativeButton("Нет") { dialog, which ->
                     dialog.dismiss()

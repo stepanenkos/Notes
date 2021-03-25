@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
+<FrameLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
@@ -7,8 +7,16 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     tools:context=".listnotes.presentation.NotesFragment"
-
     >
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/fragment_notes_recycler_view"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:clipToPadding="true"
+        android:paddingBottom="@dimen/padding_64x"
+        tools:listitem="@layout/note_item"
+        />
 
     <com.google.android.material.appbar.MaterialToolbar
         android:id="@+id/fragment_notes_toolbar"
@@ -17,6 +25,7 @@
         android:background="@color/primary_dark"
         android:visibility="gone"
         >
+
         <FrameLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -52,12 +61,4 @@
         </FrameLayout>
     </com.google.android.material.appbar.MaterialToolbar>
 
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/fragment_notes_recycler_view"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:clipToPadding="true"
-        android:paddingBottom="@dimen/padding_64x"
-        tools:listitem="@layout/note_item"
-        />
-</LinearLayout>
+</FrameLayout>
