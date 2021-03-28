@@ -4,12 +4,14 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.google.firebase.firestore.FirebaseFirestoreException
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import kz.stepanenkos.notes.NoteData
 import kz.stepanenkos.notes.common.firebasedatabase.domain.FirebaseDatabaseRepository
+import kz.stepanenkos.notes.common.model.ResponseData
 import kz.stepanenkos.notes.user.data.datasource.UserCredentialsDataSource
 
 class NotesViewModel(
@@ -17,10 +19,10 @@ class NotesViewModel(
     private val userCredentialsDataSource: UserCredentialsDataSource,
 ) : ViewModel() {
     private val _allNotesFromDB: MutableLiveData<List<NoteData>> = MutableLiveData()
-    var allNotes: LiveData<List<NoteData>> = _allNotesFromDB
+    val allNotes: LiveData<List<NoteData>> = _allNotesFromDB
 
-    private val _allFoundNotesByText: MutableLiveData<List<NoteData>> = MutableLiveData()
-    var allFoundNotesByText: LiveData<List<NoteData>> = _allFoundNotesByText
+    private val _errorWhileGettingNotes: MutableLiveData<FirebaseFirestoreException> = MutableLiveData()
+    val errorWhileGettingNotes: LiveData<FirebaseFirestoreException> = _errorWhileGettingNotes
 
     fun onStart() {
         getAllNotes()
@@ -30,7 +32,11 @@ class NotesViewModel(
         viewModelScope.launch(Dispatchers.IO) {
             firebaseDatabaseRepository.getAllNotes().collect { listNoteDataFromFirebaseDB ->
                 withContext(Dispatchers.Main) {
-                    _allNotesFromDB.postValue(listNoteDataFromFirebaseDB)
+                    when(listNoteDataFromFirebaseDB) {
+                        is ResponseData.Success -> _allNotesFromDB.postValue(listNoteDataFromFirebaseDB.result)
+                        is ResponseData.Error -> _errorWhileGettingNotes.postValue(listNoteDataFromFirebaseDB.error)
+                    }
+
                 }
             }
         }
@@ -38,14 +44,7 @@ class NotesViewModel(
 
     fun deleteNote(noteData: NoteData) {
         viewModelScope.launch(Dispatchers.IO) {
-            deleteNoteFromFirebaseDatabase(noteData)
+            firebaseDatabaseRepository.deleteNote(noteData)
         }
     }
-
-    private fun deleteNoteFromFirebaseDatabase(noteData: NoteData) {
-        firebaseDatabaseRepository.deleteNote(noteData)
-    }
-
-
-
 }

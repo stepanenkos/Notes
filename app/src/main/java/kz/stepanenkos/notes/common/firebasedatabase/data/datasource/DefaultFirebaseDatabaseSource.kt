@@ -2,13 +2,14 @@ package kz.stepanenkos.notes.common.firebasedatabase.data.datasource
 
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.firestore.FirebaseFirestoreException
 import java.util.*
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.channels.awaitClose
-import kotlinx.coroutines.channels.sendBlocking
 import kotlinx.coroutines.flow.callbackFlow
 import kz.stepanenkos.notes.NoteData
+import kz.stepanenkos.notes.common.model.ResponseData
 
 private const val USERS_NODE = "users"
 private const val NOTES_NODE_CHILD = "notes"
@@ -31,24 +32,30 @@ class DefaultFirebaseDatabaseSource(
     }
 
     @ExperimentalCoroutinesApi
-    override suspend fun getNoteById(noteId: String) = callbackFlow<NoteData> {
-        auth.currentUser?.uid?.let { uid ->
-            usersNode.document(uid).collection(NOTES_NODE_CHILD).get()
-                .addOnSuccessListener {
-                    for (doc in it.documents) {
-                        if (doc.toObject(NoteData::class.java)?.id == noteId) {
-                            this@callbackFlow.sendBlocking(doc.toObject(NoteData::class.java)!!)
+    override suspend fun getNoteById(noteId: String) = callbackFlow<ResponseData<NoteData, FirebaseFirestoreException>> {
+        val noteById = auth.currentUser?.uid?.let { uid ->
+            usersNode.document(uid).collection(NOTES_NODE_CHILD)
+                .addSnapshotListener { value, error ->
+                    if (value != null) {
+                        for (doc in value) {
+                            if (doc.toObject(NoteData::class.java).id == noteId) {
+                                offer(ResponseData.Success(doc.toObject(NoteData::class.java)))
+                            }
                         }
+                    }
+                    if(error != null) {
+                        offer(ResponseData.Error(error))
+                        cancel(error.localizedMessage!!)
                     }
                 }
         }
-        awaitClose { cancel() }
+        awaitClose { noteById?.remove() }
     }
 
     @ExperimentalCoroutinesApi
-    override suspend fun getAllNotes() = callbackFlow<List<NoteData>> {
-        val addSnapshotListener = auth.currentUser?.uid?.let { uid ->
-           usersNode.document(uid).collection(NOTES_NODE_CHILD)
+    override suspend fun getAllNotes() = callbackFlow {
+        val getAllNotes = auth.currentUser?.uid?.let { uid ->
+            usersNode.document(uid).collection(NOTES_NODE_CHILD)
                 .addSnapshotListener { value, error ->
                     error?.let {
                         cancel(it.message.toString())
@@ -58,22 +65,25 @@ class DefaultFirebaseDatabaseSource(
                         for (doc in value) {
                             listNoteData.add(doc.toObject(NoteData::class.java))
                         }
+                        listNoteData.sortByDescending { it.dateOfNote }
+                        offer(ResponseData.Success(listNoteData))
                     }
-                    offer(listNoteData)
+                    if(error != null) {
+                        offer(ResponseData.Error(error))
+                        cancel(error.localizedMessage!!)
+                    }
                 }
 
         }
-        awaitClose {
-            addSnapshotListener?.remove()
-            cancel() }
+        awaitClose { getAllNotes?.remove() }
     }
 
     @ExperimentalCoroutinesApi
     override suspend fun searchNoteByText(searchKeyword: String) = callbackFlow<List<NoteData>> {
-        auth.currentUser?.uid?.let { uid ->
-            usersNode.document(uid).collection(NOTES_NODE_CHILD).get()
-                .addOnSuccessListener { value->
-                    val listNoteData: MutableList<NoteData> = mutableListOf()
+        val searchNoteByText = auth.currentUser?.uid?.let { uid ->
+            usersNode.document(uid).collection(NOTES_NODE_CHILD)
+                .addSnapshotListener { value, error ->
+                    val foundNotesBySearchText: MutableList<NoteData> = mutableListOf()
                     if (value != null) {
                         for (doc in value) {
                             if (doc.toObject(NoteData::class.java).titleNote.toLowerCase(Locale.ROOT)
@@ -82,14 +92,14 @@ class DefaultFirebaseDatabaseSource(
                                     searchKeyword.toLowerCase(Locale.ROOT)
                                 )
                             ) {
-                                listNoteData.add(doc.toObject(NoteData::class.java))
+                                foundNotesBySearchText.add(doc.toObject(NoteData::class.java))
                             }
                         }
                     }
-                    this@callbackFlow.sendBlocking(listNoteData)
+                    offer(foundNotesBySearchText)
                 }
         }
-        awaitClose { cancel() }
+        awaitClose { searchNoteByText?.remove() }
     }
 
     override fun updateNote(noteData: NoteData) {

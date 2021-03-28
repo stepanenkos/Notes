@@ -1,6 +1,5 @@
 package kz.stepanenkos.notes.editor.presentation
 
-import android.graphics.PorterDuff
 import android.os.Bundle
 import android.text.Html
 import android.text.Spannable
@@ -10,8 +9,9 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
-import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
+import com.google.android.material.snackbar.Snackbar
+import com.google.firebase.firestore.FirebaseFirestoreException
 import java.util.*
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -43,6 +43,7 @@ class EditorFragment : Fragment() {
     private var isBold = false
     private var spannableString: SpannableString = SpannableString("")
     private var idNote: String? = null
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -53,29 +54,25 @@ class EditorFragment : Fragment() {
         titleNote = root.findViewById(R.id.fragment_editor_title_note)
         contentNote = root.findViewById(R.id.fragment_editor_content_note)
         doneNote = root.findViewById(R.id.fragment_editor_apply_changed)
-        doneNote.setColorFilter(
-            ContextCompat.getColor(requireContext(), R.color.primary),
-            PorterDuff.Mode.MULTIPLY
-        )
         editNote = root.findViewById(R.id.fragment_editor_edit_text)
         boldButton = root.findViewById(R.id.fragment_editor_format_bold)
         underlinedButton = root.findViewById(R.id.fragment_editor_format_underlined)
+        editNote.disabled()
+        doneNote.enabled()
         return root
-    }
-
-    override fun onStart() {
-        super.onStart()
-        idNote = arguments?.getString("ID")
-        idNote?.let { editorViewModel.getNoteById(it) }
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         idNote = arguments?.getString("ID")
-        idNote?.let { editorViewModel.getNoteById(it) }
+        idNote?.let {
+            doneNote.disabled()
+            editNote.enabled()
+            editorViewModel.getNoteById(it)
+        }
+
         editorViewModel.noteById.observe(viewLifecycleOwner, { noteDataInDB ->
             isForEdit = true
-
             if (noteDataInDB != null) {
                 noteData = noteDataInDB
                 titleNote.disabled()
@@ -83,13 +80,19 @@ class EditorFragment : Fragment() {
                 titleNote.setText(noteDataInDB.titleNote)
                 contentNote.setText(noteDataInDB.contentNote.trim())
             }
-
         })
+
+        editorViewModel.errorReceivingNote.observe(viewLifecycleOwner, ::showError)
+
         setOnClickListeners()
     }
 
     private fun setOnClickListeners() {
         doneNote.setOnClickListener {
+            if(titleNote.text.toString().isBlank() && contentNote.text.toString().isBlank()) {
+                Snackbar.make(requireView(), "Нельзя сохранить пустую заметку", Snackbar.LENGTH_LONG).show()
+            }
+
             if (titleNote.text.toString().isNotBlank() &&
                 contentNote.text.toString().isNotBlank() && !isForEdit
             ) {
@@ -104,34 +107,25 @@ class EditorFragment : Fragment() {
                 titleNote.disabled()
                 contentNote.disabled()
                 doneNote.disabled()
-                doneNote.setColorFilter(
-                    ContextCompat.getColor(requireContext(), R.color.black),
-                    PorterDuff.Mode.MULTIPLY
-                )
-                editNote.setColorFilter(
-                    ContextCompat.getColor(requireContext(), R.color.primary),
-                    PorterDuff.Mode.MULTIPLY
-                )
-            } else {
+                editNote.enabled()
+                Snackbar.make(requireView(), "Заметка сохранена", Snackbar.LENGTH_LONG).show()
+            } else if (titleNote.text.toString().isNotBlank() &&
+                contentNote.text.toString().isNotBlank() && isForEdit
+            ){
                 noteData.titleNote = titleNote.text.toString()
                 noteData.contentNote = contentNote.text.toString()
                 noteData.searchKeywords.clear()
                 fillSearchKeywordsList(titleNote.text.toString(), contentNote.text.toString())
 
                 editorViewModel.updateNote(noteData)
-
+                editNote.enabled()
                 titleNote.disabled()
                 contentNote.disabled()
                 doneNote.disabled()
-                doneNote.setColorFilter(
-                    ContextCompat.getColor(requireContext(), R.color.black),
-                    PorterDuff.Mode.MULTIPLY
-                )
-                editNote.setColorFilter(
-                    ContextCompat.getColor(requireContext(), R.color.primary),
-                    PorterDuff.Mode.MULTIPLY
-                )
+
                 isForEdit = false
+                Snackbar.make(requireView(), "Заметка обновлена", Snackbar.LENGTH_LONG).show()
+
             }
 
         }
@@ -142,14 +136,7 @@ class EditorFragment : Fragment() {
             isForEdit = true
             contentNote.enabled()
             doneNote.enabled()
-            doneNote.setColorFilter(
-                ContextCompat.getColor(requireContext(), R.color.primary),
-                PorterDuff.Mode.MULTIPLY
-            )
-            editNote.setColorFilter(
-                ContextCompat.getColor(requireContext(), R.color.black),
-                PorterDuff.Mode.MULTIPLY
-            )
+            editNote.disabled()
         }
 
 
@@ -198,10 +185,14 @@ class EditorFragment : Fragment() {
 
     private fun fillSearchKeywordsList(titleNote: String, contentNote: String) {
         noteData.searchKeywords.add(titleNote.toLowerCase(Locale.ROOT))
-        noteData.searchKeywords.addAll(titleNote.toLowerCase(Locale.ROOT).split(Regex("[\\p{Punct}\\s]+")))
+        noteData.searchKeywords.addAll(
+            titleNote.toLowerCase(Locale.ROOT).split(Regex("[\\p{Punct}\\s]+"))
+        )
 
         noteData.searchKeywords.add(contentNote.toLowerCase(Locale.ROOT))
-        noteData.searchKeywords.addAll(contentNote.toLowerCase(Locale.ROOT).split(Regex("[\\p{Punct}\\s]+")))
+        noteData.searchKeywords.addAll(
+            contentNote.toLowerCase(Locale.ROOT).split(Regex("[\\p{Punct}\\s]+"))
+        )
 /*        for (index in titleNote.indices) {
             noteData.searchKeywords.add(titleNote.substring(index).toLowerCase(Locale.ROOT))
             noteData.searchKeywords.add(titleNote[index].toString())
@@ -220,5 +211,13 @@ class EditorFragment : Fragment() {
         for(index in contentNote.length downTo 0) {
             noteData.searchKeywords.add(contentNote.substring(index).toLowerCase(Locale.ROOT))
         }*/
+    }
+
+    private fun showError(firebaseFirestoreException: FirebaseFirestoreException) {
+        Snackbar.make(
+            requireView(),
+            firebaseFirestoreException.localizedMessage,
+            Snackbar.LENGTH_LONG
+        ).show()
     }
 }

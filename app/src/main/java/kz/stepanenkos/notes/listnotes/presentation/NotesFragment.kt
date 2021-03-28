@@ -20,8 +20,10 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.appbar.MaterialToolbar
 import com.google.android.material.checkbox.MaterialCheckBox
+import com.google.android.material.snackbar.Snackbar
 import com.google.android.material.textview.MaterialTextView
 import com.google.firebase.auth.ktx.auth
+import com.google.firebase.firestore.FirebaseFirestoreException
 import com.google.firebase.ktx.Firebase
 import kz.stepanenkos.notes.NoteData
 import kz.stepanenkos.notes.R
@@ -141,6 +143,8 @@ class NotesFragment : Fragment(), NoteClickListener {
         notesViewModel.allNotes.observe(viewLifecycleOwner) {
             notesAdapter.submitList(it)
         }
+
+        notesViewModel.errorWhileGettingNotes.observe(viewLifecycleOwner, ::showError)
         if (Firebase.auth.currentUser == null) {
             findNavController().navigate(R.id.loginFragment)
         }
@@ -179,5 +183,9 @@ class NotesFragment : Fragment(), NoteClickListener {
                 dialog.show()
             }
         })
+    }
+
+    private fun showError(error: FirebaseFirestoreException) {
+        Snackbar.make(requireView(), error.localizedMessage, Snackbar.LENGTH_LONG).show()
     }
 }
