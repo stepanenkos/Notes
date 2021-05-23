@@ -23,40 +23,7 @@
             >
 
             <ImageView
-                android:id="@+id/fragment_editor_format_bold"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:clickable="true"
-                android:focusable="true"
-                android:visibility="gone"
-                android:padding="4dp"
-                android:src="@drawable/ic_format_bold"
-                />
-
-            <ImageView
-                android:id="@+id/fragment_editor_format_underlined"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:clickable="true"
-                android:focusable="true"
-                android:visibility="gone"
-                android:padding="4dp"
-                android:src="@drawable/ic_format_underlined"
-                />
-
-            <ImageView
-                android:id="@+id/fragment_editor_format_italic"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:clickable="true"
-                android:focusable="true"
-                android:visibility="gone"
-                android:padding="4dp"
-                android:src="@drawable/ic_format_italic"
-                />
-
-            <ImageView
-                android:id="@+id/fragment_editor_edit_text"
+                android:id="@+id/fragment_editor_edit_text_button"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginEnd="8dp"
@@ -68,7 +35,7 @@
                 />
 
             <ImageView
-                android:id="@+id/fragment_editor_apply_changed"
+                android:id="@+id/fragment_editor_apply_changed_button"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginEnd="8dp"

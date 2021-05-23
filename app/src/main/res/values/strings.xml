@@ -68,5 +68,8 @@
     <string name="fragment_editor_content_description_edit_note_button">Кнопка редактировать заметку</string>
     <string name="date_time_format_pattern">HH:mm dd MMMM yyyy</string>
     <string name="fragment_notes_select_all_notes">Выбрать все заметки</string>
+    <string name="editor_fragment_cannot_save_empty_note">Нельзя сохранить пустую заметку</string>
+    <string name="editor_fragment_note_updated">Заметка обновлена</string>
+    <string name="editor_fragment_note_saved">Заметка сохранена</string>
 
 </resources>
