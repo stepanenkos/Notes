@@ -90,15 +90,7 @@ class EditorFragment : Fragment() {
             editorViewModel.getNoteById(noteById)
         }
 
-        editorViewModel.noteById.observe(viewLifecycleOwner, { noteDataInDB ->
-            if (noteDataInDB != null) {
-                noteData = noteDataInDB
-                titleNote.disabled()
-                contentNote.disabled()
-                titleNote.setText(noteDataInDB.titleNote)
-                contentNote.setText(noteDataInDB.contentNote.trim())
-            }
-        })
+        editorViewModel.noteById.observe(viewLifecycleOwner, ::showNote)
 
         editorViewModel.errorReceivingNote.observe(viewLifecycleOwner, ::showError)
 
@@ -174,6 +166,16 @@ class EditorFragment : Fragment() {
 
     private fun isNotBlankTextFields(titleNote: EditText, contentNote: EditText): Boolean {
         return titleNote.text.isNotBlank() && contentNote.text.isNotBlank()
+    }
+
+    private fun showNote(noteData: NoteData?) {
+        if (noteData != null) {
+            this.noteData = noteData
+            titleNote.disabled()
+            contentNote.disabled()
+            titleNote.setText(noteData.titleNote)
+            contentNote.setText(noteData.contentNote.trim())
+        }
     }
 
     private fun showError(firebaseFirestoreException: FirebaseFirestoreException) {
