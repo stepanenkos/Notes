@@ -14,7 +14,7 @@
         >
         <action
             android:id="@+id/action_notesFragment2_to_editorFragment"
-            app:destination="@id/editorFragment"
+            app:destination="@id/editorNotesFragment"
             app:launchSingleTop="true"
             />
         <action
@@ -37,11 +37,11 @@
             />
     </fragment>
     <fragment
-        android:id="@+id/editorFragment"
-        android:name="kz.stepanenkos.notes.editor.presentation.EditorFragment"
+        android:id="@+id/editorNotesFragment"
+        android:name="kz.stepanenkos.notes.editor.presentation.EditorNotesFragment"
         android:label="AddNoteFragment"
         app:launchSingleTop="true"
-        tools:layout="@layout/fragment_editor"
+        tools:layout="@layout/fragment_editor_for_notes"
         >
         <action
             android:id="@+id/action_editorFragment_to_notesFragment2"
@@ -148,4 +148,14 @@
             app:destination="@id/notesFragment"
             />
     </fragment>
+    <fragment
+        android:id="@+id/editorTasksFragment"
+        android:name="kz.stepanenkos.notes.editor.presentation.EditorTasksFragment"
+        android:label="EditorTasksFragment"
+        tools:layout="@layout/fragment_editor_for_tasks"/>
+    <fragment
+        android:id="@+id/tasksFragment"
+        android:name="kz.stepanenkos.notes.listtasks.presentation.TasksFragment"
+        android:label="TasksFragment"
+        tools:layout="@layout/fragment_tasks"/>
 </navigation>

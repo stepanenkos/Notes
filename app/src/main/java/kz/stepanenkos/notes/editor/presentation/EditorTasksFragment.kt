@@ -23,7 +23,7 @@ import kz.stepanenkos.notes.common.presentation.ContentNoteEditText
 import kz.stepanenkos.notes.common.presentation.TitleNoteEditText
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
-class EditorFragment : Fragment() {
+class EditorTasksFragment : Fragment() {
     private val editorViewModel: EditorViewModel by viewModel()
 
     private lateinit var titleNote: TitleNoteEditText
@@ -66,7 +66,7 @@ class EditorFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        val root = inflater.inflate(R.layout.fragment_editor, container, false)
+        val root = inflater.inflate(R.layout.fragment_editor_for_notes, container, false)
         titleNote = root.findViewById(R.id.fragment_editor_title_note)
         contentNote = root.findViewById(R.id.fragment_editor_content_note)
         doneNote = root.findViewById(R.id.fragment_editor_apply_changed_button)

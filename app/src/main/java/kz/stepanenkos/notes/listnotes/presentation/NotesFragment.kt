@@ -149,7 +149,7 @@ class NotesFragment : Fragment(R.layout.fragment_notes), NoteClickListener {
         val bundle = Bundle().apply {
             putString(NOTE_ID, noteData.id)
         }
-        findNavController().navigate(R.id.editorFragment, bundle)
+        findNavController().navigate(R.id.editorNotesFragment, bundle)
     }
 
     private fun getSwapHelper(): ItemTouchHelper {

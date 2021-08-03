@@ -3,13 +3,10 @@ package kz.stepanenkos.notes
 import android.content.Context
 import android.content.SharedPreferences
 import android.os.Bundle
-import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
-import androidx.constraintlayout.widget.Group
 import androidx.coordinatorlayout.widget.CoordinatorLayout
 import androidx.core.content.edit
-import androidx.core.view.isVisible
 import androidx.navigation.NavController
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.setupWithNavController
@@ -99,7 +96,7 @@ class MainActivity : AppCompatActivity(), FirebaseAuth.AuthStateListener,
 
         addNoteButton.setOnClickListener {
             navController.navigate(
-                R.id.editorFragment,
+                R.id.editorNotesFragment,
                 /*null,
                 NavOptions.Builder().setLaunchSingleTop(true).build()*/
             )

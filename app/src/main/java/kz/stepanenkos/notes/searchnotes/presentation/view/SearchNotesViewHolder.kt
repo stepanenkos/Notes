@@ -7,8 +7,8 @@ import androidx.cardview.widget.CardView
 import androidx.recyclerview.widget.RecyclerView
 import kz.stepanenkos.notes.NoteData
 import kz.stepanenkos.notes.R
-import kz.stepanenkos.notes.common.presentation.ContentNoteTextView
-import kz.stepanenkos.notes.common.presentation.TitleNoteTextView
+import kz.stepanenkos.notes.common.presentation.ContentTextView
+import kz.stepanenkos.notes.common.presentation.TitleTextView
 import kz.stepanenkos.notes.listnotes.listeners.NoteClickListener
 import org.threeten.bp.Instant
 import org.threeten.bp.ZoneId
@@ -20,14 +20,14 @@ class SearchNotesViewHolder(
     private val noteClickListener: NoteClickListener
 ) : RecyclerView.ViewHolder(itemView) {
     private val noteContainer: CardView = itemView.findViewById(R.id.note_item_card_view)
-    private val titleNote: TitleNoteTextView = itemView.findViewById(R.id.note_item_title_note)
-    private val contentNote: ContentNoteTextView = itemView.findViewById(R.id.note_item_content_note)
+    private val title: TitleTextView = itemView.findViewById(R.id.note_item_title_note)
+    private val content: ContentTextView = itemView.findViewById(R.id.note_item_content_note)
     private val dateOfCreateNote: TextView =
         itemView.findViewById(R.id.note_item_date_of_create_note)
 
     fun onBind(noteData: NoteData) {
-        titleNote.text = noteData.titleNote
-        contentNote.text = Html.fromHtml(noteData.contentNote).toString()
+        title.text = noteData.titleNote
+        content.text = Html.fromHtml(noteData.contentNote).toString()
         dateOfCreateNote.text = ZonedDateTime.ofInstant(Instant.ofEpochSecond(noteData.dateOfNote), ZoneId.of(
             ZoneId.systemDefault().rules.getOffset(
                 Instant.now()

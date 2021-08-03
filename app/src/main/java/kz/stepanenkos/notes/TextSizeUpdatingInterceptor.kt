@@ -5,26 +5,26 @@ import androidx.preference.PreferenceManager
 import io.github.inflationx.viewpump.InflateResult
 import io.github.inflationx.viewpump.Interceptor
 import kz.stepanenkos.notes.common.presentation.ContentNoteEditText
-import kz.stepanenkos.notes.common.presentation.ContentNoteTextView
+import kz.stepanenkos.notes.common.presentation.ContentTextView
 import kz.stepanenkos.notes.common.presentation.TitleNoteEditText
-import kz.stepanenkos.notes.common.presentation.TitleNoteTextView
+import kz.stepanenkos.notes.common.presentation.TitleTextView
 
 class TextSizeUpdatingInterceptor : Interceptor {
     override fun intercept(chain: Interceptor.Chain): InflateResult {
         val result: InflateResult = chain.proceed(chain.request())
 
-        if (result.view is TitleNoteTextView) {
-            val titleNoteTextView: TitleNoteTextView = result.view as TitleNoteTextView
-            val titleNoteTextSize = PreferenceManager.getDefaultSharedPreferences(titleNoteTextView.context)
+        if (result.view is TitleTextView) {
+            val titleTextView: TitleTextView = result.view as TitleTextView
+            val titleNoteTextSize = PreferenceManager.getDefaultSharedPreferences(titleTextView.context)
                 .getString("title_note_font_size", "20")
-            titleNoteTextSize?.toFloat()?.let { titleNoteTextView.setTextSize(TypedValue.COMPLEX_UNIT_SP, it) }
+            titleNoteTextSize?.toFloat()?.let { titleTextView.setTextSize(TypedValue.COMPLEX_UNIT_SP, it) }
         }
 
-        if(result.view is ContentNoteTextView) {
-            val contentNoteTextView: ContentNoteTextView = result.view as ContentNoteTextView
-            val contentNoteTextSize = PreferenceManager.getDefaultSharedPreferences(contentNoteTextView.context)
+        if(result.view is ContentTextView) {
+            val contentTextView: ContentTextView = result.view as ContentTextView
+            val contentNoteTextSize = PreferenceManager.getDefaultSharedPreferences(contentTextView.context)
                 .getString("content_note_font_size", "18")
-            contentNoteTextSize?.toFloat()?.let { contentNoteTextView.setTextSize(TypedValue.COMPLEX_UNIT_SP, it) }
+            contentNoteTextSize?.toFloat()?.let { contentTextView.setTextSize(TypedValue.COMPLEX_UNIT_SP, it) }
         }
 
         if(result.view is TitleNoteEditText) {

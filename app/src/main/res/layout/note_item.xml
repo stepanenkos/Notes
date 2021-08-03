@@ -46,7 +46,7 @@
                     android:textSize="12sp"
                     />
 
-                <kz.stepanenkos.notes.common.presentation.TitleNoteTextView
+                <kz.stepanenkos.notes.common.presentation.TitleTextView
                     android:id="@+id/note_item_title_note"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -60,7 +60,7 @@
                     tools:text="Заголовок заметки"
                     />
 
-                <kz.stepanenkos.notes.common.presentation.ContentNoteTextView
+                <kz.stepanenkos.notes.common.presentation.ContentTextView
                     android:id="@+id/note_item_content_note"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
