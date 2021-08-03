@@ -1,60 +1,59 @@
-package kz.stepanenkos.notes.listnotes.presentation.view
+package kz.stepanenkos.notes.listtasks.presentation.view
 
-import android.content.res.Resources
 import android.text.Html
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.CheckBox
-import android.widget.ImageView
 import android.widget.TextView
 import androidx.cardview.widget.CardView
 import androidx.recyclerview.selection.ItemDetailsLookup
 import androidx.recyclerview.selection.SelectionTracker
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
-import com.google.android.material.appbar.MaterialToolbar
-import com.google.android.material.checkbox.MaterialCheckBox
 import kz.stepanenkos.notes.NoteData
 import kz.stepanenkos.notes.R
+import kz.stepanenkos.notes.TaskData
 import kz.stepanenkos.notes.common.extensions.view.gone
 import kz.stepanenkos.notes.common.extensions.view.show
 import kz.stepanenkos.notes.common.presentation.ContentNoteTextView
 import kz.stepanenkos.notes.common.presentation.TitleNoteTextView
-import kz.stepanenkos.notes.listnotes.listeners.NoteClickListener
+import kz.stepanenkos.notes.listnotes.presentation.view.NotesAdapter
+import kz.stepanenkos.notes.listnotes.presentation.view.NotesDiffUtilCallback
+import kz.stepanenkos.notes.listtasks.listeners.TaskClickListener
 import org.threeten.bp.Instant
 import org.threeten.bp.ZoneId
 import org.threeten.bp.ZonedDateTime
 import org.threeten.bp.format.DateTimeFormatter
 
-class NotesAdapter(
-    private val noteClickListener: NoteClickListener
-) : ListAdapter<NoteData, NotesAdapter.NotesViewHolder>(NotesDiffUtilCallback()) {
-    private var tracker: SelectionTracker<NoteData>? = null
+class TasksAdapter(
+    private val taskClickListener: TaskClickListener
+) : ListAdapter<TaskData, TasksAdapter.TasksViewHolder>(NotesDiffUtilCallback()) {
+    private var tracker: SelectionTracker<TaskData>? = null
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): NotesViewHolder {
-        return NotesViewHolder(
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): TasksViewHolder {
+        return TasksViewHolder(
             itemView = LayoutInflater.from(parent.context)
                 .inflate(R.layout.note_item, parent, false),
-            noteClickListener = noteClickListener
+            taskClickListener = taskClickListener
         )
     }
 
-    override fun onBindViewHolder(holder: NotesViewHolder, position: Int) {
+    override fun onBindViewHolder(holder: TasksViewHolder, position: Int) {
         tracker?.let {
             holder.onBind(getItem(position), it.isSelected(getItem(position)))
         }
     }
 
-    fun setTracker(tracker: SelectionTracker<NoteData>) {
+    fun setTracker(tracker: SelectionTracker<TaskData>) {
         this.tracker = tracker
     }
 
     override fun getItemId(position: Int) = position.toLong()
 
-    inner class NotesViewHolder(
+    inner class TasksViewHolder(
         itemView: View,
-        private val noteClickListener: NoteClickListener
+        private val taskClickListener: TaskClickListener
     ) : RecyclerView.ViewHolder(itemView) {
         private val noteContainer: CardView = itemView.findViewById(R.id.note_item_card_view)
         private val titleNote: TitleNoteTextView = itemView.findViewById(R.id.note_item_title_note)
@@ -79,7 +78,7 @@ class NotesAdapter(
                 )
             )
             noteContainer.setOnClickListener {
-                noteClickListener.onNoteClick(noteData)
+                taskClickListener.onNoteClick(noteData)
             }
             if (isActivated) {
                 checkBox.show()
@@ -91,11 +90,12 @@ class NotesAdapter(
             checkBox.isActivated = !isActivated
         }
 
-        fun getItemDetails(): ItemDetailsLookup.ItemDetails<NoteData> =
-            object : ItemDetailsLookup.ItemDetails<NoteData>() {
+        fun getItemDetails(): ItemDetailsLookup.ItemDetails<TaskData> =
+            object : ItemDetailsLookup.ItemDetails<TaskData>() {
                 override fun getPosition(): Int = adapterPosition
-                override fun getSelectionKey(): NoteData = getItem(adapterPosition)
+                override fun getSelectionKey(): TaskData = getItem(adapterPosition)
             }
     }
+
 }
 

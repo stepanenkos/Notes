@@ -1,10 +1,12 @@
 package kz.stepanenkos.notes.common.firebasedatabase.data
 
+import com.google.firebase.firestore.FirebaseFirestoreException
 import kotlinx.coroutines.flow.Flow
 import kz.stepanenkos.notes.NoteData
+import kz.stepanenkos.notes.TaskData
 import kz.stepanenkos.notes.common.firebasedatabase.data.datasource.FirebaseDatabaseSource
 import kz.stepanenkos.notes.common.firebasedatabase.domain.FirebaseDatabaseRepository
-
+import kz.stepanenkos.notes.common.model.ResponseData
 class DefaultFirebaseDatabaseRepository(
     private val firebaseDatabaseSource: FirebaseDatabaseSource
 ) : FirebaseDatabaseRepository {
@@ -12,21 +14,49 @@ class DefaultFirebaseDatabaseRepository(
         firebaseDatabaseSource.saveNote(noteData)
     }
 
-    override suspend fun getNoteById(noteId: String) = firebaseDatabaseSource.getNoteById(noteId)
+    override suspend fun saveTask(taskData: TaskData) {
+        firebaseDatabaseSource.saveTask(taskData)
+    }
+
+    override suspend fun getNoteById(noteId: String): Flow<ResponseData<NoteData, FirebaseFirestoreException>> {
+        return firebaseDatabaseSource.getNoteById(noteId)
+    }
+    override suspend fun getTaskById(taskId: String): Flow<ResponseData<TaskData, FirebaseFirestoreException>> {
+        return firebaseDatabaseSource.getTaskById(taskId)
+    }
 
 
-    override suspend fun getAllNotes() = firebaseDatabaseSource.getAllNotes()
+    override suspend fun getAllNotes(): Flow<ResponseData<List<NoteData>, FirebaseFirestoreException>> {
+        return firebaseDatabaseSource.getAllNotes()
+    }
+
+    override suspend fun getAllTasks() : Flow<ResponseData<List<TaskData>, FirebaseFirestoreException>> {
+        return firebaseDatabaseSource.getAllTasks()
+    }
 
 
     override suspend fun searchNoteByText(searchKeyword: String): Flow<List<NoteData>> {
         return firebaseDatabaseSource.searchNoteByText(searchKeyword)
     }
 
+    override suspend fun searchTaskByText(searchKeyword: String): Flow<List<TaskData>> {
+        return firebaseDatabaseSource.searchTaskByText(searchKeyword)
+    }
+
     override fun updateNote(noteData: NoteData) {
         firebaseDatabaseSource.updateNote(noteData)
+    }
+
+    override fun updateTask(taskData: TaskData) {
+        firebaseDatabaseSource.updateTask(taskData)
     }
 
     override fun deleteNote(noteData: NoteData) {
         firebaseDatabaseSource.deleteNote(noteData)
     }
+
+    override fun deleteTask(taskData: TaskData) {
+        firebaseDatabaseSource.deleteTask(taskData)
+    }
 }
+

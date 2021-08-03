@@ -1,4 +1,4 @@
-package kz.stepanenkos.notes.listnotes.presentation
+package kz.stepanenkos.notes.listtasks.presentation
 
 import android.app.AlertDialog
 import android.content.Context
@@ -21,31 +21,31 @@ import com.google.android.material.textview.MaterialTextView
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.firestore.FirebaseFirestoreException
 import com.google.firebase.ktx.Firebase
-import kz.stepanenkos.notes.NoteData
 import kz.stepanenkos.notes.R
+import kz.stepanenkos.notes.TaskData
 import kz.stepanenkos.notes.common.extensions.view.gone
 import kz.stepanenkos.notes.common.extensions.view.show
-import kz.stepanenkos.notes.databinding.FragmentNotesBinding
-import kz.stepanenkos.notes.listnotes.listeners.NoteClickListener
-import kz.stepanenkos.notes.listnotes.presentation.view.NoteDetailsLookup
-import kz.stepanenkos.notes.listnotes.presentation.view.NoteKeyProvider
-import kz.stepanenkos.notes.listnotes.presentation.view.NotesAdapter
+import kz.stepanenkos.notes.databinding.FragmentTasksBinding
+import kz.stepanenkos.notes.listtasks.presentation.view.TaskDetailsLookup
+import kz.stepanenkos.notes.listtasks.presentation.view.TaskKeyProvider
+import kz.stepanenkos.notes.listtasks.listeners.TaskClickListener
+import kz.stepanenkos.notes.listtasks.presentation.view.TasksAdapter
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
-class NotesFragment : Fragment(R.layout.fragment_notes), NoteClickListener {
-    private val notesViewModel: NotesViewModel by viewModel()
-    private var _binding: FragmentNotesBinding? = null
+class TasksFragment : Fragment(R.layout.fragment_tasks), TaskClickListener {
+    private val tasksViewModel: TasksViewModel by viewModel()
+    private var _binding: FragmentTasksBinding? = null
     private val binding get() = _binding!!
     private lateinit var recyclerView: RecyclerView
-    private val notesAdapter = NotesAdapter(this)
+    private val tasksAdapter = TasksAdapter(this)
 
-    private lateinit var tracker: SelectionTracker<NoteData>
+    private lateinit var tracker: SelectionTracker<TaskData>
     private lateinit var toolbar: MaterialToolbar
-    private lateinit var checkBoxSelectAllNotes: MaterialCheckBox
-    private lateinit var deleteSelectedNotes: ImageView
-    private lateinit var infoCountSelectedNotes: MaterialTextView
+    private lateinit var checkBoxSelectAllTasks: MaterialCheckBox
+    private lateinit var deleteSelectedTasks: ImageView
+    private lateinit var infoCountSelectedTasks: MaterialTextView
 
-    private val NOTE_ID = "ID"
+    private val TASK_ID = "TASK_ID"
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
@@ -65,46 +65,46 @@ class NotesFragment : Fragment(R.layout.fragment_notes), NoteClickListener {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        _binding = FragmentNotesBinding.bind(view)
+        _binding = FragmentTasksBinding.bind(view)
         recyclerView = binding.fragmentNotesRecyclerView
         recyclerView.layoutManager = LinearLayoutManager(requireContext())
         getSwapHelper().attachToRecyclerView(recyclerView)
 
-        recyclerView.adapter = notesAdapter
+        recyclerView.adapter = tasksAdapter
         toolbar = binding.fragmentNotesToolbar
-        checkBoxSelectAllNotes = binding.fragmentNotesCheckboxSelectAllNotes
-        deleteSelectedNotes = binding.fragmentNotesImageViewButtonDeleteNote
-        infoCountSelectedNotes = binding.fragmentNotesTextViewInfoSelectItem
+        checkBoxSelectAllTasks = binding.fragmentNotesCheckboxSelectAllNotes
+        deleteSelectedTasks = binding.fragmentNotesImageViewButtonDeleteNote
+        infoCountSelectedTasks = binding.fragmentNotesTextViewInfoSelectItem
 
         tracker = SelectionTracker.Builder(
             "mySelection",
             recyclerView,
-            NoteKeyProvider(notesAdapter),
-            NoteDetailsLookup(recyclerView),
-            StorageStrategy.createParcelableStorage(NoteData::class.java)
+            TaskKeyProvider(tasksAdapter),
+            TaskDetailsLookup(recyclerView),
+            StorageStrategy.createParcelableStorage(TaskData::class.java)
         ).withSelectionPredicate(
             SelectionPredicates.createSelectAnything()
         ).build()
 
-        notesAdapter.setTracker(tracker)
+        tasksAdapter.setTracker(tracker)
         tracker.addObserver(
-            object : SelectionTracker.SelectionObserver<NoteData>() {
+            object : SelectionTracker.SelectionObserver<TaskData>() {
                 override fun onSelectionChanged() {
                     super.onSelectionChanged()
                     if (tracker.selection.size() > 0) {
                         toolbar.show()
-                        val countSelectedNotesText =
-                            "${tracker.selection.size()}/${notesAdapter.currentList.size}"
-                        infoCountSelectedNotes.text = countSelectedNotesText
+                        val countSelectedTasksText =
+                            "${tracker.selection.size()}/${tasksAdapter.currentList.size}"
+                        infoCountSelectedTasks.text = countSelectedTasksText
                     } else {
                         toolbar.gone()
                     }
                 }
             })
 
-        checkBoxSelectAllNotes.setOnCheckedChangeListener { _, isChecked ->
+        checkBoxSelectAllTasks.setOnCheckedChangeListener { _, isChecked ->
             if (isChecked) {
-                notesAdapter.currentList.forEach {
+                tasksAdapter.currentList.forEach {
                     if (!tracker.isSelected(it)) {
                         tracker.select(it)
                     }
@@ -114,13 +114,13 @@ class NotesFragment : Fragment(R.layout.fragment_notes), NoteClickListener {
             }
         }
 
-        deleteSelectedNotes.setOnClickListener {
+        deleteSelectedTasks.setOnClickListener {
             val builder = AlertDialog.Builder(requireContext())
             builder.setTitle(getString(R.string.notes_fragment_title_delete_note))
             builder.setMessage(getString(R.string.notes_fragment_question_delete_note))
             builder.setPositiveButton(getString(R.string.notes_fragment_text_yes_on_positive_button)) { _, _ ->
-                tracker.selection.forEach { noteData ->
-                    notesViewModel.deleteNote(noteData)
+                tracker.selection.forEach { taskData ->
+                    tasksViewModel.deleteTask(taskData)
                 }
             }
             builder.setNegativeButton(getString(R.string.notes_fragment_text_no_on_negative_button)) { dialog, _ ->
@@ -133,23 +133,23 @@ class NotesFragment : Fragment(R.layout.fragment_notes), NoteClickListener {
     override fun onStart() {
         super.onStart()
         setHasOptionsMenu(true)
-        notesViewModel.onStart()
+        tasksViewModel.onStart()
 
-        notesViewModel.allNotes.observe(viewLifecycleOwner) {
-            notesAdapter.submitList(it)
+        tasksViewModel.allNotes.observe(viewLifecycleOwner) {
+            tasksAdapter.submitList(it)
         }
 
-        notesViewModel.errorWhileGettingNotes.observe(viewLifecycleOwner, ::showError)
+        tasksViewModel.errorWhileGettingNotes.observe(viewLifecycleOwner, ::showError)
         if (Firebase.auth.currentUser == null) {
             findNavController().navigate(R.id.loginFragment)
         }
     }
 
-    override fun onNoteClick(noteData: NoteData) {
+    override fun onTaskClick(taskData: TaskData) {
         val bundle = Bundle().apply {
-            putString(NOTE_ID, noteData.id)
+            putString(TASK_ID, taskData.id)
         }
-        findNavController().navigate(R.id.editorFragment, bundle)
+        findNavController().navigate(R.id.editorTasksFragment, bundle)
     }
 
     private fun getSwapHelper(): ItemTouchHelper {
@@ -168,11 +168,11 @@ class NotesFragment : Fragment(R.layout.fragment_notes), NoteClickListener {
                 builder.setTitle(getString(R.string.notes_fragment_title_delete_note))
                 builder.setMessage(getString(R.string.notes_fragment_question_delete_note))
                 builder.setPositiveButton(getString(R.string.notes_fragment_text_yes_on_positive_button)) { _, _ ->
-                    notesViewModel.deleteNote(notesAdapter.currentList[viewHolder.adapterPosition])
+                    tasksViewModel.deleteTask(tasksAdapter.currentList[viewHolder.adapterPosition])
                 }
                 builder.setNegativeButton(getString(R.string.notes_fragment_text_no_on_negative_button)) { dialog, which ->
                     dialog.dismiss()
-                    notesAdapter.notifyItemChanged(viewHolder.adapterPosition)
+                    tasksAdapter.notifyItemChanged(viewHolder.adapterPosition)
                 }
                 builder.create().show()
             }

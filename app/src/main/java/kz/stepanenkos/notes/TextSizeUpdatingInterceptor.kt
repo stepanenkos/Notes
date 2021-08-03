@@ -1,4 +1,4 @@
-package kz.stepanenkos
+package kz.stepanenkos.notes
 
 import android.util.TypedValue
 import androidx.preference.PreferenceManager

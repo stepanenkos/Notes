@@ -71,5 +71,9 @@
     <string name="editor_fragment_cannot_save_empty_note">Нельзя сохранить пустую заметку</string>
     <string name="editor_fragment_note_updated">Заметка обновлена</string>
     <string name="editor_fragment_note_saved">Заметка сохранена</string>
+    <string name="notes_fragment_title_delete_note">Удаление заметки</string>
+    <string name="notes_fragment_question_delete_note">Вы действительно хотите удалить заметку?</string>
+    <string name="notes_fragment_text_yes_on_positive_button">Да</string>
+    <string name="notes_fragment_text_no_on_negative_button">Нет</string>
 
 </resources>

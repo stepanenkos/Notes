@@ -41,9 +41,7 @@ class EditorFragment : Fragment() {
             this,
             object : OnBackPressedCallback(true) {
                 override fun handleOnBackPressed() {
-                    if (isNotBlankTextFields(titleNote, contentNote) &&
-                            noteData.titleNote == titleNote.text.toString() &&
-                            noteData.contentNote == contentNote.text.toString()) {
+                    if (isNotBlankTextFields(titleNote, contentNote) && isEqualsContentInNoteDataAndFields()) {
                         isEnabled = false
                         requireActivity().onBackPressed()
                     } else {
@@ -58,7 +56,6 @@ class EditorFragment : Fragment() {
                             getString(R.string.editor_fragment_note_saved),
                             Snackbar.LENGTH_LONG
                         ).show()
-
                     }
                 }
             })
@@ -69,7 +66,6 @@ class EditorFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-
         val root = inflater.inflate(R.layout.fragment_editor, container, false)
         titleNote = root.findViewById(R.id.fragment_editor_title_note)
         contentNote = root.findViewById(R.id.fragment_editor_content_note)
@@ -166,6 +162,11 @@ class EditorFragment : Fragment() {
 
     private fun isNotBlankTextFields(titleNote: EditText, contentNote: EditText): Boolean {
         return titleNote.text.isNotBlank() && contentNote.text.isNotBlank()
+    }
+
+    private fun isEqualsContentInNoteDataAndFields(): Boolean {
+        return noteData.titleNote == titleNote.text.toString() &&
+                noteData.contentNote == contentNote.text.toString()
     }
 
     private fun showNote(noteData: NoteData?) {
