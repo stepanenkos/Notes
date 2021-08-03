@@ -64,16 +64,23 @@
     </string-array>
 
     <string name="fragment_editor_content_note_hint">Текст заметки</string>
+    <string name="fragment_editor_content_task_hint">Текст задачи</string>
     <string name="fragment_editor_content_description_done_button">Кнопка сохранить заметку</string>
     <string name="fragment_editor_content_description_edit_note_button">Кнопка редактировать заметку</string>
     <string name="date_time_format_pattern">HH:mm dd MMMM yyyy</string>
     <string name="fragment_notes_select_all_notes">Выбрать все заметки</string>
-    <string name="editor_fragment_cannot_save_empty_note">Нельзя сохранить пустую заметку</string>
-    <string name="editor_fragment_note_updated">Заметка обновлена</string>
-    <string name="editor_fragment_note_saved">Заметка сохранена</string>
+    <string name="fragment_tasks_select_all_tasks">Выбрать все задачи</string>
+    <string name="editor_notes_fragment_cannot_save_empty_note">Нельзя сохранить пустую заметку</string>
+    <string name="editor_tasks_fragment_cannot_save_empty_task">Нельзя сохранить пустую задачу</string>
+    <string name="editor_notes_fragment_note_updated">Заметка обновлена</string>
+    <string name="editor_tasks_fragment_task_updated">Задача обновлена</string>
+    <string name="editor_notes_fragment_note_saved">Заметка сохранена</string>
+    <string name="editor_tasks_fragment_task_saved">Задача сохранена</string>
     <string name="notes_fragment_title_delete_note">Удаление заметки</string>
+    <string name="tasks_fragment_title_delete_task">Удаление задачи</string>
     <string name="notes_fragment_question_delete_note">Вы действительно хотите удалить заметку?</string>
-    <string name="notes_fragment_text_yes_on_positive_button">Да</string>
-    <string name="notes_fragment_text_no_on_negative_button">Нет</string>
+    <string name="tasks_fragment_question_delete_task">Вы действительно хотите удалить задачу?</string>
+    <string name="positive_button_text">Да</string>
+    <string name="negative_button_text">Нет</string>
 
 </resources>

@@ -3,6 +3,8 @@
   <component name="DesignSurface">
     <option name="filePathToZoomLevelMap">
       <map>
+        <entry key="..\:/AndroidProjects/Notes/app/src/main/res/layout/fragment_editor_for_notes.xml" value="0.228125" />
+        <entry key="..\:/AndroidProjects/Notes/app/src/main/res/layout/fragment_editor_for_tasks.xml" value="0.24537037037037038" />
         <entry key="..\:/AndroidProjects/Notes/app/src/main/res/layout/fragment_notes.xml" value="0.15833333333333333" />
         <entry key="..\:/AndroidProjects/Notes/app/src/main/res/layout/fragment_signed.xml" value="0.24895833333333334" />
         <entry key="..\:/AndroidProjects/Notes/app/src/main/res/layout/fragment_tasks.xml" value="0.228125" />

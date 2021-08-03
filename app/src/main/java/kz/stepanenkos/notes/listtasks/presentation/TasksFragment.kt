@@ -116,14 +116,14 @@ class TasksFragment : Fragment(R.layout.fragment_tasks), TaskClickListener {
 
         deleteSelectedTasks.setOnClickListener {
             val builder = AlertDialog.Builder(requireContext())
-            builder.setTitle(getString(R.string.notes_fragment_title_delete_note))
-            builder.setMessage(getString(R.string.notes_fragment_question_delete_note))
-            builder.setPositiveButton(getString(R.string.notes_fragment_text_yes_on_positive_button)) { _, _ ->
+            builder.setTitle(getString(R.string.tasks_fragment_title_delete_task))
+            builder.setMessage(getString(R.string.tasks_fragment_question_delete_task))
+            builder.setPositiveButton(getString(R.string.positive_button_text)) { _, _ ->
                 tracker.selection.forEach { taskData ->
                     tasksViewModel.deleteTask(taskData)
                 }
             }
-            builder.setNegativeButton(getString(R.string.notes_fragment_text_no_on_negative_button)) { dialog, _ ->
+            builder.setNegativeButton(getString(R.string.negative_button_text)) { dialog, _ ->
                 dialog.dismiss()
             }
             builder.create().show()
@@ -167,10 +167,10 @@ class TasksFragment : Fragment(R.layout.fragment_tasks), TaskClickListener {
                 val builder = AlertDialog.Builder(requireContext())
                 builder.setTitle(getString(R.string.notes_fragment_title_delete_note))
                 builder.setMessage(getString(R.string.notes_fragment_question_delete_note))
-                builder.setPositiveButton(getString(R.string.notes_fragment_text_yes_on_positive_button)) { _, _ ->
+                builder.setPositiveButton(getString(R.string.positive_button_text)) { _, _ ->
                     tasksViewModel.deleteTask(tasksAdapter.currentList[viewHolder.adapterPosition])
                 }
-                builder.setNegativeButton(getString(R.string.notes_fragment_text_no_on_negative_button)) { dialog, which ->
+                builder.setNegativeButton(getString(R.string.negative_button_text)) { dialog, which ->
                     dialog.dismiss()
                     tasksAdapter.notifyItemChanged(viewHolder.adapterPosition)
                 }

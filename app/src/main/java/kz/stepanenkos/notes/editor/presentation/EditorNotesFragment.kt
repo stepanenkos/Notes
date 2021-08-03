@@ -53,7 +53,7 @@ class EditorNotesFragment : Fragment() {
 
                         Snackbar.make(
                             requireView(),
-                            getString(R.string.editor_fragment_note_saved),
+                            getString(R.string.editor_notes_fragment_note_saved),
                             Snackbar.LENGTH_LONG
                         ).show()
                     }
@@ -98,7 +98,7 @@ class EditorNotesFragment : Fragment() {
             if (!isNotBlankTextFields(titleNote, contentNote)) {
                 Snackbar.make(
                     requireView(),
-                    getString(R.string.editor_fragment_cannot_save_empty_note),
+                    getString(R.string.editor_notes_fragment_cannot_save_empty_note),
                     Snackbar.LENGTH_LONG
                 ).show()
             }
@@ -115,7 +115,7 @@ class EditorNotesFragment : Fragment() {
 
                 Snackbar.make(
                     requireView(),
-                    getString(R.string.editor_fragment_note_saved),
+                    getString(R.string.editor_notes_fragment_note_saved),
                     Snackbar.LENGTH_LONG
                 ).show()
             }
