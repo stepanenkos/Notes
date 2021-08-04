@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/mobile_navigation"
-    app:startDestination="@id/notesFragment"
+    app:startDestination="@id/mainFragment"
     >
     <fragment
         android:id="@+id/notesFragment"
@@ -63,6 +63,10 @@
         <action
             android:id="@+id/action_editorFragment_to_menuFragment"
             app:destination="@id/menuFragment"
+            />
+        <action
+            android:id="@+id/action_editorNotesFragment_to_mainFragment"
+            app:destination="@id/mainFragment"
             />
     </fragment>
     <fragment
@@ -158,4 +162,19 @@
         android:name="kz.stepanenkos.notes.listtasks.presentation.TasksFragment"
         android:label="TasksFragment"
         tools:layout="@layout/fragment_tasks"/>
+    <fragment
+        android:id="@+id/mainFragment"
+        android:name="kz.stepanenkos.notes.mainscreen.presentation.MainFragment"
+        android:label="fragment_main"
+        tools:layout="@layout/fragment_main"
+        >
+        <action
+            android:id="@+id/action_mainFragment_to_tasksFragment"
+            app:destination="@id/tasksFragment"
+            />
+        <action
+            android:id="@+id/action_mainFragment_to_notesFragment"
+            app:destination="@id/notesFragment"
+            />
+    </fragment>
 </navigation>

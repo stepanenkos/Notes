@@ -4,7 +4,7 @@ package kz.stepanenkos.notes.listnotes.presentation.view
 import android.view.MotionEvent
 import androidx.recyclerview.selection.ItemDetailsLookup
 import androidx.recyclerview.widget.RecyclerView
-import kz.stepanenkos.notes.NoteData
+import kz.stepanenkos.notes.common.model.NoteData
 
 class NoteDetailsLookup(private val recyclerView: RecyclerView) :
     ItemDetailsLookup<NoteData>() {

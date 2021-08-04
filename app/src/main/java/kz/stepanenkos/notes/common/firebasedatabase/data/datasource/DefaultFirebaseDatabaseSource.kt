@@ -7,10 +7,9 @@ import java.util.*
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.channels.awaitClose
-import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
-import kz.stepanenkos.notes.NoteData
-import kz.stepanenkos.notes.TaskData
+import kz.stepanenkos.notes.common.model.NoteData
+import kz.stepanenkos.notes.common.model.TaskData
 import kz.stepanenkos.notes.common.model.ResponseData
 
 private const val USERS_NODE = "users"

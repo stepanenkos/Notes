@@ -12,12 +12,11 @@ import androidx.recyclerview.selection.SelectionTracker
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import kz.stepanenkos.notes.R
-import kz.stepanenkos.notes.TaskData
+import kz.stepanenkos.notes.common.model.TaskData
 import kz.stepanenkos.notes.common.extensions.view.gone
 import kz.stepanenkos.notes.common.extensions.view.show
 import kz.stepanenkos.notes.common.presentation.ContentTextView
 import kz.stepanenkos.notes.common.presentation.TitleTextView
-import kz.stepanenkos.notes.listnotes.presentation.view.NotesDiffUtilCallback
 import kz.stepanenkos.notes.listtasks.listeners.TaskClickListener
 import org.threeten.bp.Instant
 import org.threeten.bp.ZoneId

@@ -6,7 +6,7 @@ import android.widget.CheckBox
 import android.widget.TextView
 import androidx.cardview.widget.CardView
 import androidx.recyclerview.widget.RecyclerView
-import kz.stepanenkos.notes.NoteData
+import kz.stepanenkos.notes.common.model.NoteData
 import kz.stepanenkos.notes.R
 import kz.stepanenkos.notes.common.extensions.view.gone
 import kz.stepanenkos.notes.common.extensions.view.show
@@ -29,7 +29,7 @@ class NotesViewHolder(
     private val dateOfCreateNote: TextView =
         itemView.findViewById(R.id.note_item_date_of_create_note)
 
-    fun onBind(noteData: NoteData,  isActivated: Boolean = false) {
+    fun onBind(noteData: NoteData, isActivated: Boolean = false) {
         title.text = noteData.titleNote
         content.text = Html.fromHtml(noteData.contentNote).toString()
         dateOfCreateNote.text = ZonedDateTime.ofInstant(Instant.ofEpochSecond(noteData.dateOfNote), ZoneId.of(

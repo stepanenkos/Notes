@@ -10,9 +10,10 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import kz.stepanenkos.notes.NoteData
+import kz.stepanenkos.notes.common.model.NoteData
 import kz.stepanenkos.notes.common.firebasedatabase.domain.FirebaseDatabaseRepository
 import kz.stepanenkos.notes.common.model.ResponseData
+import kz.stepanenkos.notes.common.model.TaskData
 
 class EditorViewModel(
     private val firebaseDatabaseRepository: FirebaseDatabaseRepository
@@ -20,17 +21,24 @@ class EditorViewModel(
     private val _noteById: MutableLiveData<NoteData> = MutableLiveData()
     val noteById: LiveData<NoteData> = _noteById
 
+    private val _taskById: MutableLiveData<TaskData> = MutableLiveData()
+    val taskById: LiveData<TaskData> = _taskById
+
     private val _onBold: MutableLiveData<Spanned> = MutableLiveData()
     val onBold: LiveData<Spanned> = _onBold
 
-    private val _errorReceivingNote: MutableLiveData<FirebaseFirestoreException> = MutableLiveData()
-    val errorReceivingNote: LiveData<FirebaseFirestoreException> = _errorReceivingNote
+    private val _errorReceiving: MutableLiveData<FirebaseFirestoreException> = MutableLiveData()
+    val errorReceiving: LiveData<FirebaseFirestoreException> = _errorReceiving
 
     private var fromHtml: Spanned? = null
     private var toHtml: String? = null
 
     suspend fun saveNote(noteData: NoteData) {
-        saveNoteToFirebaseDatabase(noteData)
+        firebaseDatabaseRepository.saveNote(noteData)
+    }
+
+    suspend fun saveTask(taskData: TaskData) {
+        firebaseDatabaseRepository.saveTask(taskData)
     }
 
     fun updateNote(noteData: NoteData) {
@@ -49,16 +57,27 @@ class EditorViewModel(
                             _noteById.postValue(responseData.result)
                         }
                         is ResponseData.Error -> {
-                            _errorReceivingNote.postValue(responseData.error)
+                            _errorReceiving.postValue(responseData.error)
                         }
                     }
                 }
             }
         }
     }
-
-    private suspend fun saveNoteToFirebaseDatabase(noteData: NoteData) {
-        firebaseDatabaseRepository.saveNote(noteData)
+    fun getTaskById(taskId: String) {
+        viewModelScope.launch(Dispatchers.IO) {
+            firebaseDatabaseRepository.getTaskById(taskId).collect { responseData ->
+                withContext(Dispatchers.Main) {
+                    when(responseData) {
+                        is ResponseData.Success -> {
+                            _taskById.postValue(responseData.result)
+                        }
+                        is ResponseData.Error -> {
+                            _errorReceiving.postValue(responseData.error)
+                        }
+                    }
+                }
+            }
+        }
     }
-
 }

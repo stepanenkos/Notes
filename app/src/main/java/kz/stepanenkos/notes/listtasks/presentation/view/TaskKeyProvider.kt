@@ -1,7 +1,7 @@
 package kz.stepanenkos.notes.listtasks.presentation.view
 
 import androidx.recyclerview.selection.ItemKeyProvider
-import kz.stepanenkos.notes.TaskData
+import kz.stepanenkos.notes.common.model.TaskData
 
 class TaskKeyProvider (private val adapter: TasksAdapter) : ItemKeyProvider<TaskData>(SCOPE_CACHED) {
     override fun getKey(position: Int): TaskData =

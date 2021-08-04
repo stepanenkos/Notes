@@ -1,7 +1,7 @@
 package kz.stepanenkos.notes.listnotes.presentation.view
 
 import androidx.recyclerview.selection.ItemKeyProvider
-import kz.stepanenkos.notes.NoteData
+import kz.stepanenkos.notes.common.model.NoteData
 
 class NoteKeyProvider (private val adapter: NotesAdapter) : ItemKeyProvider<NoteData>(SCOPE_CACHED) {
     override fun getKey(position: Int): NoteData =

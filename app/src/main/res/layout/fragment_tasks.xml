@@ -6,20 +6,20 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context=".listnotes.presentation.NotesFragment"
+    tools:context=".listtasks.presentation.TasksFragment"
     >
 
     <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/fragment_notes_recycler_view"
+        android:id="@+id/fragment_tasks_recycler_view"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:clipToPadding="true"
         android:paddingBottom="@dimen/padding_64x"
-        tools:listitem="@layout/note_item"
+        tools:listitem="@layout/task_item"
         />
 
     <com.google.android.material.appbar.MaterialToolbar
-        android:id="@+id/fragment_notes_toolbar"
+        android:id="@+id/fragment_tasks_toolbar"
         android:layout_width="match_parent"
         android:layout_height="?actionBarSize"
         android:background="@color/primary_dark"
@@ -31,7 +31,7 @@
             android:layout_height="wrap_content"
             >
         <com.google.android.material.checkbox.MaterialCheckBox
-            android:id="@+id/fragment_notes_checkbox_select_all_notes"
+            android:id="@+id/fragment_tasks_checkbox_select_all_tasks"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/fragment_notes_select_all_notes"
@@ -39,7 +39,7 @@
             />
 
         <com.google.android.material.textview.MaterialTextView
-            android:id="@+id/fragment_notes_text_view_info_select_item"
+            android:id="@+id/fragment_tasks_text_view_info_select_item"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/margin_16x"
@@ -49,7 +49,7 @@
             />
 
         <ImageView
-            android:id="@+id/fragment_notes_image_view_button_delete_note"
+            android:id="@+id/fragment_tasks_image_view_button_delete_task"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center|end"

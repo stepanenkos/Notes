@@ -25,10 +25,10 @@
     # This rule will properly ProGuard all the model classes in
     # the package com.yourcompany.models. Modify to fit the structure
     # of your app.
-    -keep class kz.stepanenkos.notes.NoteData {
+    -keep class kz.stepanenkos.notes.common.model.NoteData {
         *;
     }
 
-    -keepclassmembers class kz.stepanenkos.notes.NoteData {
+    -keepclassmembers class kz.stepanenkos.notes.common.model.NoteData {
         *;
     }

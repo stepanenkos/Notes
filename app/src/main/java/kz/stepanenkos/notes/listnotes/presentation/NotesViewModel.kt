@@ -9,7 +9,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import kz.stepanenkos.notes.NoteData
+import kz.stepanenkos.notes.common.model.NoteData
 import kz.stepanenkos.notes.common.firebasedatabase.domain.FirebaseDatabaseRepository
 import kz.stepanenkos.notes.common.model.ResponseData
 import kz.stepanenkos.notes.user.data.datasource.UserCredentialsDataSource

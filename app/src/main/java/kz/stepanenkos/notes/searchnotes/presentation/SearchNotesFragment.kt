@@ -12,7 +12,7 @@ import androidx.recyclerview.widget.RecyclerView
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import kz.stepanenkos.notes.NoteData
+import kz.stepanenkos.notes.common.model.NoteData
 import kz.stepanenkos.notes.R
 import kz.stepanenkos.notes.listnotes.listeners.NoteClickListener
 import kz.stepanenkos.notes.searchnotes.presentation.view.SearchNotesAdapter

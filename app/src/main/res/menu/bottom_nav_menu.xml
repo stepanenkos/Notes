@@ -4,7 +4,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     >
     <item
-        android:id="@+id/notesFragment"
+        android:id="@+id/mainFragment"
         android:icon="@drawable/ic_sticky_note"
         />
 

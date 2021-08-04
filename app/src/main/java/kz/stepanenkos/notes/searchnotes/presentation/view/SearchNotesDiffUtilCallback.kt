@@ -1,7 +1,7 @@
 package kz.stepanenkos.notes.searchnotes.presentation.view
 
 import androidx.recyclerview.widget.DiffUtil
-import kz.stepanenkos.notes.NoteData
+import kz.stepanenkos.notes.common.model.NoteData
 
 class SearchNotesDiffUtilCallback : DiffUtil.ItemCallback<NoteData>() {
     override fun areItemsTheSame(oldItem: NoteData, newItem: NoteData): Boolean {

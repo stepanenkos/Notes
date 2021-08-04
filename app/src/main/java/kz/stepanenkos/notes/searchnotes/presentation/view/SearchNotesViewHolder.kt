@@ -5,7 +5,7 @@ import android.view.View
 import android.widget.TextView
 import androidx.cardview.widget.CardView
 import androidx.recyclerview.widget.RecyclerView
-import kz.stepanenkos.notes.NoteData
+import kz.stepanenkos.notes.common.model.NoteData
 import kz.stepanenkos.notes.R
 import kz.stepanenkos.notes.common.presentation.ContentTextView
 import kz.stepanenkos.notes.common.presentation.TitleTextView

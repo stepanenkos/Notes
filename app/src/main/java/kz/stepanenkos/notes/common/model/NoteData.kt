@@ -1,4 +1,4 @@
-package kz.stepanenkos.notes
+package kz.stepanenkos.notes.common.model
 
 
 import android.os.Parcelable
@@ -9,17 +9,16 @@ import org.threeten.bp.ZoneId
 import org.threeten.bp.ZonedDateTime
 
 @Parcelize
-data class TaskData(
+data class NoteData(
     var id: String = UUID.randomUUID().toString(),
-    var contentTask: String = "",
-    var dateOfTask: Long = ZonedDateTime.now(
+    var titleNote: String = "",
+    var contentNote: String = "",
+    var dateOfNote: Long = ZonedDateTime.now(
         ZoneId.of(
             ZoneId.systemDefault().rules.getOffset(
                 Instant.now()
             ).toString()
         )
     ).toEpochSecond(),
-    var isNotification: Boolean = false,
-    var dateOfNotification: Long = 0,
-    var isDone: Boolean = false,
+    var searchKeywords: MutableList<String> = mutableListOf()
 ) : Parcelable

@@ -47,7 +47,7 @@
                 />
         </LinearLayout>
 
-        <kz.stepanenkos.notes.common.presentation.TitleNoteEditText
+        <kz.stepanenkos.notes.common.presentation.TitleEditText
             android:id="@+id/fragment_editor_title_note"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -65,7 +65,7 @@
 
             />
 
-        <kz.stepanenkos.notes.common.presentation.ContentNoteEditText
+        <kz.stepanenkos.notes.common.presentation.ContentEditText
             android:id="@+id/fragment_editor_content_note"
             android:layout_width="match_parent"
             android:layout_height="match_parent"

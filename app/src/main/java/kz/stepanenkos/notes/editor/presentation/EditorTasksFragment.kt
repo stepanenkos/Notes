@@ -15,24 +15,22 @@ import java.util.*
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import kz.stepanenkos.notes.NoteData
 import kz.stepanenkos.notes.R
 import kz.stepanenkos.notes.common.extensions.view.disabled
 import kz.stepanenkos.notes.common.extensions.view.enabled
-import kz.stepanenkos.notes.common.presentation.ContentNoteEditText
-import kz.stepanenkos.notes.common.presentation.TitleNoteEditText
+import kz.stepanenkos.notes.common.model.TaskData
+import kz.stepanenkos.notes.common.presentation.ContentEditText
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class EditorTasksFragment : Fragment() {
     private val editorViewModel: EditorViewModel by viewModel()
 
-    private lateinit var titleNote: TitleNoteEditText
-    private lateinit var contentNote: ContentNoteEditText
+    private lateinit var content: ContentEditText
     private lateinit var doneNote: ImageView
     private lateinit var editNote: ImageView
 
-    private var noteData: NoteData = NoteData()
-    private var idNote: String? = null
+    private var taskData: TaskData = TaskData()
+    private var idTask: String? = null
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
@@ -41,13 +39,13 @@ class EditorTasksFragment : Fragment() {
             this,
             object : OnBackPressedCallback(true) {
                 override fun handleOnBackPressed() {
-                    if (isNotBlankTextFields(titleNote, contentNote) && isEqualsContentInNoteDataAndFields()) {
+                    if (isNotBlankTextFields(content) && isEqualsContentInNoteDataAndFields()) {
                         isEnabled = false
                         requireActivity().onBackPressed()
                     } else {
                         CoroutineScope(Dispatchers.IO).launch {
-                            fillNoteData(titleNote, contentNote)
-                            editorViewModel.saveNote(noteData)
+                            fillNoteData(content)
+                            editorViewModel.saveTask(taskData)
                         }
                         doneNoteUI()
 
@@ -67,8 +65,7 @@ class EditorTasksFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         val root = inflater.inflate(R.layout.fragment_editor_for_notes, container, false)
-        titleNote = root.findViewById(R.id.fragment_editor_title_note)
-        contentNote = root.findViewById(R.id.fragment_editor_content_note)
+        content = root.findViewById(R.id.fragment_editor_content_note)
         doneNote = root.findViewById(R.id.fragment_editor_apply_changed_button)
         editNote = root.findViewById(R.id.fragment_editor_edit_text_button)
 
@@ -79,23 +76,23 @@ class EditorTasksFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        idNote = arguments?.getString("ID")
-        idNote?.let { noteById ->
+        idTask = arguments?.getString("ID")
+        idTask?.let { taskById ->
             editNote.enabled()
             doneNote.disabled()
-            editorViewModel.getNoteById(noteById)
+            editorViewModel.getTaskById(taskById)
         }
 
-        editorViewModel.noteById.observe(viewLifecycleOwner, ::showNote)
+        editorViewModel.taskById.observe(viewLifecycleOwner, ::showNote)
 
-        editorViewModel.errorReceivingNote.observe(viewLifecycleOwner, ::showError)
+        editorViewModel.errorReceiving.observe(viewLifecycleOwner, ::showError)
 
         setOnClickListeners()
     }
 
     private fun setOnClickListeners() {
         doneNote.setOnClickListener {
-            if (!isNotBlankTextFields(titleNote, contentNote)) {
+            if (!isNotBlankTextFields(content)) {
                 Snackbar.make(
                     requireView(),
                     getString(R.string.editor_notes_fragment_cannot_save_empty_note),
@@ -103,12 +100,12 @@ class EditorTasksFragment : Fragment() {
                 ).show()
             }
 
-            if (isNotBlankTextFields(titleNote, contentNote)) {
+            if (isNotBlankTextFields(content)) {
 
-                fillNoteData(titleNote, contentNote)
+                fillNoteData(content)
 
                 CoroutineScope(Dispatchers.IO).launch {
-                    editorViewModel.saveNote(noteData)
+                    editorViewModel.saveTask(taskData)
                 }
 
                 doneNoteUI()
@@ -127,55 +124,35 @@ class EditorTasksFragment : Fragment() {
     }
 
     private fun doneNoteUI() {
-        titleNote.disabled()
-        contentNote.disabled()
+        content.disabled()
         doneNote.disabled()
         editNote.enabled()
     }
 
     private fun editNoteUI() {
-        titleNote.enabled()
-        contentNote.enabled()
+        content.enabled()
         doneNote.enabled()
         editNote.disabled()
     }
-    private fun fillNoteData(titleNote: EditText, contentNote: EditText) {
-        if(isNotBlankTextFields(titleNote, contentNote)) {
-            noteData.titleNote = titleNote.text.toString()
-            noteData.contentNote = titleNote.text.toString()
-            noteData.searchKeywords.clear()
-            fillSearchKeywordsList(titleNote, contentNote)
+    private fun fillNoteData(contentTask: EditText) {
+        if(isNotBlankTextFields(contentTask)) {
+            taskData.contentTask = contentTask.text.toString()
         }
     }
 
-    private fun fillSearchKeywordsList(titleNote: EditText, contentNote: EditText) {
-        noteData.searchKeywords.add(titleNote.text.toString().toLowerCase(Locale.ROOT))
-        noteData.searchKeywords.addAll(
-            titleNote.text.toString().toLowerCase(Locale.ROOT).split(Regex("[\\p{Punct}\\s]+"))
-        )
-
-        noteData.searchKeywords.add(contentNote.text.toString().toLowerCase(Locale.ROOT))
-        noteData.searchKeywords.addAll(
-            contentNote.text.toString().toLowerCase(Locale.ROOT).split(Regex("[\\p{Punct}\\s]+"))
-        )
-    }
-
-    private fun isNotBlankTextFields(titleNote: EditText, contentNote: EditText): Boolean {
-        return titleNote.text.isNotBlank() && contentNote.text.isNotBlank()
+    private fun isNotBlankTextFields(contentTask: EditText): Boolean {
+        return contentTask.text.isNotBlank() && contentTask.text.isNotBlank()
     }
 
     private fun isEqualsContentInNoteDataAndFields(): Boolean {
-        return noteData.titleNote == titleNote.text.toString() &&
-                noteData.contentNote == contentNote.text.toString()
+        return taskData.contentTask == content.text.toString()
     }
 
-    private fun showNote(noteData: NoteData?) {
-        if (noteData != null) {
-            this.noteData = noteData
-            titleNote.disabled()
-            contentNote.disabled()
-            titleNote.setText(noteData.titleNote)
-            contentNote.setText(noteData.contentNote.trim())
+    private fun showNote(taskData: TaskData?) {
+        if (taskData != null) {
+            this.taskData = taskData
+            content.disabled()
+            content.setText(taskData.contentTask.trim())
         }
     }
 

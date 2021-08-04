@@ -22,7 +22,7 @@ import com.google.firebase.auth.ktx.auth
 import com.google.firebase.firestore.FirebaseFirestoreException
 import com.google.firebase.ktx.Firebase
 import kz.stepanenkos.notes.R
-import kz.stepanenkos.notes.TaskData
+import kz.stepanenkos.notes.common.model.TaskData
 import kz.stepanenkos.notes.common.extensions.view.gone
 import kz.stepanenkos.notes.common.extensions.view.show
 import kz.stepanenkos.notes.databinding.FragmentTasksBinding
@@ -66,15 +66,15 @@ class TasksFragment : Fragment(R.layout.fragment_tasks), TaskClickListener {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         _binding = FragmentTasksBinding.bind(view)
-        recyclerView = binding.fragmentNotesRecyclerView
+        recyclerView = binding.fragmentTasksRecyclerView
         recyclerView.layoutManager = LinearLayoutManager(requireContext())
         getSwapHelper().attachToRecyclerView(recyclerView)
 
         recyclerView.adapter = tasksAdapter
-        toolbar = binding.fragmentNotesToolbar
-        checkBoxSelectAllTasks = binding.fragmentNotesCheckboxSelectAllNotes
-        deleteSelectedTasks = binding.fragmentNotesImageViewButtonDeleteNote
-        infoCountSelectedTasks = binding.fragmentNotesTextViewInfoSelectItem
+        toolbar = binding.fragmentTasksToolbar
+        checkBoxSelectAllTasks = binding.fragmentTasksCheckboxSelectAllTasks
+        deleteSelectedTasks = binding.fragmentTasksImageViewButtonDeleteTask
+        infoCountSelectedTasks = binding.fragmentTasksTextViewInfoSelectItem
 
         tracker = SelectionTracker.Builder(
             "mySelection",

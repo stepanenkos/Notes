@@ -3,6 +3,7 @@ package kz.stepanenkos.notes
 import android.content.Context
 import android.content.SharedPreferences
 import android.os.Bundle
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.coordinatorlayout.widget.CoordinatorLayout
@@ -95,11 +96,22 @@ class MainActivity : AppCompatActivity(), FirebaseAuth.AuthStateListener,
     private fun setListeners() {
 
         addNoteButton.setOnClickListener {
-            navController.navigate(
-                R.id.editorNotesFragment,
-                /*null,
-                NavOptions.Builder().setLaunchSingleTop(true).build()*/
-            )
+            val builder = AlertDialog.Builder(this)
+            builder.setPositiveButton("Добавить заметку") {_, _ ->
+                navController.navigate(
+                    R.id.editorNotesFragment,
+                    /*null,
+                    NavOptions.Builder().setLaunchSingleTop(true).build()*/
+                )
+            }
+            builder.setNegativeButton("Добавить задачу") {_, _ ->
+                navController.navigate(
+                    R.id.editorTasksFragment,
+                    /*null,
+                    NavOptions.Builder().setLaunchSingleTop(true).build()*/
+                )
+            }
+            builder.create().show()
         }
     }
 

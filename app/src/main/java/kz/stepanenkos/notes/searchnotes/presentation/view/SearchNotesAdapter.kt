@@ -3,7 +3,7 @@ package kz.stepanenkos.notes.searchnotes.presentation.view
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.ListAdapter
-import kz.stepanenkos.notes.NoteData
+import kz.stepanenkos.notes.common.model.NoteData
 import kz.stepanenkos.notes.R
 import kz.stepanenkos.notes.listnotes.listeners.NoteClickListener
 

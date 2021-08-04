@@ -2,8 +2,8 @@ package kz.stepanenkos.notes.common.firebasedatabase.domain
 
 import com.google.firebase.firestore.FirebaseFirestoreException
 import kotlinx.coroutines.flow.Flow
-import kz.stepanenkos.notes.NoteData
-import kz.stepanenkos.notes.TaskData
+import kz.stepanenkos.notes.common.model.NoteData
+import kz.stepanenkos.notes.common.model.TaskData
 import kz.stepanenkos.notes.common.model.ResponseData
 
 interface FirebaseDatabaseRepository {

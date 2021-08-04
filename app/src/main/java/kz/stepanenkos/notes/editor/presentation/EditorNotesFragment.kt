@@ -15,19 +15,19 @@ import java.util.*
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import kz.stepanenkos.notes.NoteData
+import kz.stepanenkos.notes.common.model.NoteData
 import kz.stepanenkos.notes.R
 import kz.stepanenkos.notes.common.extensions.view.disabled
 import kz.stepanenkos.notes.common.extensions.view.enabled
-import kz.stepanenkos.notes.common.presentation.ContentNoteEditText
-import kz.stepanenkos.notes.common.presentation.TitleNoteEditText
+import kz.stepanenkos.notes.common.presentation.ContentEditText
+import kz.stepanenkos.notes.common.presentation.TitleEditText
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class EditorNotesFragment : Fragment() {
     private val editorViewModel: EditorViewModel by viewModel()
 
-    private lateinit var titleNote: TitleNoteEditText
-    private lateinit var contentNote: ContentNoteEditText
+    private lateinit var titleNote: TitleEditText
+    private lateinit var contentNote: ContentEditText
     private lateinit var doneNote: ImageView
     private lateinit var editNote: ImageView
 
@@ -41,7 +41,11 @@ class EditorNotesFragment : Fragment() {
             this,
             object : OnBackPressedCallback(true) {
                 override fun handleOnBackPressed() {
-                    if (isNotBlankTextFields(titleNote, contentNote) && isEqualsContentInNoteDataAndFields()) {
+                    if (isNotBlankTextFields(
+                            titleNote,
+                            contentNote
+                        ) && isEqualsContentInNoteDataAndFields()
+                    ) {
                         isEnabled = false
                         requireActivity().onBackPressed()
                     } else {
@@ -88,7 +92,7 @@ class EditorNotesFragment : Fragment() {
 
         editorViewModel.noteById.observe(viewLifecycleOwner, ::showNote)
 
-        editorViewModel.errorReceivingNote.observe(viewLifecycleOwner, ::showError)
+        editorViewModel.errorReceiving.observe(viewLifecycleOwner, ::showError)
 
         setOnClickListeners()
     }
@@ -139,10 +143,11 @@ class EditorNotesFragment : Fragment() {
         doneNote.enabled()
         editNote.disabled()
     }
+
     private fun fillNoteData(titleNote: EditText, contentNote: EditText) {
-        if(isNotBlankTextFields(titleNote, contentNote)) {
+        if (isNotBlankTextFields(titleNote, contentNote)) {
             noteData.titleNote = titleNote.text.toString()
-            noteData.contentNote = titleNote.text.toString()
+            noteData.contentNote = contentNote.text.toString()
             noteData.searchKeywords.clear()
             fillSearchKeywordsList(titleNote, contentNote)
         }

@@ -21,7 +21,7 @@ import com.google.android.material.textview.MaterialTextView
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.firestore.FirebaseFirestoreException
 import com.google.firebase.ktx.Firebase
-import kz.stepanenkos.notes.NoteData
+import kz.stepanenkos.notes.common.model.NoteData
 import kz.stepanenkos.notes.R
 import kz.stepanenkos.notes.common.extensions.view.gone
 import kz.stepanenkos.notes.common.extensions.view.show
@@ -118,12 +118,12 @@ class NotesFragment : Fragment(R.layout.fragment_notes), NoteClickListener {
             val builder = AlertDialog.Builder(requireContext())
             builder.setTitle(getString(R.string.notes_fragment_title_delete_note))
             builder.setMessage(getString(R.string.notes_fragment_question_delete_note))
-            builder.setPositiveButton(getString(R.string.notes_fragment_text_yes_on_positive_button)) { _, _ ->
+            builder.setPositiveButton(getString(R.string.positive_button_text)) { _, _ ->
                 tracker.selection.forEach { noteData ->
                     notesViewModel.deleteNote(noteData)
                 }
             }
-            builder.setNegativeButton(getString(R.string.notes_fragment_text_no_on_negative_button)) { dialog, _ ->
+            builder.setNegativeButton(getString(R.string.negative_button_text)) { dialog, _ ->
                 dialog.dismiss()
             }
             builder.create().show()
@@ -167,10 +167,10 @@ class NotesFragment : Fragment(R.layout.fragment_notes), NoteClickListener {
                 val builder = AlertDialog.Builder(requireContext())
                 builder.setTitle(getString(R.string.notes_fragment_title_delete_note))
                 builder.setMessage(getString(R.string.notes_fragment_question_delete_note))
-                builder.setPositiveButton(getString(R.string.notes_fragment_text_yes_on_positive_button)) { _, _ ->
+                builder.setPositiveButton(getString(R.string.positive_button_text)) { _, _ ->
                     notesViewModel.deleteNote(notesAdapter.currentList[viewHolder.adapterPosition])
                 }
-                builder.setNegativeButton(getString(R.string.notes_fragment_text_no_on_negative_button)) { dialog, which ->
+                builder.setNegativeButton(getString(R.string.negative_button_text)) { dialog, which ->
                     dialog.dismiss()
                     notesAdapter.notifyItemChanged(viewHolder.adapterPosition)
                 }
