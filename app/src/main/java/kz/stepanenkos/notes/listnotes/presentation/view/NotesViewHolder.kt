@@ -1,15 +1,14 @@
 package kz.stepanenkos.notes.listnotes.presentation.view
 
-import android.text.Html
 import android.view.View
 import android.widget.CheckBox
 import android.widget.TextView
 import androidx.cardview.widget.CardView
 import androidx.recyclerview.widget.RecyclerView
-import kz.stepanenkos.notes.common.model.NoteData
 import kz.stepanenkos.notes.R
 import kz.stepanenkos.notes.common.extensions.view.gone
 import kz.stepanenkos.notes.common.extensions.view.show
+import kz.stepanenkos.notes.common.model.NoteData
 import kz.stepanenkos.notes.common.presentation.ContentTextView
 import kz.stepanenkos.notes.common.presentation.TitleTextView
 import kz.stepanenkos.notes.listnotes.listeners.NoteClickListener
@@ -31,7 +30,7 @@ class NotesViewHolder(
 
     fun onBind(noteData: NoteData, isActivated: Boolean = false) {
         title.text = noteData.titleNote
-        content.text = Html.fromHtml(noteData.contentNote).toString()
+        content.text = noteData.contentNote
         dateOfCreateNote.text = ZonedDateTime.ofInstant(Instant.ofEpochSecond(noteData.dateOfNote), ZoneId.of(
             ZoneId.systemDefault().rules.getOffset(
                 Instant.now()

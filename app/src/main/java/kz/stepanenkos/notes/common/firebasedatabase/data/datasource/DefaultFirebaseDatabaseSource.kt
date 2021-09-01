@@ -3,14 +3,15 @@ package kz.stepanenkos.notes.common.firebasedatabase.data.datasource
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.FirebaseFirestoreException
-import java.util.*
+import com.google.firebase.firestore.ktx.toObject
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.callbackFlow
 import kz.stepanenkos.notes.common.model.NoteData
-import kz.stepanenkos.notes.common.model.TaskData
 import kz.stepanenkos.notes.common.model.ResponseData
+import kz.stepanenkos.notes.common.model.TaskData
+import java.util.*
 
 private const val USERS_NODE = "users"
 private const val NOTES_NODE_CHILD = "notes"
@@ -51,19 +52,20 @@ class DefaultFirebaseDatabaseSource(
                     .addSnapshotListener { value, error ->
                         if (value != null) {
                             for (doc in value) {
-                                if (doc.toObject(NoteData::class.java).id == noteId) {
-                                    offer(ResponseData.Success(doc.toObject(NoteData::class.java)))
+                                if (doc.toObject<NoteData>().id == noteId) {
+                                    trySend(ResponseData.Success(doc.toObject())).isSuccess
                                 }
                             }
                         }
                         if (error != null) {
-                            trySend(ResponseData.Error(error))
+                            trySend(ResponseData.Error(error)).isFailure
                             cancel(error.localizedMessage!!)
                         }
                     }
             }
             awaitClose { noteById?.remove() }
         }
+
 
     @ExperimentalCoroutinesApi
     override suspend fun getTaskById(taskId: String) =
@@ -74,12 +76,12 @@ class DefaultFirebaseDatabaseSource(
                         if (value != null) {
                             for (doc in value) {
                                 if (doc.toObject(TaskData::class.java).id == taskId) {
-                                    trySend(ResponseData.Success(doc.toObject(TaskData::class.java)))
+                                    trySend(ResponseData.Success(doc.toObject())).isSuccess
                                 }
                             }
                         }
                         if (error != null) {
-                            trySend(ResponseData.Error(error))
+                            trySend(ResponseData.Error(error)).isFailure
                             cancel(error.localizedMessage!!)
                         }
                     }
@@ -98,13 +100,13 @@ class DefaultFirebaseDatabaseSource(
                     val listNoteData: MutableList<NoteData> = mutableListOf()
                     if (value != null) {
                         for (doc in value) {
-                            listNoteData.add(doc.toObject(NoteData::class.java))
+                            listNoteData.add(doc.toObject<NoteData>())
                         }
                         listNoteData.sortByDescending { it.dateOfNote }
-                        offer(ResponseData.Success(listNoteData))
+                        trySend(ResponseData.Success(listNoteData)).isSuccess
                     }
                     if (error != null) {
-                        offer(ResponseData.Error(error))
+                        trySend(ResponseData.Error(error)).isFailure
                         cancel(error.localizedMessage!!)
                     }
                 }
@@ -124,13 +126,13 @@ class DefaultFirebaseDatabaseSource(
                     val listTaskData: MutableList<TaskData> = mutableListOf()
                     if (value != null) {
                         for (doc in value) {
-                            listTaskData.add(doc.toObject(TaskData::class.java))
+                            listTaskData.add(doc.toObject())
                         }
                         listTaskData.sortByDescending { it.dateOfTask }
-                        trySend(ResponseData.Success(listTaskData))
+                        trySend(ResponseData.Success(listTaskData)).isSuccess
                     }
                     if (error != null) {
-                        trySend(ResponseData.Error(error))
+                        trySend(ResponseData.Error(error)).isFailure
                         cancel(error.localizedMessage!!)
                     }
                 }
@@ -147,17 +149,17 @@ class DefaultFirebaseDatabaseSource(
                     val foundNotesBySearchText: MutableList<NoteData> = mutableListOf()
                     if (value != null) {
                         for (doc in value) {
-                            if (doc.toObject(NoteData::class.java).titleNote.toLowerCase(Locale.ROOT)
-                                    .contains(searchKeyword.toLowerCase(Locale.ROOT)) ||
+                            if (doc.toObject(NoteData::class.java).titleNote.lowercase(Locale.ROOT)
+                                    .contains(searchKeyword.lowercase(Locale.ROOT)) ||
                                 doc.toObject(NoteData::class.java).contentNote.contains(
-                                    searchKeyword.toLowerCase(Locale.ROOT)
+                                    searchKeyword.lowercase(Locale.ROOT)
                                 )
                             ) {
                                 foundNotesBySearchText.add(doc.toObject(NoteData::class.java))
                             }
                         }
                     }
-                    offer(foundNotesBySearchText)
+                    trySend(foundNotesBySearchText).isSuccess
                 }
         }
         awaitClose { searchNoteByText?.remove() }
@@ -171,14 +173,14 @@ class DefaultFirebaseDatabaseSource(
                     val foundTasksBySearchText: MutableList<TaskData> = mutableListOf()
                     if (value != null) {
                         for (doc in value) {
-                            if (doc.toObject(TaskData::class.java).contentTask.toLowerCase(Locale.ROOT)
-                                    .contains(searchKeyword.toLowerCase(Locale.ROOT))
+                            if (doc.toObject(TaskData::class.java).contentTask.lowercase(Locale.ROOT)
+                                    .contains(searchKeyword.lowercase(Locale.ROOT))
                             ) {
                                 foundTasksBySearchText.add(doc.toObject(TaskData::class.java))
                             }
                         }
                     }
-                    trySend(foundTasksBySearchText)
+                    trySend(foundTasksBySearchText).isSuccess
                 }
         }
         awaitClose { searchTasksByText?.remove() }

@@ -31,7 +31,7 @@ import kz.stepanenkos.notes.listnotes.presentation.view.NoteDetailsLookup
 import kz.stepanenkos.notes.listnotes.presentation.view.NoteKeyProvider
 import kz.stepanenkos.notes.listnotes.presentation.view.NotesAdapter
 import org.koin.androidx.viewmodel.ext.android.viewModel
-
+const val NOTE_ID = "NOTE_ID"
 class NotesFragment : Fragment(R.layout.fragment_notes), NoteClickListener {
     private val notesViewModel: NotesViewModel by viewModel()
     private var _binding: FragmentNotesBinding? = null
@@ -45,7 +45,7 @@ class NotesFragment : Fragment(R.layout.fragment_notes), NoteClickListener {
     private lateinit var deleteSelectedNotes: ImageView
     private lateinit var infoCountSelectedNotes: MaterialTextView
 
-    private val NOTE_ID = "ID"
+
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
@@ -170,7 +170,7 @@ class NotesFragment : Fragment(R.layout.fragment_notes), NoteClickListener {
                 builder.setPositiveButton(getString(R.string.positive_button_text)) { _, _ ->
                     notesViewModel.deleteNote(notesAdapter.currentList[viewHolder.adapterPosition])
                 }
-                builder.setNegativeButton(getString(R.string.negative_button_text)) { dialog, which ->
+                builder.setNegativeButton(getString(R.string.negative_button_text)) { dialog, _ ->
                     dialog.dismiss()
                     notesAdapter.notifyItemChanged(viewHolder.adapterPosition)
                 }

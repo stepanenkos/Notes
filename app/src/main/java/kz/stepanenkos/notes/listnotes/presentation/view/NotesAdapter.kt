@@ -62,7 +62,7 @@ class NotesAdapter(
 
         fun onBind(noteData: NoteData, isActivated: Boolean = false) {
             title.text = noteData.titleNote
-            content.text = Html.fromHtml(noteData.contentNote).toString()
+            content.text = noteData.contentNote
             dateOfCreateNote.text = ZonedDateTime.ofInstant(
                 Instant.ofEpochSecond(noteData.dateOfNote), ZoneId.of(
                     ZoneId.systemDefault().rules.getOffset(

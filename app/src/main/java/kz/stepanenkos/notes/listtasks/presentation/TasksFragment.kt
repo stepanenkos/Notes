@@ -31,7 +31,7 @@ import kz.stepanenkos.notes.listtasks.presentation.view.TaskKeyProvider
 import kz.stepanenkos.notes.listtasks.listeners.TaskClickListener
 import kz.stepanenkos.notes.listtasks.presentation.view.TasksAdapter
 import org.koin.androidx.viewmodel.ext.android.viewModel
-
+const val TASK_ID = "TASK_ID"
 class TasksFragment : Fragment(R.layout.fragment_tasks), TaskClickListener {
     private val tasksViewModel: TasksViewModel by viewModel()
     private var _binding: FragmentTasksBinding? = null
@@ -45,7 +45,7 @@ class TasksFragment : Fragment(R.layout.fragment_tasks), TaskClickListener {
     private lateinit var deleteSelectedTasks: ImageView
     private lateinit var infoCountSelectedTasks: MaterialTextView
 
-    private val TASK_ID = "TASK_ID"
+
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
@@ -170,7 +170,7 @@ class TasksFragment : Fragment(R.layout.fragment_tasks), TaskClickListener {
                 builder.setPositiveButton(getString(R.string.positive_button_text)) { _, _ ->
                     tasksViewModel.deleteTask(tasksAdapter.currentList[viewHolder.adapterPosition])
                 }
-                builder.setNegativeButton(getString(R.string.negative_button_text)) { dialog, which ->
+                builder.setNegativeButton(getString(R.string.negative_button_text)) { dialog, _ ->
                     dialog.dismiss()
                     tasksAdapter.notifyItemChanged(viewHolder.adapterPosition)
                 }

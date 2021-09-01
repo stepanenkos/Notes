@@ -1,6 +1,5 @@
 package kz.stepanenkos.notes.listtasks.presentation.view
 
-import android.text.Html
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -12,9 +11,9 @@ import androidx.recyclerview.selection.SelectionTracker
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import kz.stepanenkos.notes.R
-import kz.stepanenkos.notes.common.model.TaskData
 import kz.stepanenkos.notes.common.extensions.view.gone
 import kz.stepanenkos.notes.common.extensions.view.show
+import kz.stepanenkos.notes.common.model.TaskData
 import kz.stepanenkos.notes.common.presentation.ContentTextView
 import kz.stepanenkos.notes.common.presentation.TitleTextView
 import kz.stepanenkos.notes.listtasks.listeners.TaskClickListener
@@ -61,7 +60,7 @@ class TasksAdapter(
             itemView.findViewById(R.id.note_item_date_of_create_note)
 
         fun onBind(taskData: TaskData, isActivated: Boolean = false) {
-            contentTask.text = Html.fromHtml(taskData.contentTask).toString()
+            contentTask.text = taskData.contentTask
             dateOfCreateNote.text = ZonedDateTime.ofInstant(
                 Instant.ofEpochSecond(taskData.dateOfTask), ZoneId.of(
                     ZoneId.systemDefault().rules.getOffset(

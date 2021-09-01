@@ -14,6 +14,7 @@ import kz.stepanenkos.notes.common.model.NoteData
 import kz.stepanenkos.notes.common.firebasedatabase.domain.FirebaseDatabaseRepository
 import kz.stepanenkos.notes.common.model.ResponseData
 import kz.stepanenkos.notes.common.model.TaskData
+import java.util.*
 
 class EditorViewModel(
     private val firebaseDatabaseRepository: FirebaseDatabaseRepository
@@ -33,11 +34,49 @@ class EditorViewModel(
     private var fromHtml: Spanned? = null
     private var toHtml: String? = null
 
-    suspend fun saveNote(noteData: NoteData) {
+
+
+    suspend fun saveNote(titleNote: String, contentNote: String) {
+        if (titleNote.isNotBlank() && contentNote.isNotBlank()) {
+            saveNote(
+                NoteData(
+                    titleNote = titleNote,
+                    contentNote = contentNote,
+                    searchKeywords = fillNoteSearchKeywordsList(titleNote, contentNote)
+                )
+            )
+        }
+    }
+
+    private suspend fun saveNote(noteData: NoteData) {
         firebaseDatabaseRepository.saveNote(noteData)
     }
 
-    suspend fun saveTask(taskData: TaskData) {
+    private fun fillNoteSearchKeywordsList(titleNote: String, contentNote: String): List<String> {
+        val searchKeywordsList: MutableList<String> = mutableListOf()
+        searchKeywordsList.add(titleNote.lowercase(Locale.getDefault()))
+        searchKeywordsList.addAll(
+            titleNote.lowercase(Locale.getDefault()).split(Regex("[\\p{Punct}\\s]+"))
+        )
+
+        searchKeywordsList.add(contentNote.lowercase(Locale.getDefault()))
+        searchKeywordsList.addAll(
+            contentNote.lowercase(Locale.getDefault()).split(Regex("[\\p{Punct}\\s]+"))
+        )
+        return searchKeywordsList
+    }
+
+    suspend fun saveTask(contentTask: String) {
+        if (contentTask.isNotBlank()) {
+            saveTask(
+                TaskData(
+                    contentTask = contentTask
+                )
+            )
+        }
+    }
+
+    private suspend fun saveTask(taskData: TaskData) {
         firebaseDatabaseRepository.saveTask(taskData)
     }
 
@@ -48,11 +87,18 @@ class EditorViewModel(
 
     }
 
+    fun updateTask(taskData: TaskData) {
+        viewModelScope.launch(Dispatchers.IO) {
+            firebaseDatabaseRepository.updateTask(taskData)
+        }
+
+    }
+
     fun getNoteById(noteId: String) {
         viewModelScope.launch(Dispatchers.IO) {
-            firebaseDatabaseRepository.getNoteById(noteId).collect {responseData ->
+            firebaseDatabaseRepository.getNoteById(noteId).collect { responseData ->
                 withContext(Dispatchers.Main) {
-                    when(responseData) {
+                    when (responseData) {
                         is ResponseData.Success -> {
                             _noteById.postValue(responseData.result)
                         }
@@ -64,11 +110,12 @@ class EditorViewModel(
             }
         }
     }
+
     fun getTaskById(taskId: String) {
         viewModelScope.launch(Dispatchers.IO) {
             firebaseDatabaseRepository.getTaskById(taskId).collect { responseData ->
                 withContext(Dispatchers.Main) {
-                    when(responseData) {
+                    when (responseData) {
                         is ResponseData.Success -> {
                             _taskById.postValue(responseData.result)
                         }

@@ -10,16 +10,16 @@ import org.threeten.bp.ZonedDateTime
 
 @Parcelize
 data class TaskData(
-    var id: String = UUID.randomUUID().toString(),
-    var contentTask: String = "",
-    var dateOfTask: Long = ZonedDateTime.now(
+    val id: String = UUID.randomUUID().toString(),
+    val contentTask: String = "",
+    val dateOfTask: Long = ZonedDateTime.now(
         ZoneId.of(
             ZoneId.systemDefault().rules.getOffset(
                 Instant.now()
             ).toString()
         )
     ).toEpochSecond(),
-    var isNotification: Boolean = false,
-    var dateOfNotification: Long = 0,
-    var isDone: Boolean = false,
+    val isNotification: Boolean = false,
+    val dateOfNotification: Long = 0,
+    val isDone: Boolean = false,
 ) : Parcelable

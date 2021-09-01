@@ -2,16 +2,12 @@ package kz.stepanenkos.notes.editor.presentation
 
 import android.content.Context
 import android.os.Bundle
-import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewGroup
-import android.widget.EditText
 import android.widget.ImageView
 import androidx.activity.OnBackPressedCallback
 import androidx.fragment.app.Fragment
 import com.google.android.material.snackbar.Snackbar
 import com.google.firebase.firestore.FirebaseFirestoreException
-import java.util.*
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -20,16 +16,19 @@ import kz.stepanenkos.notes.common.extensions.view.disabled
 import kz.stepanenkos.notes.common.extensions.view.enabled
 import kz.stepanenkos.notes.common.model.TaskData
 import kz.stepanenkos.notes.common.presentation.ContentEditText
+import kz.stepanenkos.notes.databinding.FragmentEditorTasksBinding
+import kz.stepanenkos.notes.listtasks.presentation.TASK_ID
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
-class EditorTasksFragment : Fragment() {
+class EditorTasksFragment : Fragment(R.layout.fragment_editor_tasks) {
     private val editorViewModel: EditorViewModel by viewModel()
+    private var binding: FragmentEditorTasksBinding? = null
 
-    private lateinit var content: ContentEditText
+    private lateinit var contentTask: ContentEditText
     private lateinit var doneNote: ImageView
     private lateinit var editNote: ImageView
 
-    private var taskData: TaskData = TaskData()
+    private var taskData: TaskData? = null
     private var idTask: String? = null
 
     override fun onAttach(context: Context) {
@@ -39,51 +38,58 @@ class EditorTasksFragment : Fragment() {
             this,
             object : OnBackPressedCallback(true) {
                 override fun handleOnBackPressed() {
-                    if (isNotBlankTextFields(content) && isEqualsContentInNoteDataAndFields()) {
+                    if (idTask != null && isEqualsContentInTaskDataAndFields()) {
+                        isEnabled = false
+                        requireActivity().onBackPressed()
+                    } else if (idTask != null && !isEqualsContentInTaskDataAndFields()) {
+                        CoroutineScope(Dispatchers.IO).launch {
+                            taskData?.copy(
+                                contentTask = contentTask.text.toString()
+                            )?.let {
+                                editorViewModel.updateTask(
+                                    it
+                                )
+                            }
+                        }
                         isEnabled = false
                         requireActivity().onBackPressed()
                     } else {
                         CoroutineScope(Dispatchers.IO).launch {
-                            fillNoteData(content)
-                            editorViewModel.saveTask(taskData)
+                            editorViewModel.saveTask(contentTask = contentTask.text.toString())
                         }
-                        doneNoteUI()
+                        doneTaskUI()
 
                         Snackbar.make(
                             requireView(),
                             getString(R.string.editor_notes_fragment_note_saved),
                             Snackbar.LENGTH_LONG
                         ).show()
+
+                        isEnabled = false
+                        requireActivity().onBackPressed()
                     }
                 }
             })
     }
 
-    override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View? {
-        val root = inflater.inflate(R.layout.fragment_editor_for_notes, container, false)
-        content = root.findViewById(R.id.fragment_editor_content_note)
-        doneNote = root.findViewById(R.id.fragment_editor_apply_changed_button)
-        editNote = root.findViewById(R.id.fragment_editor_edit_text_button)
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        binding = FragmentEditorTasksBinding.bind(view)
+        contentTask = binding!!.fragmentEditorContentTask
+        doneNote = binding!!.fragmentEditorTasksApplyChangedButton
+        editNote = binding!!.fragmentEditorTasksEditTextButton
 
         editNote.disabled()
         doneNote.enabled()
-        return root
-    }
 
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-        idTask = arguments?.getString("ID")
+        idTask = arguments?.getString(TASK_ID)
         idTask?.let { taskById ->
             editNote.enabled()
             doneNote.disabled()
             editorViewModel.getTaskById(taskById)
         }
 
-        editorViewModel.taskById.observe(viewLifecycleOwner, ::showNote)
+        editorViewModel.taskById.observe(viewLifecycleOwner, ::showTask)
 
         editorViewModel.errorReceiving.observe(viewLifecycleOwner, ::showError)
 
@@ -92,67 +98,63 @@ class EditorTasksFragment : Fragment() {
 
     private fun setOnClickListeners() {
         doneNote.setOnClickListener {
-            if (!isNotBlankTextFields(content)) {
+            if (contentTask.text.toString().isBlank()) {
                 Snackbar.make(
                     requireView(),
-                    getString(R.string.editor_notes_fragment_cannot_save_empty_note),
+                    getString(R.string.editor_tasks_fragment_cannot_save_empty_task),
                     Snackbar.LENGTH_LONG
                 ).show()
-            }
-
-            if (isNotBlankTextFields(content)) {
-
-                fillNoteData(content)
-
+            } else if(taskData != null && !isEqualsContentInTaskDataAndFields()) {
                 CoroutineScope(Dispatchers.IO).launch {
-                    editorViewModel.saveTask(taskData)
+                    taskData?.copy(
+                        contentTask = contentTask.text.toString()
+                    )?.let {
+                        editorViewModel.updateTask(
+                            it
+                        )
+                    }
                 }
-
-                doneNoteUI()
-
-                Snackbar.make(
-                    requireView(),
-                    getString(R.string.editor_notes_fragment_note_saved),
-                    Snackbar.LENGTH_LONG
-                ).show()
             }
+
+            CoroutineScope(Dispatchers.IO).launch {
+                editorViewModel.saveTask(contentTask.text.toString())
+            }
+
+            doneTaskUI()
+
+            Snackbar.make(
+                requireView(),
+                getString(R.string.editor_tasks_fragment_task_saved),
+                Snackbar.LENGTH_LONG
+            ).show()
         }
 
         editNote.setOnClickListener {
-            editNoteUI()
+            editTaskUI()
         }
     }
 
-    private fun doneNoteUI() {
-        content.disabled()
+    private fun doneTaskUI() {
+        contentTask.disabled()
         doneNote.disabled()
         editNote.enabled()
     }
 
-    private fun editNoteUI() {
-        content.enabled()
+    private fun editTaskUI() {
+        contentTask.enabled()
         doneNote.enabled()
         editNote.disabled()
     }
-    private fun fillNoteData(contentTask: EditText) {
-        if(isNotBlankTextFields(contentTask)) {
-            taskData.contentTask = contentTask.text.toString()
-        }
+
+    private fun isEqualsContentInTaskDataAndFields(): Boolean {
+        return taskData?.contentTask == contentTask.text.toString()
     }
 
-    private fun isNotBlankTextFields(contentTask: EditText): Boolean {
-        return contentTask.text.isNotBlank() && contentTask.text.isNotBlank()
-    }
-
-    private fun isEqualsContentInNoteDataAndFields(): Boolean {
-        return taskData.contentTask == content.text.toString()
-    }
-
-    private fun showNote(taskData: TaskData?) {
+    private fun showTask(taskData: TaskData?) {
         if (taskData != null) {
             this.taskData = taskData
-            content.disabled()
-            content.setText(taskData.contentTask.trim())
+            contentTask.disabled()
+            contentTask.setText(taskData.contentTask.trim())
         }
     }
 
