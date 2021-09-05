@@ -14,7 +14,7 @@ class MainAdapter(fragment: Fragment) : FragmentStateAdapter(fragment) {
         return when(position) {
             0 -> NotesFragment()
             1 -> TasksFragment()
-            else -> TasksFragment()
+            else -> NotesFragment()
         }
     }
 

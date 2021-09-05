@@ -19,6 +19,7 @@ import io.github.inflationx.viewpump.ViewPumpContextWrapper
 import kz.stepanenkos.notes.common.extensions.view.gone
 import kz.stepanenkos.notes.common.extensions.view.hide
 import kz.stepanenkos.notes.common.extensions.view.show
+import kz.stepanenkos.notes.databinding.ActivityMainBinding
 import org.koin.android.ext.android.inject
 
 private const val NIGHT_MODE_KEY = "night_mode_key"
@@ -33,9 +34,11 @@ class MainActivity : AppCompatActivity(), FirebaseAuth.AuthStateListener,
     private lateinit var addNoteButton: FloatingActionButton
     private lateinit var bottomNavigationView: BottomNavigationView
     private lateinit var coordinatorLayout: CoordinatorLayout
+    private lateinit var binding: ActivityMainBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
         if (getSharedPreferences(NIGHT_MODE_SHARED_PREFS, MODE_PRIVATE).getBoolean(
                 NIGHT_MODE_KEY,
                 false
@@ -53,10 +56,11 @@ class MainActivity : AppCompatActivity(), FirebaseAuth.AuthStateListener,
                 putBoolean(NIGHT_MODE_KEY, false)
             }
         }
-        setContentView(R.layout.activity_main)
+        binding = ActivityMainBinding.inflate(layoutInflater)
+        setContentView(binding.root)
+
         initViews()
         setListeners()
-
     }
 
     override fun attachBaseContext(newBase: Context?) {
@@ -82,15 +86,16 @@ class MainActivity : AppCompatActivity(), FirebaseAuth.AuthStateListener,
     }
 
     private fun initViews() {
-        val navHostFragment: NavHostFragment =
-            supportFragmentManager.findFragmentById(R.id.activity_main_nav_host_fragment) as NavHostFragment
+        val navHostFragment: NavHostFragment = supportFragmentManager.findFragmentById(binding.activityMainNavHostFragment.id) as NavHostFragment
+/*        val navHostFragment: NavHostFragment =
+            supportFragmentManager.findFragmentById(R.id.activity_main_nav_host_fragment) as NavHostFragment*/
         navController = navHostFragment.navController
-        bottomNavigationView = findViewById(R.id.bottomNavigationView)
+        bottomNavigationView = binding.bottomNavigationView
         bottomNavigationView.setupWithNavController(navController)
         bottomNavigationView.background = null
         sharedPrefs = getSharedPreferences(NIGHT_MODE_SHARED_PREFS, MODE_PRIVATE)
-        addNoteButton = findViewById(R.id.fab)
-        coordinatorLayout = findViewById(R.id.activity_main_coordinator_layout)
+        addNoteButton = binding.fab
+        coordinatorLayout = binding.activityMainCoordinatorLayout
     }
 
     private fun setListeners() {

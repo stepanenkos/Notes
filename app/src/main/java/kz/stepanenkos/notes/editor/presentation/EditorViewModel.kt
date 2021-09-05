@@ -25,16 +25,8 @@ class EditorViewModel(
     private val _taskById: MutableLiveData<TaskData> = MutableLiveData()
     val taskById: LiveData<TaskData> = _taskById
 
-    private val _onBold: MutableLiveData<Spanned> = MutableLiveData()
-    val onBold: LiveData<Spanned> = _onBold
-
     private val _errorReceiving: MutableLiveData<FirebaseFirestoreException> = MutableLiveData()
     val errorReceiving: LiveData<FirebaseFirestoreException> = _errorReceiving
-
-    private var fromHtml: Spanned? = null
-    private var toHtml: String? = null
-
-
 
     suspend fun saveNote(titleNote: String, contentNote: String) {
         if (titleNote.isNotBlank() && contentNote.isNotBlank()) {
@@ -52,32 +44,23 @@ class EditorViewModel(
         firebaseDatabaseRepository.saveNote(noteData)
     }
 
-    private fun fillNoteSearchKeywordsList(titleNote: String, contentNote: String): List<String> {
-        val searchKeywordsList: MutableList<String> = mutableListOf()
-        searchKeywordsList.add(titleNote.lowercase(Locale.getDefault()))
-        searchKeywordsList.addAll(
-            titleNote.lowercase(Locale.getDefault()).split(Regex("[\\p{Punct}\\s]+"))
-        )
-
-        searchKeywordsList.add(contentNote.lowercase(Locale.getDefault()))
-        searchKeywordsList.addAll(
-            contentNote.lowercase(Locale.getDefault()).split(Regex("[\\p{Punct}\\s]+"))
-        )
-        return searchKeywordsList
-    }
-
-    suspend fun saveTask(contentTask: String) {
+    fun saveTask(contentTask: String) {
         if (contentTask.isNotBlank()) {
-            saveTask(
-                TaskData(
-                    contentTask = contentTask
+            viewModelScope.launch(Dispatchers.IO) {
+                saveTask(
+                    TaskData(
+                        contentTask = contentTask
+                    )
                 )
-            )
+            }
         }
+
     }
 
     private suspend fun saveTask(taskData: TaskData) {
-        firebaseDatabaseRepository.saveTask(taskData)
+        viewModelScope.launch(Dispatchers.IO) {
+            firebaseDatabaseRepository.saveTask(taskData)
+        }
     }
 
     fun updateNote(noteData: NoteData) {
@@ -126,5 +109,19 @@ class EditorViewModel(
                 }
             }
         }
+    }
+
+    private fun fillNoteSearchKeywordsList(titleNote: String, contentNote: String): List<String> {
+        val searchKeywordsList: MutableList<String> = mutableListOf()
+        searchKeywordsList.add(titleNote.lowercase(Locale.getDefault()))
+        searchKeywordsList.addAll(
+            titleNote.lowercase(Locale.getDefault()).split(Regex("[\\p{Punct}\\s]+"))
+        )
+
+        searchKeywordsList.add(contentNote.lowercase(Locale.getDefault()))
+        searchKeywordsList.addAll(
+            contentNote.lowercase(Locale.getDefault()).split(Regex("[\\p{Punct}\\s]+"))
+        )
+        return searchKeywordsList
     }
 }

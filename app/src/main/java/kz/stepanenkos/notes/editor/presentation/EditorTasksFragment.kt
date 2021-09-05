@@ -22,15 +22,15 @@ import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class EditorTasksFragment : Fragment(R.layout.fragment_editor_tasks) {
     private val editorViewModel: EditorViewModel by viewModel()
-    private var binding: FragmentEditorTasksBinding? = null
+    private lateinit var binding: FragmentEditorTasksBinding
 
     private lateinit var contentTask: ContentEditText
-    private lateinit var doneNote: ImageView
-    private lateinit var editNote: ImageView
+    private lateinit var doneTaskButton: ImageView
+    private lateinit var editTaskButton: ImageView
 
     private var taskData: TaskData? = null
     private var idTask: String? = null
-
+    private var isSave: Boolean = false
     override fun onAttach(context: Context) {
         super.onAttach(context)
 
@@ -38,35 +38,45 @@ class EditorTasksFragment : Fragment(R.layout.fragment_editor_tasks) {
             this,
             object : OnBackPressedCallback(true) {
                 override fun handleOnBackPressed() {
-                    if (idTask != null && isEqualsContentInTaskDataAndFields()) {
-                        isEnabled = false
-                        requireActivity().onBackPressed()
-                    } else if (idTask != null && !isEqualsContentInTaskDataAndFields()) {
-                        CoroutineScope(Dispatchers.IO).launch {
-                            taskData?.copy(
-                                contentTask = contentTask.text.toString()
-                            )?.let {
-                                editorViewModel.updateTask(
-                                    it
+                    when {
+                        taskData == null && contentTask.text.toString().isNotBlank() && !isSave -> {
+                            CoroutineScope(Dispatchers.IO).launch {
+                                editorViewModel.saveTask(
+                                    contentTask.text.toString()
                                 )
                             }
+                            Snackbar.make(
+                                requireView(),
+                                getString(R.string.editor_tasks_fragment_task_saved),
+                                Snackbar.LENGTH_LONG
+                            ).show()
+                            doneTaskUI()
+                            isSave = true
                         }
-                        isEnabled = false
-                        requireActivity().onBackPressed()
-                    } else {
-                        CoroutineScope(Dispatchers.IO).launch {
-                            editorViewModel.saveTask(contentTask = contentTask.text.toString())
+
+                        taskData != null && !isEqualsContentInTaskDataAndFields() && !isSave -> {
+                            CoroutineScope(Dispatchers.IO).launch {
+                                taskData?.copy(
+                                    contentTask = contentTask.text.toString()
+                                )?.let {
+                                    editorViewModel.updateTask(
+                                        it
+                                    )
+                                }
+                            }
+                            Snackbar.make(
+                                requireView(),
+                                getString(R.string.editor_tasks_fragment_task_saved),
+                                Snackbar.LENGTH_LONG
+                            ).show()
+                            doneTaskUI()
+                            isSave = true
                         }
-                        doneTaskUI()
 
-                        Snackbar.make(
-                            requireView(),
-                            getString(R.string.editor_notes_fragment_note_saved),
-                            Snackbar.LENGTH_LONG
-                        ).show()
-
-                        isEnabled = false
-                        requireActivity().onBackPressed()
+                        isSave -> {
+                            isEnabled = false
+                            requireActivity().onBackPressed()
+                        }
                     }
                 }
             })
@@ -75,18 +85,19 @@ class EditorTasksFragment : Fragment(R.layout.fragment_editor_tasks) {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         binding = FragmentEditorTasksBinding.bind(view)
-        contentTask = binding!!.fragmentEditorContentTask
-        doneNote = binding!!.fragmentEditorTasksApplyChangedButton
-        editNote = binding!!.fragmentEditorTasksEditTextButton
+        contentTask = binding.fragmentEditorContentTask
+        doneTaskButton = binding.fragmentEditorTasksApplyChangedButton
+        editTaskButton = binding.fragmentEditorTasksEditTextButton
 
-        editNote.disabled()
-        doneNote.enabled()
+        editTaskButton.disabled()
+        doneTaskButton.enabled()
 
         idTask = arguments?.getString(TASK_ID)
         idTask?.let { taskById ->
-            editNote.enabled()
-            doneNote.disabled()
+            editTaskButton.enabled()
+            doneTaskButton.disabled()
             editorViewModel.getTaskById(taskById)
+            isSave = false
         }
 
         editorViewModel.taskById.observe(viewLifecycleOwner, ::showTask)
@@ -97,53 +108,65 @@ class EditorTasksFragment : Fragment(R.layout.fragment_editor_tasks) {
     }
 
     private fun setOnClickListeners() {
-        doneNote.setOnClickListener {
-            if (contentTask.text.toString().isBlank()) {
-                Snackbar.make(
-                    requireView(),
-                    getString(R.string.editor_tasks_fragment_cannot_save_empty_task),
-                    Snackbar.LENGTH_LONG
-                ).show()
-            } else if(taskData != null && !isEqualsContentInTaskDataAndFields()) {
-                CoroutineScope(Dispatchers.IO).launch {
-                    taskData?.copy(
-                        contentTask = contentTask.text.toString()
-                    )?.let {
-                        editorViewModel.updateTask(
-                            it
-                        )
+        doneTaskButton.setOnClickListener {
+            when {
+                contentTask.text.toString().isBlank() -> {
+                    Snackbar.make(
+                        requireView(),
+                        getString(R.string.editor_tasks_fragment_cannot_save_empty_task),
+                        Snackbar.LENGTH_LONG
+                    ).show()
+                }
+
+                taskData == null && contentTask.text.toString().isNotBlank() -> {
+                    CoroutineScope(Dispatchers.IO).launch {
+                        editorViewModel.saveTask(contentTask.text.toString())
                     }
+                    Snackbar.make(
+                        requireView(),
+                        getString(R.string.editor_notes_fragment_note_saved),
+                        Snackbar.LENGTH_LONG
+                    ).show()
+                    doneTaskUI()
+                    isSave = true
+                }
+
+                taskData != null && !isEqualsContentInTaskDataAndFields() -> {
+                    CoroutineScope(Dispatchers.IO).launch {
+                        taskData?.copy(
+                            contentTask.text.toString()
+                        )?.let {
+                            editorViewModel.updateTask(
+                                it
+                            )
+                        }
+                    }
+                    Snackbar.make(
+                        requireView(),
+                        getString(R.string.editor_notes_fragment_note_saved),
+                        Snackbar.LENGTH_LONG
+                    ).show()
+                    doneTaskUI()
+                    isSave = true
                 }
             }
-
-            CoroutineScope(Dispatchers.IO).launch {
-                editorViewModel.saveTask(contentTask.text.toString())
-            }
-
-            doneTaskUI()
-
-            Snackbar.make(
-                requireView(),
-                getString(R.string.editor_tasks_fragment_task_saved),
-                Snackbar.LENGTH_LONG
-            ).show()
         }
 
-        editNote.setOnClickListener {
+        editTaskButton.setOnClickListener {
             editTaskUI()
         }
     }
 
     private fun doneTaskUI() {
         contentTask.disabled()
-        doneNote.disabled()
-        editNote.enabled()
+        doneTaskButton.disabled()
+        editTaskButton.enabled()
     }
 
     private fun editTaskUI() {
         contentTask.enabled()
-        doneNote.enabled()
-        editNote.disabled()
+        doneTaskButton.enabled()
+        editTaskButton.disabled()
     }
 
     private fun isEqualsContentInTaskDataAndFields(): Boolean {

@@ -5,9 +5,7 @@ import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.text.Editable
-import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
 import android.widget.Button
 import android.widget.TextView
@@ -23,19 +21,15 @@ import com.google.android.material.snackbar.Snackbar
 import com.google.android.material.textfield.TextInputEditText
 import com.google.firebase.FirebaseException
 import com.google.firebase.FirebaseTooManyRequestsException
-import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException
-import com.google.firebase.auth.FirebaseAuthInvalidUserException
-import com.google.firebase.auth.FirebaseAuthUserCollisionException
-import com.google.firebase.auth.FirebaseAuthWeakPasswordException
-import com.google.firebase.auth.FirebaseUser
+import com.google.firebase.auth.*
 import kz.stepanenkos.notes.R
 import kz.stepanenkos.notes.common.presentation.AbstractTextWatcher
+import kz.stepanenkos.notes.databinding.FragmentLoginBinding
 import org.koin.android.ext.android.inject
 
 private const val RC_SIGN_IN = 9001
 
-class LoginFragment : Fragment() {
+class LoginFragment : Fragment(R.layout.fragment_login) {
     private val loginViewModel: LoginViewModel by inject()
     private val googleSignInClient: GoogleSignInClient by inject()
     private val auth: FirebaseAuth by inject()
@@ -49,31 +43,27 @@ class LoginFragment : Fragment() {
     private lateinit var signInButton: Button
     private lateinit var googleSignInButton: SignInButton
     private lateinit var forgetPasswordTextViewButton: TextView
+    private lateinit var binding: FragmentLoginBinding
 
-    override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View? {
-        val view = inflater.inflate(R.layout.fragment_login, container, false)
-        emailEditText = view.findViewById(R.id.fragment_login_edit_text_email)
-        passwordEditText = view.findViewById(R.id.fragment_login_edit_text_password)
-        signUpButton = view.findViewById(R.id.fragment_login_button_sign_up)
-        signInButton = view.findViewById(R.id.fragment_login_button_sign_in)
-        googleSignInButton = view.findViewById(R.id.fragment_login_button_google_login)
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        observeViewModelLiveData()
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        binding = FragmentLoginBinding.bind(view)
+        emailEditText = binding.fragmentLoginEditTextEmail
+        passwordEditText = binding.fragmentLoginEditTextPassword
+        signUpButton = binding.fragmentLoginButtonSignUp
+        signInButton = binding.fragmentLoginButtonSignIn
+        googleSignInButton = binding.fragmentLoginButtonGoogleLogin
+        forgetPasswordTextViewButton = binding.fragmentLoginTextViewForgotPassword
         if (AppCompatDelegate.getDefaultNightMode() == AppCompatDelegate.MODE_NIGHT_YES) {
             googleSignInButton.setColorScheme(SignInButton.COLOR_DARK)
         } else {
             googleSignInButton.setColorScheme(SignInButton.COLOR_LIGHT)
         }
-        forgetPasswordTextViewButton =
-            view.findViewById(R.id.fragment_login_text_view_forgot_password)
-        return view
-    }
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        observeViewModelLiveData()
     }
 
     override fun onStart() {
@@ -188,8 +178,6 @@ class LoginFragment : Fragment() {
 
     private fun showErrorMessage(throwable: Throwable) {
         when (throwable.javaClass) {
-
-
             FirebaseAuthInvalidUserException::class.java -> {
                 Snackbar.make(
                     requireView(),

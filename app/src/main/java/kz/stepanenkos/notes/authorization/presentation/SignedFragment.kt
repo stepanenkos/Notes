@@ -10,27 +10,23 @@ import androidx.fragment.app.DialogFragment
 import androidx.navigation.fragment.findNavController
 import com.google.firebase.auth.FirebaseUser
 import kz.stepanenkos.notes.R
+import kz.stepanenkos.notes.databinding.FragmentSignedBinding
 import org.koin.android.ext.android.inject
 
-class SignedFragment : DialogFragment() {
+class SignedFragment : DialogFragment(R.layout.fragment_signed) {
     private val loginViewModel: LoginViewModel by inject()
 
     private lateinit var userLoggedTextView: TextView
     private lateinit var closeButton: Button
-
-
-    override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View? {
-        val view = inflater.inflate(R.layout.fragment_signed, container, false)
-        userLoggedTextView = view.findViewById(R.id.fragment_signed_text_view_you_are_logged_in_as)
-        closeButton = view.findViewById(R.id.fragment_signed_button_close)
-        return view
-    }
+    private lateinit var binding: FragmentSignedBinding
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        binding = FragmentSignedBinding.bind(view)
+
+        userLoggedTextView = binding.fragmentSignedTextViewYouAreLoggedInAs
+        closeButton = binding.fragmentSignedButtonClose
+
         val currentUser = loginViewModel.getCurrentUser()
         updateUI(currentUser)
 

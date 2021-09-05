@@ -34,8 +34,8 @@ import org.koin.androidx.viewmodel.ext.android.viewModel
 const val TASK_ID = "TASK_ID"
 class TasksFragment : Fragment(R.layout.fragment_tasks), TaskClickListener {
     private val tasksViewModel: TasksViewModel by viewModel()
-    private var _binding: FragmentTasksBinding? = null
-    private val binding get() = _binding!!
+    private lateinit var binding: FragmentTasksBinding
+
     private lateinit var recyclerView: RecyclerView
     private val tasksAdapter = TasksAdapter(this)
 
@@ -65,7 +65,7 @@ class TasksFragment : Fragment(R.layout.fragment_tasks), TaskClickListener {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        _binding = FragmentTasksBinding.bind(view)
+        binding = FragmentTasksBinding.bind(view)
         recyclerView = binding.fragmentTasksRecyclerView
         recyclerView.layoutManager = LinearLayoutManager(requireContext())
         getSwapHelper().attachToRecyclerView(recyclerView)
@@ -181,10 +181,5 @@ class TasksFragment : Fragment(R.layout.fragment_tasks), TaskClickListener {
 
     private fun showError(error: FirebaseFirestoreException) {
         Snackbar.make(requireView(), error.localizedMessage, Snackbar.LENGTH_LONG).show()
-    }
-
-    override fun onDestroyView() {
-        super.onDestroyView()
-        _binding = null
     }
 }

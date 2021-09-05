@@ -12,15 +12,13 @@
         android:id="@+id/note_item_card_view"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/margin_16x"
-        android:layout_marginTop="@dimen/margin_16x"
-        android:layout_marginEnd="@dimen/margin_16x"
-        android:layout_marginBottom="@dimen/margin_8x"
-        android:background="@drawable/item_background"
+        android:layout_marginStart="@dimen/margin_8x"
+        android:layout_marginTop="@dimen/margin_8x"
+        android:layout_marginEnd="@dimen/margin_8x"
         android:clickable="true"
         android:focusable="true"
         app:cardCornerRadius="@dimen/card_corner_radius_16x"
-        app:cardElevation="@dimen/card_elevation_8x"
+        app:cardElevation="@dimen/card_elevation_4x"
         >
 
         <LinearLayout

@@ -10,7 +10,7 @@ import kz.stepanenkos.notes.mainscreen.presentation.view.MainAdapter
 
 
 class MainFragment : Fragment(R.layout.fragment_main) {
-    private var binding: FragmentMainBinding? = null
+    private lateinit var binding: FragmentMainBinding
 
     private lateinit var mainAdapter: MainAdapter
 
@@ -18,8 +18,8 @@ class MainFragment : Fragment(R.layout.fragment_main) {
         super.onViewCreated(view, savedInstanceState)
         binding = FragmentMainBinding.bind(view)
         mainAdapter = MainAdapter(this)
-        binding!!.fragmentMainViewPager.adapter = mainAdapter
-        TabLayoutMediator(binding!!.fragmentMainTabLayout, binding!!.fragmentMainViewPager) { tab, position ->
+        binding.fragmentMainViewPager.adapter = mainAdapter
+        TabLayoutMediator(binding.fragmentMainTabLayout, binding.fragmentMainViewPager) { tab, position ->
             when (position) {
                 0 -> {
                     tab.text = getString(R.string.main_fragment_tablayout_note)
@@ -28,10 +28,5 @@ class MainFragment : Fragment(R.layout.fragment_main) {
             }
         }.attach()
 
-    }
-
-    override fun onDestroyView() {
-        super.onDestroyView()
-        binding = null
     }
 }

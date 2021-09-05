@@ -25,16 +25,18 @@ import kz.stepanenkos.notes.authorization.presentation.LoginViewModel
 import kz.stepanenkos.notes.common.extensions.view.gone
 import kz.stepanenkos.notes.common.extensions.view.hide
 import kz.stepanenkos.notes.common.extensions.view.show
+import kz.stepanenkos.notes.databinding.FragmentMenuBinding
 import org.koin.android.ext.android.inject
 
 private const val NIGHT_MODE_KEY = "night_mode_key"
 private const val NIGHT_MODE_SHARED_PREFS = "night_mode_shared_prefs"
 
-class MenuFragment : Fragment(), FirebaseAuth.AuthStateListener,
+class MenuFragment : Fragment(R.layout.fragment_menu), FirebaseAuth.AuthStateListener,
     SharedPreferences.OnSharedPreferenceChangeListener {
     private val loginViewModel: LoginViewModel by inject()
     private val firebaseAuth: FirebaseAuth by inject()
 
+    private lateinit var binding: FragmentMenuBinding
     private lateinit var userProfilePhoto: ImageView
     private lateinit var signInButton: TextView
     private lateinit var signOutButton: TextView
@@ -44,28 +46,21 @@ class MenuFragment : Fragment(), FirebaseAuth.AuthStateListener,
     private lateinit var switchMaterial: SwitchMaterial
     private lateinit var sharedPrefs: SharedPreferences
 
-    override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View? {
-        val view = inflater.inflate(R.layout.fragment_menu, container, false)
-        userProfileSettingsTextView =
-            view.findViewById(R.id.nav_header_button_profile_settings)
-        signInButton = view.findViewById(R.id.nav_header_button_sign_in)
-        signOutButton = view.findViewById(R.id.nav_header_button_sign_out)
-        userEnterAsTextView =
-            view.findViewById(R.id.nav_header_text_view_you_sign_in_as)
-        userProfilePhoto = view.findViewById(R.id.nav_header_profile_photo)
-        buttonSettings = view.findViewById(R.id.fragment_menu_button_text_view_settings)
-        switchMaterial = view.findViewById(R.id.fragment_menu_night_mode_switch)
-        sharedPrefs = activity?.getSharedPreferences(NIGHT_MODE_SHARED_PREFS, AppCompatActivity.MODE_PRIVATE)!!
-        switchMaterial.isChecked = sharedPrefs.getBoolean(NIGHT_MODE_KEY, false)
-        return view
-    }
-
-
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        binding = FragmentMenuBinding.bind(view)
+        userProfileSettingsTextView = binding.navHeaderButtonProfileSettings
+        signInButton = binding.navHeaderButtonSignIn
+        signOutButton = binding.navHeaderButtonSignOut
+        userEnterAsTextView = binding.navHeaderTextViewYouSignInAs
+        userProfilePhoto = binding.navHeaderProfilePhoto
+        buttonSettings = binding.fragmentMenuButtonTextViewSettings
+        switchMaterial = binding.fragmentMenuNightModeSwitch
+
+        sharedPrefs =
+            activity?.getSharedPreferences(NIGHT_MODE_SHARED_PREFS, AppCompatActivity.MODE_PRIVATE)!!
+        switchMaterial.isChecked = sharedPrefs.getBoolean(NIGHT_MODE_KEY, false)
+
         buttonSettings.setOnClickListener {
             findNavController().navigate(R.id.settingsFragment)
         }
@@ -146,7 +141,7 @@ class MenuFragment : Fragment(), FirebaseAuth.AuthStateListener,
         signInButton.gone()
         signOutButton.show()
         userProfileSettingsTextView.show()
-        if(lifecycle.currentState == Lifecycle.State.RESUMED) {
+        if (lifecycle.currentState == Lifecycle.State.RESUMED) {
             Glide.with(this)
                 .load(firebaseUser?.photoUrl)
                 .circleCrop()
@@ -159,7 +154,7 @@ class MenuFragment : Fragment(), FirebaseAuth.AuthStateListener,
     private fun showUIUnsignedUser() {
         userEnterAsTextView.text =
             activity?.getString(R.string.fragment_login_dialog_information_text_you_are_not_logged_in)
-        if(lifecycle.currentState == Lifecycle.State.RESUMED) {
+        if (lifecycle.currentState == Lifecycle.State.RESUMED) {
             Glide.with(this)
                 .load(R.drawable.ic_account_photo)
                 .circleCrop()
@@ -179,8 +174,6 @@ class MenuFragment : Fragment(), FirebaseAuth.AuthStateListener,
             showUIUnsignedUser()
         }
     }
-
-
 
     private fun toLoginScreen() {
         findNavController().navigate(R.id.loginFragment)

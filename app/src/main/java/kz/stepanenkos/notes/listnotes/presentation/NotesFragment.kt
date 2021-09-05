@@ -34,8 +34,8 @@ import org.koin.androidx.viewmodel.ext.android.viewModel
 const val NOTE_ID = "NOTE_ID"
 class NotesFragment : Fragment(R.layout.fragment_notes), NoteClickListener {
     private val notesViewModel: NotesViewModel by viewModel()
-    private var _binding: FragmentNotesBinding? = null
-    private val binding get() = _binding!!
+    private lateinit var binding: FragmentNotesBinding
+
     private lateinit var recyclerView: RecyclerView
     private val notesAdapter = NotesAdapter(this)
 
@@ -65,7 +65,8 @@ class NotesFragment : Fragment(R.layout.fragment_notes), NoteClickListener {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        _binding = FragmentNotesBinding.bind(view)
+        binding = FragmentNotesBinding.bind(view)
+
         recyclerView = binding.fragmentNotesRecyclerView
         recyclerView.layoutManager = LinearLayoutManager(requireContext())
         getSwapHelper().attachToRecyclerView(recyclerView)
@@ -181,10 +182,5 @@ class NotesFragment : Fragment(R.layout.fragment_notes), NoteClickListener {
 
     private fun showError(error: FirebaseFirestoreException) {
         Snackbar.make(requireView(), error.localizedMessage, Snackbar.LENGTH_LONG).show()
-    }
-
-    override fun onDestroyView() {
-        super.onDestroyView()
-        _binding = null
     }
 }

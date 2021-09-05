@@ -14,30 +14,33 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kz.stepanenkos.notes.common.model.NoteData
 import kz.stepanenkos.notes.R
+import kz.stepanenkos.notes.databinding.FragmentSearchNotesBinding
 import kz.stepanenkos.notes.listnotes.listeners.NoteClickListener
 import kz.stepanenkos.notes.searchnotes.presentation.view.SearchNotesAdapter
 import org.koin.android.ext.android.inject
 
-class SearchNotesFragment : Fragment(), NoteClickListener {
+class SearchNotesFragment : Fragment(R.layout.fragment_search_notes), NoteClickListener {
+    private lateinit var binding: FragmentSearchNotesBinding
     private lateinit var recyclerView: RecyclerView
     private lateinit var searchView: SearchView
+
     private val searchViewModel: SearchViewModel by inject()
     private val notesAdapter = SearchNotesAdapter(this)
-    override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View? {
 
-        val root = inflater.inflate(R.layout.fragment_search_notes, container, false)
-        recyclerView = root.findViewById(R.id.search_notes_recycler_view)
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        binding = FragmentSearchNotesBinding.bind(view)
+
+        recyclerView = binding.searchNotesRecyclerView
         recyclerView.layoutManager = LinearLayoutManager(requireContext())
-
-        searchView = root.findViewById(R.id.fragment_search_notes_search_view)
-        setupSearchView(searchView)
         recyclerView.adapter = notesAdapter
 
-        return root
+        searchView = binding.fragmentSearchNotesSearchView
+        setupSearchView(searchView)
+
+        searchViewModel.allFoundNotes.observe(viewLifecycleOwner) {allFoundNotes ->
+            notesAdapter.submitList(allFoundNotes)
+        }
     }
 
     private fun setupSearchView(searchView: SearchView) {
@@ -68,14 +71,6 @@ class SearchNotesFragment : Fragment(), NoteClickListener {
             }
 
         })
-    }
-
-
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-        searchViewModel.allFoundNotes.observe(viewLifecycleOwner) {allFoundNotes ->
-            notesAdapter.submitList(allFoundNotes)
-        }
     }
 
     override fun onNoteClick(noteData: NoteData) {

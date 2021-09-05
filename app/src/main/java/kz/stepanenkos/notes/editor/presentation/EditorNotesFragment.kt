@@ -2,7 +2,6 @@ package kz.stepanenkos.notes.editor.presentation
 
 import android.content.Context
 import android.os.Bundle
-import android.util.Log
 import android.view.View
 import android.widget.EditText
 import android.widget.ImageView
@@ -25,7 +24,7 @@ import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class EditorNotesFragment : Fragment(R.layout.fragment_editor_notes) {
     private val editorViewModel: EditorViewModel by viewModel()
-    private var binding: FragmentEditorNotesBinding? = null
+    private lateinit var binding: FragmentEditorNotesBinding
 
     private lateinit var titleNote: TitleEditText
     private lateinit var contentNote: ContentEditText
@@ -34,6 +33,7 @@ class EditorNotesFragment : Fragment(R.layout.fragment_editor_notes) {
 
     private var idNote: String? = null
     private var noteData: NoteData? = null
+    private var isSave: Boolean = false
     override fun onAttach(context: Context) {
         super.onAttach(context)
 
@@ -41,35 +41,47 @@ class EditorNotesFragment : Fragment(R.layout.fragment_editor_notes) {
             this,
             object : OnBackPressedCallback(true) {
                 override fun handleOnBackPressed() {
-                    if (idNote != null && isEqualsContentInNoteDataAndFields()) {
-                        isEnabled = false
-                        requireActivity().onBackPressed()
-                    } else if (idNote != null && !isEqualsContentInNoteDataAndFields()) {
-                        CoroutineScope(Dispatchers.IO).launch {
-                            noteData?.copy(
-                                titleNote = titleNote.text.toString(),
-                                contentNote = contentNote.text.toString()
-                            )?.let {
-                                editorViewModel.updateNote(
-                                    it
+                    when {
+                        noteData == null && isNotBlankTextFields(titleNote, contentNote) && !isSave -> {
+                            CoroutineScope(Dispatchers.IO).launch {
+                                editorViewModel.saveNote(
+                                    titleNote.text.toString(),
+                                    contentNote.text.toString()
                                 )
                             }
+                            Snackbar.make(
+                                requireView(),
+                                getString(R.string.editor_notes_fragment_note_saved),
+                                Snackbar.LENGTH_LONG
+                            ).show()
+                            doneNoteUI()
+                            isSave = true
                         }
-                        isEnabled = false
-                        requireActivity().onBackPressed()
-                    } else {
-                        CoroutineScope(Dispatchers.IO).launch {
-                            editorViewModel.saveNote(titleNote.text.toString(), contentNote.text.toString())
-                        }
-                        doneNoteUI()
 
-                        Snackbar.make(
-                            requireView(),
-                            getString(R.string.editor_notes_fragment_note_saved),
-                            Snackbar.LENGTH_LONG
-                        ).show()
-                        isEnabled = false
-                        requireActivity().onBackPressed()
+                        noteData != null && !isEqualsContentInNoteDataAndFields() && !isSave -> {
+                            CoroutineScope(Dispatchers.IO).launch {
+                                noteData?.copy(
+                                    titleNote = titleNote.text.toString(),
+                                    contentNote = contentNote.text.toString()
+                                )?.let {
+                                    editorViewModel.updateNote(
+                                        it
+                                    )
+                                }
+                            }
+                            Snackbar.make(
+                                requireView(),
+                                getString(R.string.editor_notes_fragment_note_saved),
+                                Snackbar.LENGTH_LONG
+                            ).show()
+                            doneNoteUI()
+                            isSave = true
+                        }
+
+                        isSave -> {
+                            isEnabled = false
+                            requireActivity().onBackPressed()
+                        }
                     }
                 }
             })
@@ -79,10 +91,10 @@ class EditorNotesFragment : Fragment(R.layout.fragment_editor_notes) {
         super.onViewCreated(view, savedInstanceState)
         binding = FragmentEditorNotesBinding.bind(view)
 
-        titleNote = binding!!.fragmentEditorTitleNote
-        contentNote = binding!!.fragmentEditorContentNote
-        doneNote = binding!!.fragmentEditorApplyChangedButton
-        editNote = binding!!.fragmentEditorEditTextButton
+        titleNote = binding.fragmentEditorTitleNote
+        contentNote = binding.fragmentEditorContentNote
+        doneNote = binding.fragmentEditorApplyChangedButton
+        editNote = binding.fragmentEditorEditTextButton
 
         editNote.disabled()
         doneNote.enabled()
@@ -92,6 +104,7 @@ class EditorNotesFragment : Fragment(R.layout.fragment_editor_notes) {
             editNote.enabled()
             doneNote.disabled()
             editorViewModel.getNoteById(noteById)
+            isSave = false
         }
 
         editorViewModel.noteById.observe(viewLifecycleOwner, ::showNote)
@@ -103,37 +116,48 @@ class EditorNotesFragment : Fragment(R.layout.fragment_editor_notes) {
 
     private fun setOnClickListeners() {
         doneNote.setOnClickListener {
-            if (!isNotBlankTextFields(titleNote, contentNote)) {
-                Snackbar.make(
-                    requireView(),
-                    getString(R.string.editor_notes_fragment_cannot_save_empty_note),
-                    Snackbar.LENGTH_LONG
-                ).show()
-            } else if(noteData != null && !isEqualsContentInNoteDataAndFields()) {
-                CoroutineScope(Dispatchers.IO).launch {
-                    noteData?.copy(
-                        titleNote = titleNote.text.toString(),
-                        contentNote = contentNote.text.toString()
-                    )?.let {
-                        editorViewModel.updateNote(
-                            it
-                        )
+            when {
+                !isNotBlankTextFields(titleNote, contentNote) -> {
+                    Snackbar.make(
+                        requireView(),
+                        getString(R.string.editor_notes_fragment_cannot_save_empty_note),
+                        Snackbar.LENGTH_LONG
+                    ).show()
+                }
+
+                noteData == null && isNotBlankTextFields(titleNote, contentNote) -> {
+                    CoroutineScope(Dispatchers.IO).launch {
+                        editorViewModel.saveNote(titleNote.text.toString(), contentNote.text.toString())
                     }
+                    Snackbar.make(
+                        requireView(),
+                        getString(R.string.editor_notes_fragment_note_saved),
+                        Snackbar.LENGTH_LONG
+                    ).show()
+                    doneNoteUI()
+                    isSave = true
+                }
+
+                noteData != null && !isEqualsContentInNoteDataAndFields() -> {
+                    CoroutineScope(Dispatchers.IO).launch {
+                        noteData?.copy(
+                            titleNote = titleNote.text.toString(),
+                            contentNote = contentNote.text.toString()
+                        )?.let {
+                            editorViewModel.updateNote(
+                                it
+                            )
+                        }
+                    }
+                    Snackbar.make(
+                        requireView(),
+                        getString(R.string.editor_notes_fragment_note_saved),
+                        Snackbar.LENGTH_LONG
+                    ).show()
+                    doneNoteUI()
+                    isSave = true
                 }
             }
-
-            CoroutineScope(Dispatchers.IO).launch {
-                editorViewModel.saveNote(titleNote.text.toString(), contentNote.text.toString())
-            }
-
-            doneNoteUI()
-
-            Snackbar.make(
-                requireView(),
-                getString(R.string.editor_notes_fragment_note_saved),
-                Snackbar.LENGTH_LONG
-            ).show()
-
         }
 
         editNote.setOnClickListener {

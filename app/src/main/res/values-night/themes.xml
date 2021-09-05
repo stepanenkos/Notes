@@ -5,12 +5,13 @@
         <item name="colorPrimary">@color/primaryDarkColor</item>
         <item name="colorPrimaryVariant">@color/primary_dark</item>
         <item name="colorOnPrimary">#DFDFDF</item>
+        <item name="backgroundColor">#212121</item>
         <!-- Secondary brand color. -->
         <item name="colorSecondary">@color/secondaryColor</item>
         <item name="colorSecondaryVariant">@color/primaryDarkColor</item>
         <item name="colorOnSecondary">#EBEBEB</item>
         <!-- Status bar color. -->
-        <item name="android:statusBarColor" tools:targetApi="l">@color/primary_dark</item>
+        <item name="android:statusBarColor" tools:targetApi="l">?attr/backgroundColor</item>
         <!-- Customize your theme here. -->
     </style>
 </resources>
