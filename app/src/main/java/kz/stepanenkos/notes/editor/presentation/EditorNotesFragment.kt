@@ -42,6 +42,10 @@ class EditorNotesFragment : Fragment(R.layout.fragment_editor_notes) {
             object : OnBackPressedCallback(true) {
                 override fun handleOnBackPressed() {
                     when {
+                        !isNotBlankTextFields(titleNote, contentNote) || isSave -> {
+                            isEnabled = false
+                            requireActivity().onBackPressed()
+                        }
                         noteData == null && isNotBlankTextFields(titleNote, contentNote) && !isSave -> {
                             CoroutineScope(Dispatchers.IO).launch {
                                 editorViewModel.saveNote(
@@ -76,11 +80,6 @@ class EditorNotesFragment : Fragment(R.layout.fragment_editor_notes) {
                             ).show()
                             doneNoteUI()
                             isSave = true
-                        }
-
-                        isSave -> {
-                            isEnabled = false
-                            requireActivity().onBackPressed()
                         }
                     }
                 }

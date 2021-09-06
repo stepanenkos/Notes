@@ -59,21 +59,6 @@
 
         </com.google.android.material.bottomappbar.BottomAppBar>
 
-        <com.google.android.material.floatingactionbutton.FloatingActionButton
-            android:id="@+id/fab"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="bottom|center"
-            android:layout_marginEnd="@dimen/margin_16x"
-            android:layout_marginBottom="@dimen/margin_28x"
-            android:contentDescription="@string/activity_main_content_description_floating_action_button"
-            android:elevation="8dp"
-            android:src="@drawable/ic_note_add"
-            app:borderWidth="4dp"
-            app:fabSize="normal"
-            app:layout_anchor="@id/bottomAppBar"
-            app:layout_anchorGravity="center"
-            />
     </androidx.coordinatorlayout.widget.CoordinatorLayout>
 </FrameLayout>
 

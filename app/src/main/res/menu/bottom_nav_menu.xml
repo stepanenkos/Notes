@@ -8,14 +8,14 @@
         android:icon="@drawable/ic_sticky_note"
         />
 
-    <item
+<!--    <item
         android:id="@+id/placeholder2"
         android:enabled="false"
-        />
+        />-->
 
     <item
-        android:id="@+id/placeholder3"
-        android:enabled="false"
+        android:id="@+id/addNoteOrTask"
+        android:icon="@drawable/ic_add"
         />
 
     <item

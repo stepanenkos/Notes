@@ -39,6 +39,10 @@ class EditorTasksFragment : Fragment(R.layout.fragment_editor_tasks) {
             object : OnBackPressedCallback(true) {
                 override fun handleOnBackPressed() {
                     when {
+                        contentTask.text.toString().isBlank() || isSave -> {
+                            isEnabled = false
+                            requireActivity().onBackPressed()
+                        }
                         taskData == null && contentTask.text.toString().isNotBlank() && !isSave -> {
                             CoroutineScope(Dispatchers.IO).launch {
                                 editorViewModel.saveTask(
@@ -71,11 +75,6 @@ class EditorTasksFragment : Fragment(R.layout.fragment_editor_tasks) {
                             ).show()
                             doneTaskUI()
                             isSave = true
-                        }
-
-                        isSave -> {
-                            isEnabled = false
-                            requireActivity().onBackPressed()
                         }
                     }
                 }

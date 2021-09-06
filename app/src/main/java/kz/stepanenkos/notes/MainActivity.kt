@@ -1,18 +1,20 @@
 package kz.stepanenkos.notes
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.content.SharedPreferences
 import android.os.Bundle
-import androidx.appcompat.app.AlertDialog
+import android.view.MenuInflater
+import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
+import androidx.appcompat.widget.CustomPopupMenu
 import androidx.coordinatorlayout.widget.CoordinatorLayout
 import androidx.core.content.edit
 import androidx.navigation.NavController
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.setupWithNavController
 import com.google.android.material.bottomnavigation.BottomNavigationView
-import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
 import io.github.inflationx.viewpump.ViewPumpContextWrapper
@@ -31,7 +33,6 @@ class MainActivity : AppCompatActivity(), FirebaseAuth.AuthStateListener,
     private val firebaseAuth: FirebaseAuth by inject()
     private lateinit var sharedPrefs: SharedPreferences
     private lateinit var navController: NavController
-    private lateinit var addNoteButton: FloatingActionButton
     private lateinit var bottomNavigationView: BottomNavigationView
     private lateinit var coordinatorLayout: CoordinatorLayout
     private lateinit var binding: ActivityMainBinding
@@ -86,37 +87,41 @@ class MainActivity : AppCompatActivity(), FirebaseAuth.AuthStateListener,
     }
 
     private fun initViews() {
-        val navHostFragment: NavHostFragment = supportFragmentManager.findFragmentById(binding.activityMainNavHostFragment.id) as NavHostFragment
-/*        val navHostFragment: NavHostFragment =
-            supportFragmentManager.findFragmentById(R.id.activity_main_nav_host_fragment) as NavHostFragment*/
+        val navHostFragment: NavHostFragment =
+            supportFragmentManager.findFragmentById(binding.activityMainNavHostFragment.id) as NavHostFragment
         navController = navHostFragment.navController
         bottomNavigationView = binding.bottomNavigationView
         bottomNavigationView.setupWithNavController(navController)
         bottomNavigationView.background = null
         sharedPrefs = getSharedPreferences(NIGHT_MODE_SHARED_PREFS, MODE_PRIVATE)
-        addNoteButton = binding.fab
         coordinatorLayout = binding.activityMainCoordinatorLayout
     }
 
+    @SuppressLint("RestrictedApi")
     private fun setListeners() {
+        bottomNavigationView.setOnItemSelectedListener { bottomNavigationViewItemMenu ->
+            when(bottomNavigationViewItemMenu.itemId) {
+                R.id.mainFragment -> {
+                    navController.navigate(R.id.mainFragment)
+                    true
+                }
 
-        addNoteButton.setOnClickListener {
-            val builder = AlertDialog.Builder(this)
-            builder.setPositiveButton("Добавить заметку") {_, _ ->
-                navController.navigate(
-                    R.id.editorNotesFragment,
-                    /*null,
-                    NavOptions.Builder().setLaunchSingleTop(true).build()*/
-                )
+                R.id.addNoteOrTask -> {
+                    popupMenu()
+                    true
+                }
+
+                R.id.searchNotesFragment -> {
+                    navController.navigate(R.id.searchNotesFragment)
+                    true
+                }
+
+                R.id.menuFragment -> {
+                    navController.navigate(R.id.menuFragment)
+                    true
+                }
+                else -> { false }
             }
-            builder.setNegativeButton("Добавить задачу") {_, _ ->
-                navController.navigate(
-                    R.id.editorTasksFragment,
-                    /*null,
-                    NavOptions.Builder().setLaunchSingleTop(true).build()*/
-                )
-            }
-            builder.create().show()
         }
     }
 
@@ -132,18 +137,45 @@ class MainActivity : AppCompatActivity(), FirebaseAuth.AuthStateListener,
         }
     }
 
+    private fun popupMenu() {
+        val addNoteOrTaskView = bottomNavigationView.findViewById<View>(R.id.addNoteOrTask)
+        val popupMenu = CustomPopupMenu(this, addNoteOrTaskView)
+        val inflater: MenuInflater = popupMenu.menuInflater
+        inflater.inflate(R.menu.popup_menu, popupMenu.menu)
+        popupMenu.menu.findItem(R.id.editorNotesFragment).setIcon(R.drawable.ic_sticky_note)
+        popupMenu.menu.findItem(R.id.editorTasksFragment).setIcon(R.drawable.ic_add_task)
+        popupMenu.show()
+
+        popupMenu.setOnMenuItemClickListener { popupMenuItem ->
+
+            when(popupMenuItem.itemId) {
+                R.id.editorNotesFragment -> {
+
+                    navController.navigate(R.id.editorNotesFragment)
+                    true
+                }
+                else -> {
+                    navController.navigate(R.id.editorTasksFragment)
+                    true
+                }
+            }
+        }
+
+        popupMenu.setOnDismissListener {
+            bottomNavigationView.menu.findItem(R.id.mainFragment).isChecked = true
+        }
+    }
+
     private fun toLoginScreen() {
         navController.navigate(R.id.loginFragment)
     }
 
     private fun showUISignedUser() {
-        addNoteButton.show()
         bottomNavigationView.show()
         coordinatorLayout.show()
     }
 
     private fun showUIUnsignedUser() {
-        addNoteButton.hide()
         bottomNavigationView.hide()
         coordinatorLayout.gone()
     }

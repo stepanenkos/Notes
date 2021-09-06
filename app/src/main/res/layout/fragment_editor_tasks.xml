@@ -56,7 +56,7 @@
             android:background="@drawable/bg_edit_text"
             android:focusableInTouchMode="true"
             android:gravity="start|top"
-            android:hint="@string/fragment_editor_content_note_hint"
+            android:hint="@string/fragment_editor_content_task_hint"
             android:inputType="textMultiLine|textWebEditText"
             android:lines="4"
             android:maxLines="4"
