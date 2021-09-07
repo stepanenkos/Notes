@@ -1,10 +1,13 @@
 package kz.stepanenkos.notes.listtasks.presentation.view
 
+import android.graphics.Paint
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.CheckBox
 import android.widget.TextView
+import android.widget.Toast
 import androidx.cardview.widget.CardView
 import androidx.recyclerview.selection.ItemDetailsLookup
 import androidx.recyclerview.selection.SelectionTracker
@@ -15,7 +18,6 @@ import kz.stepanenkos.notes.common.extensions.view.gone
 import kz.stepanenkos.notes.common.extensions.view.show
 import kz.stepanenkos.notes.common.model.TaskData
 import kz.stepanenkos.notes.common.presentation.ContentTextView
-import kz.stepanenkos.notes.common.presentation.TitleTextView
 import kz.stepanenkos.notes.listtasks.listeners.TaskClickListener
 import org.threeten.bp.Instant
 import org.threeten.bp.ZoneId
@@ -30,7 +32,7 @@ class TasksAdapter(
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): TasksViewHolder {
         return TasksViewHolder(
             itemView = LayoutInflater.from(parent.context)
-                .inflate(R.layout.note_item, parent, false),
+                .inflate(R.layout.task_item, parent, false),
             taskClickListener = taskClickListener
         )
     }
@@ -51,17 +53,17 @@ class TasksAdapter(
         itemView: View,
         private val taskClickListener: TaskClickListener
     ) : RecyclerView.ViewHolder(itemView) {
-        private val noteContainer: CardView = itemView.findViewById(R.id.note_item_card_view)
-        private val title: TitleTextView = itemView.findViewById(R.id.note_item_title_note)
+        private val taskContainer: CardView = itemView.findViewById(R.id.task_item_card_view)
         private val contentTask: ContentTextView =
-            itemView.findViewById(R.id.note_item_content_note)
-        private val checkBox: CheckBox = itemView.findViewById(R.id.note_item_checkbox)
-        private val dateOfCreateNote: TextView =
-            itemView.findViewById(R.id.note_item_date_of_create_note)
+            itemView.findViewById(R.id.task_item_content_task)
+        private val checkBoxSelectTask: CheckBox = itemView.findViewById(R.id.task_item_for_select_checkbox)
+        private val dateOfCreateTask: TextView =
+            itemView.findViewById(R.id.task_item_date_of_create_task)
+        private val checkBoxIsDoneTask: CheckBox = itemView.findViewById(R.id.task_item_is_done_task_checkbox)
 
         fun onBind(taskData: TaskData, isActivated: Boolean = false) {
             contentTask.text = taskData.contentTask
-            dateOfCreateNote.text = ZonedDateTime.ofInstant(
+            dateOfCreateTask.text = ZonedDateTime.ofInstant(
                 Instant.ofEpochSecond(taskData.dateOfTask), ZoneId.of(
                     ZoneId.systemDefault().rules.getOffset(
                         Instant.now()
@@ -72,17 +74,34 @@ class TasksAdapter(
                     "HH:mm dd MMMM yyyy"
                 )
             )
-            noteContainer.setOnClickListener {
+
+            checkBoxIsDoneTask.isChecked = taskData.doneTask
+            if(taskData.doneTask) {
+                contentTask.paintFlags = contentTask.paintFlags or Paint.STRIKE_THRU_TEXT_FLAG
+            } else {
+                contentTask.paintFlags = 0
+            }
+            taskContainer.setOnClickListener {
                 taskClickListener.onTaskClick(taskData)
             }
-            if (isActivated) {
-                checkBox.show()
-                checkBox.isChecked = isActivated
-            } else {
-                checkBox.isChecked = isActivated
-                checkBox.gone()
+
+            checkBoxIsDoneTask.setOnCheckedChangeListener { _, checked ->
+                if(checked) {
+                    contentTask.paintFlags = contentTask.paintFlags or Paint.STRIKE_THRU_TEXT_FLAG
+                } else {
+                    contentTask.paintFlags = 0
+                }
+                taskClickListener.onCheckedTask(taskData, checked)
             }
-            checkBox.isActivated = !isActivated
+
+            if (isActivated) {
+                checkBoxSelectTask.show()
+                checkBoxSelectTask.isChecked = isActivated
+            } else {
+                checkBoxSelectTask.isChecked = isActivated
+                checkBoxSelectTask.gone()
+            }
+            checkBoxSelectTask.isActivated = !isActivated
         }
 
         fun getItemDetails(): ItemDetailsLookup.ItemDetails<TaskData> =

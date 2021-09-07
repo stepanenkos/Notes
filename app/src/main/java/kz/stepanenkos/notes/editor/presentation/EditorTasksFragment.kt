@@ -39,7 +39,8 @@ class EditorTasksFragment : Fragment(R.layout.fragment_editor_tasks) {
             object : OnBackPressedCallback(true) {
                 override fun handleOnBackPressed() {
                     when {
-                        contentTask.text.toString().isBlank() || isSave -> {
+                        contentTask.text.toString()
+                            .isBlank() || isSave || (taskData != null && isEqualsContentInTaskDataAndFields()) -> {
                             isEnabled = false
                             requireActivity().onBackPressed()
                         }

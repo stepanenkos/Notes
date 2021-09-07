@@ -4,6 +4,7 @@ import android.app.AlertDialog
 import android.content.Context
 import android.os.Bundle
 import android.view.View
+import android.widget.CheckBox
 import android.widget.ImageView
 import androidx.activity.OnBackPressedCallback
 import androidx.fragment.app.Fragment
@@ -150,6 +151,21 @@ class TasksFragment : Fragment(R.layout.fragment_tasks), TaskClickListener {
             putString(TASK_ID, taskData.id)
         }
         findNavController().navigate(R.id.editorTasksFragment, bundle)
+    }
+
+    override fun onCheckedTask(taskData: TaskData, checked: Boolean) {
+        when(checked) {
+            true -> {
+                tasksViewModel.updateTask(
+                    taskData.copy(doneTask = true)
+                )
+            }
+            false -> {
+                tasksViewModel.updateTask(
+                    taskData.copy(doneTask = false)
+                )
+            }
+        }
     }
 
     private fun getSwapHelper(): ItemTouchHelper {

@@ -19,7 +19,7 @@ data class TaskData(
             ).toString()
         )
     ).toEpochSecond(),
-    val isNotification: Boolean = false,
+    val notificationOn: Boolean = false,
     val dateOfNotification: Long = 0,
-    val isDone: Boolean = false,
+    val doneTask: Boolean = false,
 ) : Parcelable

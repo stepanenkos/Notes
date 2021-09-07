@@ -47,4 +47,16 @@ class TasksViewModel(
             firebaseDatabaseRepository.deleteTask(taskData)
         }
     }
+
+    fun updateTask(taskData: TaskData) {
+        viewModelScope.launch(Dispatchers.IO) {
+            firebaseDatabaseRepository.updateTask(taskData)
+        }
+    }
+
+    fun saveTask(taskData: TaskData) {
+        viewModelScope.launch(Dispatchers.IO) {
+            firebaseDatabaseRepository.saveTask(taskData)
+        }
+    }
 }

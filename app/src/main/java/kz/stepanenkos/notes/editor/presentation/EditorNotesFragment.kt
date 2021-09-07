@@ -42,7 +42,10 @@ class EditorNotesFragment : Fragment(R.layout.fragment_editor_notes) {
             object : OnBackPressedCallback(true) {
                 override fun handleOnBackPressed() {
                     when {
-                        !isNotBlankTextFields(titleNote, contentNote) || isSave -> {
+                        !isNotBlankTextFields(
+                            titleNote,
+                            contentNote
+                        ) || isSave || (noteData != null && isEqualsContentInNoteDataAndFields()) -> {
                             isEnabled = false
                             requireActivity().onBackPressed()
                         }

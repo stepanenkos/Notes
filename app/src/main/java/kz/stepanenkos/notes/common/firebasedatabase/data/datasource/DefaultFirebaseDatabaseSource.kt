@@ -211,9 +211,9 @@ class DefaultFirebaseDatabaseSource(
                     mapOf(
                         "contentTask" to taskData.contentTask,
                         "dateOfTask" to taskData.dateOfTask,
-                        "isNotification" to taskData.isNotification,
+                        "notificationOn" to taskData.notificationOn,
                         "dateOfNotification" to taskData.dateOfNotification,
-                        "isDone" to taskData.isDone
+                        "doneTask" to taskData.doneTask
                     )
                 )
         }

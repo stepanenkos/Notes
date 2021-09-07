@@ -15,6 +15,7 @@
         android:layout_marginStart="@dimen/margin_8x"
         android:layout_marginTop="@dimen/margin_8x"
         android:layout_marginEnd="@dimen/margin_8x"
+        android:layout_marginBottom="@dimen/margin_8x"
         android:clickable="true"
         android:focusable="true"
         app:cardCornerRadius="@dimen/card_corner_radius_16x"
@@ -24,55 +25,47 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal"
+            android:orientation="vertical"
             >
 
-            <LinearLayout
+            <TextView
+                android:id="@+id/note_item_date_of_create_note"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/margin_8x"
+                android:layout_marginTop="@dimen/margin_8x"
+                android:layout_marginEnd="@dimen/margin_8x"
+                android:textSize="@dimen/text_size_12x"
+                tools:text="Вчера"
+                />
+
+            <kz.stepanenkos.notes.common.presentation.TitleTextView
+                android:id="@+id/note_item_title_note"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="vertical"
-                >
+                android:layout_marginStart="@dimen/margin_8x"
+                android:layout_marginTop="@dimen/margin_8x"
+                android:layout_marginEnd="@dimen/margin_8x"
+                android:lines="1"
+                android:maxLines="1"
+                android:textSize="@dimen/text_size_16x"
+                android:textStyle="bold"
+                tools:text="Заголовок заметки"
+                />
 
-                <TextView
-                    android:id="@+id/note_item_date_of_create_note"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="@dimen/margin_8x"
-                    android:layout_marginTop="@dimen/margin_8x"
-                    android:layout_marginEnd="@dimen/margin_8x"
-                    tools:text="Вчера"
-                    android:textSize="@dimen/text_size_12x"
-                    />
-
-                <kz.stepanenkos.notes.common.presentation.TitleTextView
-                    android:id="@+id/note_item_title_note"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="@dimen/margin_8x"
-                    android:layout_marginTop="@dimen/margin_8x"
-                    android:layout_marginEnd="@dimen/margin_8x"
-                    android:lines="1"
-                    android:maxLines="1"
-                    android:textSize="@dimen/text_size_16x"
-                    android:textStyle="bold"
-                    tools:text="Заголовок заметки"
-                    />
-
-                <kz.stepanenkos.notes.common.presentation.ContentTextView
-                    android:id="@+id/note_item_content_note"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="@dimen/margin_8x"
-                    android:layout_marginTop="@dimen/margin_8x"
-                    android:layout_marginEnd="@dimen/margin_8x"
-                    android:layout_marginBottom="@dimen/margin_8x"
-                    android:lines="1"
-                    android:maxLines="1"
-                    android:textSize="@dimen/text_size_14x"
-                    tools:text="Заметка"
-                    />
-            </LinearLayout>
-
+            <kz.stepanenkos.notes.common.presentation.ContentTextView
+                android:id="@+id/note_item_content_note"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/margin_8x"
+                android:layout_marginTop="@dimen/margin_8x"
+                android:layout_marginEnd="@dimen/margin_8x"
+                android:layout_marginBottom="@dimen/margin_8x"
+                android:lines="1"
+                android:maxLines="1"
+                android:textSize="@dimen/text_size_14x"
+                tools:text="Заметка"
+                />
         </LinearLayout>
 
         <CheckBox
