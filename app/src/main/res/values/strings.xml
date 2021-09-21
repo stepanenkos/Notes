@@ -82,9 +82,10 @@
     <string name="tasks_fragment_question_delete_task">Вы действительно хотите удалить задачу?</string>
     <string name="positive_button_text">Да</string>
     <string name="negative_button_text">Нет</string>
-    <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="main_fragment_tablayout_note">Заметки</string>
     <string name="main_fragment_tablayout_task">Задачи</string>
+    <string name="fragment_editor_tasks_set_a_reminder">Установить напоминание</string>
+    <string name="reminder_is_set_to">Напоминание установлено на %s</string>
 
 </resources>

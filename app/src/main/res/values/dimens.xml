@@ -22,4 +22,8 @@
     <dimen name="card_corner_radius_16x">16dp</dimen>
     <dimen name="card_elevation_8x">8dp</dimen>
     <dimen name="card_elevation_4x">4dp</dimen>
+    <dimen name="card_corner_radius_8x">8dp</dimen>
+    <dimen name="card_corner_radius_4x">4dp</dimen>
+    <dimen name="card_elevation_2x">2dp</dimen>
+    <dimen name="card_corner_radius_6x">6dp</dimen>
 </resources>

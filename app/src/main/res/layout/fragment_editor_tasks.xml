@@ -12,6 +12,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical"
+        android:weightSum="100"
         >
 
         <LinearLayout
@@ -50,20 +51,39 @@
         <kz.stepanenkos.notes.common.presentation.ContentEditText
             android:id="@+id/fragment_editor_content_task"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="0dp"
             android:layout_margin="@dimen/margin_8x"
             android:autoLink="all"
-            android:background="@drawable/bg_edit_text"
             android:focusableInTouchMode="true"
             android:gravity="start|top"
             android:hint="@string/fragment_editor_content_task_hint"
             android:inputType="textMultiLine|textWebEditText"
-            android:lines="4"
-            android:maxLines="4"
             android:padding="@dimen/padding_8x"
             android:textAlignment="viewStart"
             android:textColor="@color/primaryTextColor"
+            android:layout_weight="85"
             />
-
+        <CheckBox
+            android:id="@+id/fragment_editor_tasks_checkbox_set_a_notification"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/fragment_editor_tasks_set_a_reminder"
+            android:layout_marginStart="@dimen/margin_8x"
+            android:layout_marginEnd="@dimen/margin_8x"
+            android:layout_marginTop="@dimen/margin_8x"
+            android:layout_marginBottom="@dimen/margin_8x"
+            />
+        <TextView
+            android:id="@+id/fragment_editor_tasks_text_view_information_about_notification"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="15"
+            android:layout_marginStart="@dimen/margin_8x"
+            android:layout_marginEnd="@dimen/margin_8x"
+            android:layout_marginBottom="@dimen/margin_16x"
+            android:maxLines="4"
+            android:visibility="invisible"
+            android:text="@string/reminder_is_set_to"
+            />
     </LinearLayout>
 </androidx.cardview.widget.CardView>

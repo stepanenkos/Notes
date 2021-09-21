@@ -19,7 +19,7 @@
         android:background="@drawable/item_background"
         android:clickable="true"
         android:focusable="true"
-        app:cardCornerRadius="@dimen/card_corner_radius_16x"
+        app:cardCornerRadius="@dimen/card_corner_radius_8x"
         app:cardElevation="@dimen/card_elevation_4x"
         >
 

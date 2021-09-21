@@ -1,6 +1,5 @@
 package kz.stepanenkos.notes.editor.presentation
 
-import android.text.Spanned
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -44,13 +43,15 @@ class EditorViewModel(
         firebaseDatabaseRepository.saveNote(noteData)
     }
 
-    fun saveTask(contentTask: String) {
+    fun saveTask(contentTask: String, isNotificationOn: Boolean) {
         if (contentTask.isNotBlank()) {
             viewModelScope.launch(Dispatchers.IO) {
+                val taskData = TaskData(
+                    contentTask = contentTask,
+                    notificationOn = isNotificationOn
+                )
                 saveTask(
-                    TaskData(
-                        contentTask = contentTask
-                    )
+                    taskData
                 )
             }
         }
