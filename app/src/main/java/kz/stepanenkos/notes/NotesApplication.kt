@@ -11,6 +11,7 @@ import kz.stepanenkos.notes.common.firebasedatabase.di.firebaseDatabaseModule
 import kz.stepanenkos.notes.editor.di.addNoteModule
 import kz.stepanenkos.notes.listnotes.di.notesModule
 import kz.stepanenkos.notes.listtasks.di.tasksModule
+import kz.stepanenkos.notes.notification.NotificationHelper
 import kz.stepanenkos.notes.searchnotes.di.searchNoteModule
 import kz.stepanenkos.notes.user.di.userCredentialsModule
 import org.koin.android.ext.koin.androidContext
@@ -22,6 +23,7 @@ class NotesApplication : Application() {
         AndroidThreeTen.init(this)
         FirebaseApp.initializeApp(this)
         FirebaseDatabase.getInstance().setPersistenceEnabled(true)
+        NotificationHelper.init(this)
         ViewPump.init(ViewPump.builder()
             .addInterceptor(TextSizeUpdatingInterceptor())
             .build())

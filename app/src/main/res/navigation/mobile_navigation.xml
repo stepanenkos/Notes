@@ -176,5 +176,13 @@
             android:id="@+id/action_mainFragment_to_notesFragment"
             app:destination="@id/notesFragment"
             />
+        <action
+            android:id="@+id/action_mainFragment_to_editorTasksFragment"
+            app:destination="@id/editorTasksFragment"
+            />
+        <action
+            android:id="@+id/action_mainFragment_to_editorNotesFragment"
+            app:destination="@id/editorNotesFragment"
+            />
     </fragment>
 </navigation>

@@ -18,10 +18,10 @@ class DefaultFirebaseDatabaseRepository(
         firebaseDatabaseSource.saveTask(taskData)
     }
 
-    override suspend fun getNoteById(noteId: String): Flow<ResponseData<NoteData, FirebaseFirestoreException>> {
+    override suspend fun getNoteById(noteId: Int): Flow<ResponseData<NoteData, FirebaseFirestoreException>> {
         return firebaseDatabaseSource.getNoteById(noteId)
     }
-    override suspend fun getTaskById(taskId: String): Flow<ResponseData<TaskData, FirebaseFirestoreException>> {
+    override suspend fun getTaskById(taskId: Int): Flow<ResponseData<TaskData, FirebaseFirestoreException>> {
         return firebaseDatabaseSource.getTaskById(taskId)
     }
 

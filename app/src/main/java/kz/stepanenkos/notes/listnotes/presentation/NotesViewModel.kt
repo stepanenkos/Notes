@@ -1,28 +1,25 @@
 package kz.stepanenkos.notes.listnotes.presentation
 
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.google.firebase.firestore.FirebaseFirestoreException
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
-import kz.stepanenkos.notes.common.model.NoteData
 import kz.stepanenkos.notes.common.firebasedatabase.domain.FirebaseDatabaseRepository
+import kz.stepanenkos.notes.common.model.NoteData
 import kz.stepanenkos.notes.common.model.ResponseData
-import kz.stepanenkos.notes.user.data.datasource.UserCredentialsDataSource
 
 class NotesViewModel(
     private val firebaseDatabaseRepository: FirebaseDatabaseRepository,
-    private val userCredentialsDataSource: UserCredentialsDataSource,
 ) : ViewModel() {
-    private val _allNotesFromDB: MutableLiveData<List<NoteData>> = MutableLiveData()
-    val allNotes: LiveData<List<NoteData>> = _allNotesFromDB
+    private val _allNotesFromDB: MutableSharedFlow<List<NoteData>> = MutableSharedFlow(replay = 1)
+    val allNotes: SharedFlow<List<NoteData>> = _allNotesFromDB.asSharedFlow()
 
-    private val _errorWhileGettingNotes: MutableLiveData<FirebaseFirestoreException> = MutableLiveData()
-    val errorWhileGettingNotes: LiveData<FirebaseFirestoreException> = _errorWhileGettingNotes
+    private val _errorWhileGettingNotes: MutableSharedFlow<FirebaseFirestoreException> =
+        MutableStateFlow(FirebaseFirestoreException(" ", FirebaseFirestoreException.Code.UNKNOWN))
+    val errorWhileGettingNotes: SharedFlow<FirebaseFirestoreException> =
+        _errorWhileGettingNotes.asSharedFlow()
 
     fun onStart() {
         getAllNotes()
@@ -31,11 +28,10 @@ class NotesViewModel(
     private fun getAllNotes() {
         viewModelScope.launch(Dispatchers.IO) {
             firebaseDatabaseRepository.getAllNotes().collect { listNoteDataFromFirebaseDB ->
-                withContext(Dispatchers.Main) {
-                    when(listNoteDataFromFirebaseDB) {
-                        is ResponseData.Success -> _allNotesFromDB.postValue(listNoteDataFromFirebaseDB.result)
-                        is ResponseData.Error -> _errorWhileGettingNotes.postValue(listNoteDataFromFirebaseDB.error)
-                    }
+                when (listNoteDataFromFirebaseDB) {
+                    is ResponseData.Success -> _allNotesFromDB.tryEmit(listNoteDataFromFirebaseDB.result)
+
+                    is ResponseData.Error -> _errorWhileGettingNotes.tryEmit(listNoteDataFromFirebaseDB.error)
 
                 }
             }
@@ -45,6 +41,12 @@ class NotesViewModel(
     fun deleteNote(noteData: NoteData) {
         viewModelScope.launch(Dispatchers.IO) {
             firebaseDatabaseRepository.deleteNote(noteData)
+        }
+    }
+
+    fun deleteNote(listNoteData: List<NoteData>) {
+        for (noteData in listNoteData) {
+            deleteNote(noteData)
         }
     }
 }

@@ -29,7 +29,7 @@ class DefaultFirebaseDatabaseSource(
             usersNode
                 .document(uid)
                 .collection(NOTES_NODE_CHILD)
-                .document(noteData.id)
+                .document(noteData.id.toString())
                 .set(noteData)
         }
     }
@@ -39,13 +39,13 @@ class DefaultFirebaseDatabaseSource(
             usersNode
                 .document(uid)
                 .collection(TASKS_NODE_CHILD)
-                .document(taskData.id)
+                .document(taskData.id.toString())
                 .set(taskData)
         }
     }
 
     @ExperimentalCoroutinesApi
-    override suspend fun getNoteById(noteId: String) =
+    override suspend fun getNoteById(noteId: Int) =
         callbackFlow<ResponseData<NoteData, FirebaseFirestoreException>> {
             val noteById = auth.currentUser?.uid?.let { uid ->
                 usersNode.document(uid).collection(NOTES_NODE_CHILD)
@@ -68,7 +68,7 @@ class DefaultFirebaseDatabaseSource(
 
 
     @ExperimentalCoroutinesApi
-    override suspend fun getTaskById(taskId: String) =
+    override suspend fun getTaskById(taskId: Int) =
         callbackFlow<ResponseData<TaskData, FirebaseFirestoreException>> {
             val taskById = auth.currentUser?.uid?.let { uid ->
                 usersNode.document(uid).collection(TASKS_NODE_CHILD)
@@ -190,7 +190,7 @@ class DefaultFirebaseDatabaseSource(
         auth.currentUser?.uid?.let { uid ->
             usersNode.document(uid)
                 .collection(NOTES_NODE_CHILD)
-                .document(noteData.id)
+                .document(noteData.id.toString())
                 .update(
                     mapOf(
                         "titleNote" to noteData.titleNote,
@@ -206,7 +206,7 @@ class DefaultFirebaseDatabaseSource(
         auth.currentUser?.uid?.let { uid ->
             usersNode.document(uid)
                 .collection(TASKS_NODE_CHILD)
-                .document(taskData.id)
+                .document(taskData.id.toString())
                 .update(
                     mapOf(
                         "contentTask" to taskData.contentTask,
@@ -221,13 +221,13 @@ class DefaultFirebaseDatabaseSource(
 
     override fun deleteNote(noteData: NoteData) {
         auth.currentUser?.uid?.let { uid ->
-            usersNode.document(uid).collection(NOTES_NODE_CHILD).document(noteData.id).delete()
+            usersNode.document(uid).collection(NOTES_NODE_CHILD).document(noteData.id.toString()).delete()
         }
     }
 
     override fun deleteTask(taskData: TaskData) {
         auth.currentUser?.uid?.let { uid ->
-            usersNode.document(uid).collection(TASKS_NODE_CHILD).document(taskData.id).delete()
+            usersNode.document(uid).collection(TASKS_NODE_CHILD).document(taskData.id.toString()).delete()
         }
     }
 

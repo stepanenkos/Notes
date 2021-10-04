@@ -16,7 +16,6 @@ import kz.stepanenkos.notes.user.data.datasource.UserCredentialsDataSource
 
 class TasksViewModel(
     private val firebaseDatabaseRepository: FirebaseDatabaseRepository,
-    private val userCredentialsDataSource: UserCredentialsDataSource,
 ) : ViewModel() {
     private val _allNotesFromDB: MutableLiveData<List<TaskData>> = MutableLiveData()
     val allNotes: LiveData<List<TaskData>> = _allNotesFromDB

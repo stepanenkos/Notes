@@ -75,7 +75,7 @@ class SearchNotesFragment : Fragment(R.layout.fragment_search_notes), NoteClickL
 
     override fun onNoteClick(noteData: NoteData) {
         val bundle = Bundle().apply {
-            putString("ID", noteData.id)
+            putInt("ID", noteData.id)
         }
         findNavController().navigate(R.id.editorNotesFragment, bundle)
     }

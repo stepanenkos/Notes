@@ -10,8 +10,8 @@ interface FirebaseDatabaseSource {
     suspend fun saveNote(noteData: NoteData)
     suspend fun saveTask(taskData: TaskData)
 
-    suspend fun getNoteById(noteId: String): Flow<ResponseData<NoteData, FirebaseFirestoreException>>
-    suspend fun getTaskById(taskId: String): Flow<ResponseData<TaskData, FirebaseFirestoreException>>
+    suspend fun getNoteById(noteId: Int): Flow<ResponseData<NoteData, FirebaseFirestoreException>>
+    suspend fun getTaskById(taskId: Int): Flow<ResponseData<TaskData, FirebaseFirestoreException>>
 
     suspend fun getAllNotes(): Flow<ResponseData<List<NoteData>, FirebaseFirestoreException>>
     suspend fun getAllTasks(): Flow<ResponseData<List<TaskData>, FirebaseFirestoreException>>

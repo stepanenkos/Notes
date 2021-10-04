@@ -148,7 +148,7 @@ class TasksFragment : Fragment(R.layout.fragment_tasks), TaskClickListener {
 
     override fun onTaskClick(taskData: TaskData) {
         val bundle = Bundle().apply {
-            putString(TASK_ID, taskData.id)
+            putInt(TASK_ID, taskData.id)
         }
         findNavController().navigate(R.id.editorTasksFragment, bundle)
     }

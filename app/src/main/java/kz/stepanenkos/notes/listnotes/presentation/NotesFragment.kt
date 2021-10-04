@@ -7,6 +7,8 @@ import android.view.View
 import android.widget.ImageView
 import androidx.activity.OnBackPressedCallback
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.viewModels
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.selection.SelectionPredicates
 import androidx.recyclerview.selection.SelectionTracker
@@ -21,6 +23,10 @@ import com.google.android.material.textview.MaterialTextView
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.firestore.FirebaseFirestoreException
 import com.google.firebase.ktx.Firebase
+import kotlinx.coroutines.coroutineScope
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.onEach
 import kz.stepanenkos.notes.common.model.NoteData
 import kz.stepanenkos.notes.R
 import kz.stepanenkos.notes.common.extensions.view.gone
@@ -30,10 +36,13 @@ import kz.stepanenkos.notes.listnotes.listeners.NoteClickListener
 import kz.stepanenkos.notes.listnotes.presentation.view.NoteDetailsLookup
 import kz.stepanenkos.notes.listnotes.presentation.view.NoteKeyProvider
 import kz.stepanenkos.notes.listnotes.presentation.view.NotesAdapter
+import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.viewModel
+
 const val NOTE_ID = "NOTE_ID"
+
 class NotesFragment : Fragment(R.layout.fragment_notes), NoteClickListener {
-    private val notesViewModel: NotesViewModel by viewModel()
+    private val notesViewModel: NotesViewModel by inject()
     private lateinit var binding: FragmentNotesBinding
 
     private lateinit var recyclerView: RecyclerView
@@ -44,7 +53,6 @@ class NotesFragment : Fragment(R.layout.fragment_notes), NoteClickListener {
     private lateinit var checkBoxSelectAllNotes: MaterialCheckBox
     private lateinit var deleteSelectedNotes: ImageView
     private lateinit var infoCountSelectedNotes: MaterialTextView
-
 
 
     override fun onAttach(context: Context) {
@@ -120,9 +128,7 @@ class NotesFragment : Fragment(R.layout.fragment_notes), NoteClickListener {
             builder.setTitle(getString(R.string.notes_fragment_title_delete_note))
             builder.setMessage(getString(R.string.notes_fragment_question_delete_note))
             builder.setPositiveButton(getString(R.string.positive_button_text)) { _, _ ->
-                tracker.selection.forEach { noteData ->
-                    notesViewModel.deleteNote(noteData)
-                }
+                notesViewModel.deleteNote(tracker.selection.toList())
             }
             builder.setNegativeButton(getString(R.string.negative_button_text)) { dialog, _ ->
                 dialog.dismiss()
@@ -136,11 +142,19 @@ class NotesFragment : Fragment(R.layout.fragment_notes), NoteClickListener {
         setHasOptionsMenu(true)
         notesViewModel.onStart()
 
-        notesViewModel.allNotes.observe(viewLifecycleOwner) {
-            notesAdapter.submitList(it)
+        lifecycleScope.launchWhenStarted {
+            notesViewModel.allNotes
+                .onEach { listNoteData ->
+                    notesAdapter.submitList(listNoteData)
+                }.launchIn(lifecycleScope)
+
+            notesViewModel.errorWhileGettingNotes
+                .onEach {firebaseFirestoreException ->
+                    showError(firebaseFirestoreException)
+                }.launchIn(lifecycleScope)
         }
 
-        notesViewModel.errorWhileGettingNotes.observe(viewLifecycleOwner, ::showError)
+
         if (Firebase.auth.currentUser == null) {
             findNavController().navigate(R.id.loginFragment)
         }
@@ -148,7 +162,7 @@ class NotesFragment : Fragment(R.layout.fragment_notes), NoteClickListener {
 
     override fun onNoteClick(noteData: NoteData) {
         val bundle = Bundle().apply {
-            putString(NOTE_ID, noteData.id)
+            putInt(NOTE_ID, noteData.id)
         }
         findNavController().navigate(R.id.editorNotesFragment, bundle)
     }

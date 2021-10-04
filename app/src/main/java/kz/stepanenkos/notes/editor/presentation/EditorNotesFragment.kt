@@ -31,7 +31,7 @@ class EditorNotesFragment : Fragment(R.layout.fragment_editor_notes) {
     private lateinit var doneNote: ImageView
     private lateinit var editNote: ImageView
 
-    private var idNote: String? = null
+    private var idNote: Int? = null
     private var noteData: NoteData? = null
     private var isSave: Boolean = false
     override fun onAttach(context: Context) {
@@ -101,7 +101,7 @@ class EditorNotesFragment : Fragment(R.layout.fragment_editor_notes) {
         editNote.disabled()
         doneNote.enabled()
 
-        idNote = arguments?.getString(NOTE_ID)
+        idNote = arguments?.getInt(NOTE_ID)
         idNote?.let { noteById ->
             editNote.enabled()
             doneNote.disabled()

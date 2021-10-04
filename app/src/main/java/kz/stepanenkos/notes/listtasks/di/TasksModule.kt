@@ -9,7 +9,6 @@ val tasksModule: Module = module {
     viewModel {
         TasksViewModel(
             firebaseDatabaseRepository = get(),
-            userCredentialsDataSource = get(),
         )
     }
 }

@@ -78,7 +78,7 @@ class EditorViewModel(
 
     }
 
-    fun getNoteById(noteId: String) {
+    fun getNoteById(noteId: Int) {
         viewModelScope.launch(Dispatchers.IO) {
             firebaseDatabaseRepository.getNoteById(noteId).collect { responseData ->
                 withContext(Dispatchers.Main) {
@@ -95,7 +95,7 @@ class EditorViewModel(
         }
     }
 
-    fun getTaskById(taskId: String) {
+    fun getTaskById(taskId: Int) {
         viewModelScope.launch(Dispatchers.IO) {
             firebaseDatabaseRepository.getTaskById(taskId).collect { responseData ->
                 withContext(Dispatchers.Main) {
