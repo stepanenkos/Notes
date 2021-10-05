@@ -87,5 +87,6 @@
     <string name="main_fragment_tablayout_task">Задачи</string>
     <string name="fragment_editor_tasks_set_a_reminder">Установить напоминание</string>
     <string name="reminder_is_set_to">Напоминание установлено на %s</string>
+    <string name="content_title_for_notification">Напоминание о задаче</string>
 
 </resources>

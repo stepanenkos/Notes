@@ -11,6 +11,7 @@ import androidx.core.app.NotificationManagerCompat
 import androidx.navigation.NavDeepLinkBuilder
 import kz.stepanenkos.notes.MainActivity
 import kz.stepanenkos.notes.R
+import kz.stepanenkos.notes.listtasks.presentation.TASK_ID
 
 object NotificationHelper {
     private const val CHANNEL_ID = "tasks_notification_channel"
@@ -44,7 +45,7 @@ object NotificationHelper {
     ): Notification = NotificationCompat.Builder(
         application, CHANNEL_ID
     )
-        .setContentTitle("Напоминание о задаче")
+        .setContentTitle(application.getString(R.string.content_title_for_notification))
         .setContentText(contentTasks)
         .setSmallIcon(R.drawable.ic_notification)
         .setPriority(NotificationCompat.PRIORITY_DEFAULT)
@@ -57,7 +58,7 @@ object NotificationHelper {
         taskId: Int,
     ): PendingIntent {
         val bundle = Bundle()
-        bundle.putInt("TASK_ID", taskId)
+        bundle.putInt(TASK_ID, taskId)
         return NavDeepLinkBuilder(application)
             .setComponentName(MainActivity::class.java)
             .setGraph(R.navigation.mobile_navigation)
