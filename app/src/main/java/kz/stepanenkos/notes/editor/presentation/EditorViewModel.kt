@@ -13,10 +13,12 @@ import kz.stepanenkos.notes.common.model.NoteData
 import kz.stepanenkos.notes.common.firebasedatabase.domain.FirebaseDatabaseRepository
 import kz.stepanenkos.notes.common.model.ResponseData
 import kz.stepanenkos.notes.common.model.TaskData
+import kz.stepanenkos.notes.notification.NotificationAlarmHelper
 import java.util.*
 
 class EditorViewModel(
-    private val firebaseDatabaseRepository: FirebaseDatabaseRepository
+    private val firebaseDatabaseRepository: FirebaseDatabaseRepository,
+    private val notificationAlarmHelper: NotificationAlarmHelper
 ) : ViewModel() {
     private val _noteById: MutableLiveData<NoteData> = MutableLiveData()
     val noteById: LiveData<NoteData> = _noteById
@@ -43,22 +45,7 @@ class EditorViewModel(
         firebaseDatabaseRepository.saveNote(noteData)
     }
 
-    fun saveTask(contentTask: String, isNotificationOn: Boolean) {
-        if (contentTask.isNotBlank()) {
-            viewModelScope.launch(Dispatchers.IO) {
-                val taskData = TaskData(
-                    contentTask = contentTask,
-                    notificationOn = isNotificationOn
-                )
-                saveTask(
-                    taskData
-                )
-            }
-        }
-
-    }
-
-    private suspend fun saveTask(taskData: TaskData) {
+    suspend fun saveTask(taskData: TaskData) {
         viewModelScope.launch(Dispatchers.IO) {
             firebaseDatabaseRepository.saveTask(taskData)
         }
@@ -124,5 +111,13 @@ class EditorViewModel(
             contentNote.lowercase(Locale.getDefault()).split(Regex("[\\p{Punct}\\s]+"))
         )
         return searchKeywordsList
+    }
+
+    fun createNotification(taskData: TaskData) {
+        notificationAlarmHelper.createNotificationAlarm(taskData)
+    }
+
+    fun cancelNotification(taskData: TaskData) {
+        notificationAlarmHelper.cancelNotificationAlarm(taskData)
     }
 }

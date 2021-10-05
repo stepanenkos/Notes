@@ -23,4 +23,5 @@ val applicationModule: Module = module {
     single {
         androidContext().getSharedPreferences(APPLICATION_SHARED_PREFS, Context.MODE_PRIVATE)
     }
+
 }

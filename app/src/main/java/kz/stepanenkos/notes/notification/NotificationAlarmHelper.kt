@@ -52,10 +52,17 @@ class NotificationAlarmHelper(
     fun cancelNotificationAlarm(taskData: TaskData) {
         pendingIntent ?: return
         val intent = Intent(application, NotificationAlarmBroadcastReceiver::class.java)
-        val pendingIn = PendingIntent.getBroadcast(application,
-            taskData.id,
-            intent,
-            PendingIntent.FLAG_UPDATE_CURRENT)
+        val pendingIn = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            PendingIntent.getBroadcast(application,
+                taskData.id,
+                intent,
+                PendingIntent.FLAG_IMMUTABLE)
+        } else {
+            PendingIntent.getBroadcast(application,
+                taskData.id,
+                intent,
+                PendingIntent.FLAG_ONE_SHOT)
+        }
 
         alarmManager?.cancel(pendingIn)
     }
