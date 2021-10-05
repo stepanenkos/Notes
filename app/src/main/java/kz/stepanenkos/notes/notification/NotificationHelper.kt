@@ -49,6 +49,7 @@ object NotificationHelper {
         .setSmallIcon(R.drawable.ic_notification)
         .setPriority(NotificationCompat.PRIORITY_DEFAULT)
         .setContentIntent(getPendingIntent(taskId))
+        .setVibrate(listOf(1L, 2L, 3L).toLongArray())
         .setAutoCancel(true)
         .build()
 
@@ -63,20 +64,6 @@ object NotificationHelper {
             .setDestination(R.id.editorTasksFragment)
             .setArguments(bundle)
             .createPendingIntent()
-
-        /*return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            PendingIntent.
-            PendingIntent.getActivity(application,
-                0,
-                eventDetailsEvent,
-                PendingIntent.FLAG_IMMUTABLE)
-        } else {
-            PendingIntent.getActivity(application,
-                0,
-                eventDetailsEvent,
-                PendingIntent.FLAG_ONE_SHOT)
-        }*/
-
     }
 
     private fun initChannel() {

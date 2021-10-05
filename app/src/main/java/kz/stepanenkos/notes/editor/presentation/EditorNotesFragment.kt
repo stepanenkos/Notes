@@ -49,41 +49,7 @@ class EditorNotesFragment : Fragment(R.layout.fragment_editor_notes) {
                             isEnabled = false
                             requireActivity().onBackPressed()
                         }
-                        noteData == null && isNotBlankTextFields(titleNote, contentNote) && !isSave -> {
-                            CoroutineScope(Dispatchers.IO).launch {
-                                editorViewModel.saveNote(
-                                    titleNote.text.toString(),
-                                    contentNote.text.toString()
-                                )
-                            }
-                            Snackbar.make(
-                                requireView(),
-                                getString(R.string.editor_notes_fragment_note_saved),
-                                Snackbar.LENGTH_LONG
-                            ).show()
-                            doneNoteUI()
-                            isSave = true
-                        }
-
-                        noteData != null && !isEqualsContentInNoteDataAndFields() && !isSave -> {
-                            CoroutineScope(Dispatchers.IO).launch {
-                                noteData?.copy(
-                                    titleNote = titleNote.text.toString(),
-                                    contentNote = contentNote.text.toString()
-                                )?.let {
-                                    editorViewModel.updateNote(
-                                        it
-                                    )
-                                }
-                            }
-                            Snackbar.make(
-                                requireView(),
-                                getString(R.string.editor_notes_fragment_note_saved),
-                                Snackbar.LENGTH_LONG
-                            ).show()
-                            doneNoteUI()
-                            isSave = true
-                        }
+                        else -> saveNote()
                     }
                 }
             })
@@ -127,38 +93,7 @@ class EditorNotesFragment : Fragment(R.layout.fragment_editor_notes) {
                     ).show()
                 }
 
-                noteData == null && isNotBlankTextFields(titleNote, contentNote) -> {
-                    CoroutineScope(Dispatchers.IO).launch {
-                        editorViewModel.saveNote(titleNote.text.toString(), contentNote.text.toString())
-                    }
-                    Snackbar.make(
-                        requireView(),
-                        getString(R.string.editor_notes_fragment_note_saved),
-                        Snackbar.LENGTH_LONG
-                    ).show()
-                    doneNoteUI()
-                    isSave = true
-                }
-
-                noteData != null && !isEqualsContentInNoteDataAndFields() -> {
-                    CoroutineScope(Dispatchers.IO).launch {
-                        noteData?.copy(
-                            titleNote = titleNote.text.toString(),
-                            contentNote = contentNote.text.toString()
-                        )?.let {
-                            editorViewModel.updateNote(
-                                it
-                            )
-                        }
-                    }
-                    Snackbar.make(
-                        requireView(),
-                        getString(R.string.editor_notes_fragment_note_saved),
-                        Snackbar.LENGTH_LONG
-                    ).show()
-                    doneNoteUI()
-                    isSave = true
-                }
+                else -> saveNote()
             }
         }
 
@@ -206,5 +141,49 @@ class EditorNotesFragment : Fragment(R.layout.fragment_editor_notes) {
             firebaseFirestoreException.localizedMessage,
             Snackbar.LENGTH_LONG
         ).show()
+    }
+
+    private fun saveNote() {
+        when {
+
+            noteData == null && isNotBlankTextFields(titleNote, contentNote) && !isSave -> {
+                CoroutineScope(Dispatchers.IO).launch {
+                    editorViewModel.saveNote(
+                        titleNote.text.toString(),
+                        contentNote.text.toString()
+                    )
+                }
+
+                Snackbar.make(
+                    requireView(),
+                    getString(R.string.editor_notes_fragment_note_saved),
+                    Snackbar.LENGTH_LONG
+                ).show()
+
+                doneNoteUI()
+                isSave = true
+            }
+
+            noteData != null && !isEqualsContentInNoteDataAndFields() && !isSave -> {
+                CoroutineScope(Dispatchers.IO).launch {
+                    noteData?.copy(
+                        titleNote = titleNote.text.toString(),
+                        contentNote = contentNote.text.toString()
+                    )?.let {
+                        editorViewModel.updateNote(
+                            it
+                        )
+                    }
+                }
+                Snackbar.make(
+                    requireView(),
+                    getString(R.string.editor_notes_fragment_note_saved),
+                    Snackbar.LENGTH_LONG
+                ).show()
+
+                doneNoteUI()
+                isSave = true
+            }
+        }
     }
 }
