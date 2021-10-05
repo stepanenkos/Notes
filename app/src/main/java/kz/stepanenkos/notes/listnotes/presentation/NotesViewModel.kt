@@ -17,7 +17,7 @@ class NotesViewModel(
     val allNotes: SharedFlow<List<NoteData>> = _allNotesFromDB.asSharedFlow()
 
     private val _errorWhileGettingNotes: MutableSharedFlow<FirebaseFirestoreException> =
-        MutableStateFlow(FirebaseFirestoreException(" ", FirebaseFirestoreException.Code.UNKNOWN))
+        MutableSharedFlow(replay = 1)
     val errorWhileGettingNotes: SharedFlow<FirebaseFirestoreException> =
         _errorWhileGettingNotes.asSharedFlow()
 
@@ -29,9 +29,9 @@ class NotesViewModel(
         viewModelScope.launch(Dispatchers.IO) {
             firebaseDatabaseRepository.getAllNotes().collect { listNoteDataFromFirebaseDB ->
                 when (listNoteDataFromFirebaseDB) {
-                    is ResponseData.Success -> _allNotesFromDB.tryEmit(listNoteDataFromFirebaseDB.result)
+                    is ResponseData.Success -> _allNotesFromDB.emit(listNoteDataFromFirebaseDB.result)
 
-                    is ResponseData.Error -> _errorWhileGettingNotes.tryEmit(listNoteDataFromFirebaseDB.error)
+                    is ResponseData.Error -> _errorWhileGettingNotes.emit(listNoteDataFromFirebaseDB.error)
 
                 }
             }

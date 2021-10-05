@@ -1,14 +1,13 @@
 package kz.stepanenkos.notes.authorization.presentation
 
-import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.google.firebase.auth.FirebaseUser
 import kotlinx.coroutines.launch
-import kz.stepanenkos.notes.common.model.LoginData
 import kz.stepanenkos.notes.authorization.domain.AuthRepository
+import kz.stepanenkos.notes.common.model.LoginData
 import kz.stepanenkos.notes.user.data.datasource.UserCredentialsDataSource
 
 class LoginViewModel(

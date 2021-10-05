@@ -59,6 +59,7 @@ class LoginFragment : Fragment(R.layout.fragment_login) {
         signInButton = binding.fragmentLoginButtonSignIn
         googleSignInButton = binding.fragmentLoginButtonGoogleLogin
         forgetPasswordTextViewButton = binding.fragmentLoginTextViewForgotPassword
+
         if (AppCompatDelegate.getDefaultNightMode() == AppCompatDelegate.MODE_NIGHT_YES) {
             googleSignInButton.setColorScheme(SignInButton.COLOR_DARK)
         } else {
