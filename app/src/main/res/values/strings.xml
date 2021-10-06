@@ -88,5 +88,7 @@
     <string name="fragment_editor_tasks_set_a_reminder">Установить напоминание</string>
     <string name="reminder_is_set_to">Напоминание установлено на %s</string>
     <string name="content_title_for_notification">Напоминание о задаче</string>
+    <string name="search_notes_fragment_search_hint">Введите текст для поиска заметки</string>
+    <string name="search_notes_view_holder_date_pattern">HH:mm dd MMMM yyyy</string>
 
 </resources>

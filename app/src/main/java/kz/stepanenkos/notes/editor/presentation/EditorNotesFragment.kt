@@ -7,10 +7,13 @@ import android.widget.EditText
 import android.widget.ImageView
 import androidx.activity.OnBackPressedCallback
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.lifecycleScope
 import com.google.android.material.snackbar.Snackbar
 import com.google.firebase.firestore.FirebaseFirestoreException
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
 import kz.stepanenkos.notes.R
 import kz.stepanenkos.notes.common.extensions.view.disabled
@@ -75,9 +78,15 @@ class EditorNotesFragment : Fragment(R.layout.fragment_editor_notes) {
             isSave = false
         }
 
-        editorViewModel.noteById.observe(viewLifecycleOwner, ::showNote)
+        lifecycleScope.launchWhenStarted {
+            editorViewModel.noteById.onEach {
+                showNote(it)
+            }.launchIn(lifecycleScope)
 
-        editorViewModel.errorReceiving.observe(viewLifecycleOwner, ::showError)
+            editorViewModel.errorReceiving.onEach {
+                showError(it)
+            }.launchIn(lifecycleScope)
+        }
 
         setOnClickListeners()
     }

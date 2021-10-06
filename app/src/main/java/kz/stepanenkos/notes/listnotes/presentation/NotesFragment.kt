@@ -3,12 +3,10 @@ package kz.stepanenkos.notes.listnotes.presentation
 import android.app.AlertDialog
 import android.content.Context
 import android.os.Bundle
-import android.util.Log
 import android.view.View
 import android.widget.ImageView
 import androidx.activity.OnBackPressedCallback
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.selection.SelectionPredicates
@@ -24,21 +22,18 @@ import com.google.android.material.textview.MaterialTextView
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.firestore.FirebaseFirestoreException
 import com.google.firebase.ktx.Firebase
-import kotlinx.coroutines.coroutineScope
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
-import kz.stepanenkos.notes.common.model.NoteData
 import kz.stepanenkos.notes.R
 import kz.stepanenkos.notes.common.extensions.view.gone
 import kz.stepanenkos.notes.common.extensions.view.show
+import kz.stepanenkos.notes.common.model.NoteData
 import kz.stepanenkos.notes.databinding.FragmentNotesBinding
 import kz.stepanenkos.notes.listnotes.listeners.NoteClickListener
 import kz.stepanenkos.notes.listnotes.presentation.view.NoteDetailsLookup
 import kz.stepanenkos.notes.listnotes.presentation.view.NoteKeyProvider
 import kz.stepanenkos.notes.listnotes.presentation.view.NotesAdapter
 import org.koin.android.ext.android.inject
-import org.koin.androidx.viewmodel.ext.android.viewModel
 
 const val NOTE_ID = "NOTE_ID"
 

@@ -1,16 +1,17 @@
 package kz.stepanenkos.notes.editor.presentation
 
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.google.firebase.firestore.FirebaseFirestoreException
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.SharedFlow
+import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import kz.stepanenkos.notes.common.model.NoteData
 import kz.stepanenkos.notes.common.firebasedatabase.domain.FirebaseDatabaseRepository
+import kz.stepanenkos.notes.common.model.NoteData
 import kz.stepanenkos.notes.common.model.ResponseData
 import kz.stepanenkos.notes.common.model.TaskData
 import kz.stepanenkos.notes.notification.NotificationAlarmHelper
@@ -20,14 +21,14 @@ class EditorViewModel(
     private val firebaseDatabaseRepository: FirebaseDatabaseRepository,
     private val notificationAlarmHelper: NotificationAlarmHelper
 ) : ViewModel() {
-    private val _noteById: MutableLiveData<NoteData> = MutableLiveData()
-    val noteById: LiveData<NoteData> = _noteById
+    private val _noteById: MutableSharedFlow<NoteData> = MutableSharedFlow(replay = 1)
+    val noteById: SharedFlow<NoteData> = _noteById.asSharedFlow()
 
-    private val _taskById: MutableLiveData<TaskData> = MutableLiveData()
-    val taskById: LiveData<TaskData> = _taskById
+    private val _taskById: MutableSharedFlow<TaskData> = MutableSharedFlow(replay = 1)
+    val taskById: SharedFlow<TaskData> = _taskById.asSharedFlow()
 
-    private val _errorReceiving: MutableLiveData<FirebaseFirestoreException> = MutableLiveData()
-    val errorReceiving: LiveData<FirebaseFirestoreException> = _errorReceiving
+    private val _errorReceiving: MutableSharedFlow<FirebaseFirestoreException> = MutableSharedFlow(replay = 1)
+    val errorReceiving: SharedFlow<FirebaseFirestoreException> = _errorReceiving.asSharedFlow()
 
     suspend fun saveNote(titleNote: String, contentNote: String) {
         if (titleNote.isNotBlank() && contentNote.isNotBlank()) {
@@ -71,10 +72,10 @@ class EditorViewModel(
                 withContext(Dispatchers.Main) {
                     when (responseData) {
                         is ResponseData.Success -> {
-                            _noteById.postValue(responseData.result)
+                            _noteById.emit(responseData.result)
                         }
                         is ResponseData.Error -> {
-                            _errorReceiving.postValue(responseData.error)
+                            _errorReceiving.emit(responseData.error)
                         }
                     }
                 }
@@ -88,10 +89,10 @@ class EditorViewModel(
                 withContext(Dispatchers.Main) {
                     when (responseData) {
                         is ResponseData.Success -> {
-                            _taskById.postValue(responseData.result)
+                            _taskById.emit(responseData.result)
                         }
                         is ResponseData.Error -> {
-                            _errorReceiving.postValue(responseData.error)
+                            _errorReceiving.emit(responseData.error)
                         }
                     }
                 }

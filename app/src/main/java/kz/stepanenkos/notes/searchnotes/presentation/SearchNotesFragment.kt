@@ -1,21 +1,23 @@
 package kz.stepanenkos.notes.searchnotes.presentation
 
 import android.os.Bundle
-import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewGroup
 import android.widget.SearchView
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
-import kz.stepanenkos.notes.common.model.NoteData
 import kz.stepanenkos.notes.R
+import kz.stepanenkos.notes.common.model.NoteData
 import kz.stepanenkos.notes.databinding.FragmentSearchNotesBinding
 import kz.stepanenkos.notes.listnotes.listeners.NoteClickListener
+import kz.stepanenkos.notes.listnotes.presentation.NOTE_ID
 import kz.stepanenkos.notes.searchnotes.presentation.view.SearchNotesAdapter
 import org.koin.android.ext.android.inject
 
@@ -38,14 +40,16 @@ class SearchNotesFragment : Fragment(R.layout.fragment_search_notes), NoteClickL
         searchView = binding.fragmentSearchNotesSearchView
         setupSearchView(searchView)
 
-        searchViewModel.allFoundNotes.observe(viewLifecycleOwner) {allFoundNotes ->
-            notesAdapter.submitList(allFoundNotes)
+        lifecycleScope.launchWhenStarted {
+            searchViewModel.allFoundNotes.onEach { allFoundNotes ->
+                notesAdapter.submitList(allFoundNotes)
+            }.launchIn(lifecycleScope)
         }
     }
 
     private fun setupSearchView(searchView: SearchView) {
 
-        searchView.queryHint = "Введите текст для поиска заметки"
+        searchView.queryHint = getString(R.string.search_notes_fragment_search_hint)
 
         searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
             override fun onQueryTextChange(newText: String?): Boolean {
@@ -75,7 +79,7 @@ class SearchNotesFragment : Fragment(R.layout.fragment_search_notes), NoteClickL
 
     override fun onNoteClick(noteData: NoteData) {
         val bundle = Bundle().apply {
-            putInt("ID", noteData.id)
+            putInt(NOTE_ID, noteData.id)
         }
         findNavController().navigate(R.id.editorNotesFragment, bundle)
     }

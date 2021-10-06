@@ -1,27 +1,27 @@
 package kz.stepanenkos.notes.listtasks.presentation
 
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.google.firebase.firestore.FirebaseFirestoreException
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.SharedFlow
+import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import kz.stepanenkos.notes.common.model.TaskData
 import kz.stepanenkos.notes.common.firebasedatabase.domain.FirebaseDatabaseRepository
 import kz.stepanenkos.notes.common.model.ResponseData
-import kz.stepanenkos.notes.user.data.datasource.UserCredentialsDataSource
+import kz.stepanenkos.notes.common.model.TaskData
 
 class TasksViewModel(
     private val firebaseDatabaseRepository: FirebaseDatabaseRepository,
 ) : ViewModel() {
-    private val _allNotesFromDB: MutableLiveData<List<TaskData>> = MutableLiveData()
-    val allNotes: LiveData<List<TaskData>> = _allNotesFromDB
+    private val _allNotesFromDB: MutableSharedFlow<List<TaskData>> = MutableSharedFlow(replay = 1)
+    val allNotes: SharedFlow<List<TaskData>> = _allNotesFromDB.asSharedFlow()
 
-    private val _errorWhileGettingNotes: MutableLiveData<FirebaseFirestoreException> = MutableLiveData()
-    val errorWhileGettingNotes: LiveData<FirebaseFirestoreException> = _errorWhileGettingNotes
+    private val _errorWhileGettingNotes: MutableSharedFlow<FirebaseFirestoreException> = MutableSharedFlow(replay = 1)
+    val errorWhileGettingNotes: SharedFlow<FirebaseFirestoreException> = _errorWhileGettingNotes.asSharedFlow()
 
     fun onStart() {
         getAllTasks()
@@ -32,8 +32,8 @@ class TasksViewModel(
             firebaseDatabaseRepository.getAllTasks().collect { listTasksDataFromFirebaseDB ->
                 withContext(Dispatchers.Main) {
                     when(listTasksDataFromFirebaseDB) {
-                        is ResponseData.Success -> _allNotesFromDB.postValue(listTasksDataFromFirebaseDB.result)
-                        is ResponseData.Error -> _errorWhileGettingNotes.postValue(listTasksDataFromFirebaseDB.error)
+                        is ResponseData.Success -> _allNotesFromDB.emit(listTasksDataFromFirebaseDB.result)
+                        is ResponseData.Error -> _errorWhileGettingNotes.emit(listTasksDataFromFirebaseDB.error)
                     }
 
                 }

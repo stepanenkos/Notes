@@ -4,10 +4,10 @@ import android.app.AlertDialog
 import android.content.Context
 import android.os.Bundle
 import android.view.View
-import android.widget.CheckBox
 import android.widget.ImageView
 import androidx.activity.OnBackPressedCallback
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.selection.SelectionPredicates
 import androidx.recyclerview.selection.SelectionTracker
@@ -22,16 +22,19 @@ import com.google.android.material.textview.MaterialTextView
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.firestore.FirebaseFirestoreException
 import com.google.firebase.ktx.Firebase
+import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.onEach
 import kz.stepanenkos.notes.R
-import kz.stepanenkos.notes.common.model.TaskData
 import kz.stepanenkos.notes.common.extensions.view.gone
 import kz.stepanenkos.notes.common.extensions.view.show
+import kz.stepanenkos.notes.common.model.TaskData
 import kz.stepanenkos.notes.databinding.FragmentTasksBinding
+import kz.stepanenkos.notes.listtasks.listeners.TaskClickListener
 import kz.stepanenkos.notes.listtasks.presentation.view.TaskDetailsLookup
 import kz.stepanenkos.notes.listtasks.presentation.view.TaskKeyProvider
-import kz.stepanenkos.notes.listtasks.listeners.TaskClickListener
 import kz.stepanenkos.notes.listtasks.presentation.view.TasksAdapter
 import org.koin.androidx.viewmodel.ext.android.viewModel
+
 const val TASK_ID = "TASK_ID"
 class TasksFragment : Fragment(R.layout.fragment_tasks), TaskClickListener {
     private val tasksViewModel: TasksViewModel by viewModel()
@@ -45,8 +48,6 @@ class TasksFragment : Fragment(R.layout.fragment_tasks), TaskClickListener {
     private lateinit var checkBoxSelectAllTasks: MaterialCheckBox
     private lateinit var deleteSelectedTasks: ImageView
     private lateinit var infoCountSelectedTasks: MaterialTextView
-
-
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
@@ -135,12 +136,17 @@ class TasksFragment : Fragment(R.layout.fragment_tasks), TaskClickListener {
         super.onStart()
         setHasOptionsMenu(true)
         tasksViewModel.onStart()
+        lifecycleScope.launchWhenStarted {
+            tasksViewModel.allNotes.onEach {
+                tasksAdapter.submitList(it)
+            }.launchIn(lifecycleScope)
 
-        tasksViewModel.allNotes.observe(viewLifecycleOwner) {
-            tasksAdapter.submitList(it)
+            tasksViewModel.errorWhileGettingNotes.onEach {
+                showError(it)
+            }.launchIn(lifecycleScope)
         }
 
-        tasksViewModel.errorWhileGettingNotes.observe(viewLifecycleOwner, ::showError)
+
         if (Firebase.auth.currentUser == null) {
             findNavController().navigate(R.id.loginFragment)
         }

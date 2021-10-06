@@ -31,7 +31,7 @@ class SearchNotesViewHolder(
             ZoneId.systemDefault().rules.getOffset(
                 Instant.now()
             ).toString()
-        )).format(DateTimeFormatter.ofPattern("HH:mm dd MMMM yyyy"))
+        )).format(DateTimeFormatter.ofPattern(itemView.context.getString(R.string.search_notes_view_holder_date_pattern)))
         noteContainer.setOnClickListener {
             noteClickListener.onNoteClick(noteData)
         }
