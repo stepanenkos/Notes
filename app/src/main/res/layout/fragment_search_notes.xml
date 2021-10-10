@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context=".searchnotes.presentation.SearchNotesFragment"
+    tools:context=".searchnotes.presentation.SearchFragment"
     >
 
     <SearchView
@@ -16,7 +16,7 @@
         />
 
         <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/search_notes_recycler_view"
+            android:id="@+id/search_items_recycler_view"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             tools:listitem="@layout/note_item"

@@ -154,12 +154,14 @@ class EditorNotesFragment : Fragment(R.layout.fragment_editor_notes) {
 
     private fun saveNote() {
         when {
-
             noteData == null && isNotBlankTextFields(titleNote, contentNote) && !isSave -> {
+                noteData = NoteData(
+                    titleNote = titleNote.text.toString(),
+                    contentNote = contentNote.text.toString()
+                )
                 CoroutineScope(Dispatchers.IO).launch {
                     editorViewModel.saveNote(
-                        titleNote.text.toString(),
-                        contentNote.text.toString()
+                        noteData!!
                     )
                 }
 
@@ -177,7 +179,7 @@ class EditorNotesFragment : Fragment(R.layout.fragment_editor_notes) {
                 CoroutineScope(Dispatchers.IO).launch {
                     noteData?.copy(
                         titleNote = titleNote.text.toString(),
-                        contentNote = contentNote.text.toString()
+                        contentNote = contentNote.text.toString(),
                     )?.let {
                         editorViewModel.updateNote(
                             it

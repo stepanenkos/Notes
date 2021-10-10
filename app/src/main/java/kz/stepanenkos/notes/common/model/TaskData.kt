@@ -22,4 +22,5 @@ data class TaskData(
     val notificationOn: Boolean = false,
     val dateOfNotification: Long = 0,
     val doneTask: Boolean = false,
+    val searchKeywords: List<String> = mutableListOf()
 ) : Parcelable

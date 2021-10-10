@@ -128,7 +128,7 @@
     </fragment>
     <fragment
         android:id="@+id/searchNotesFragment"
-        android:name="kz.stepanenkos.notes.searchnotes.presentation.SearchNotesFragment"
+        android:name="kz.stepanenkos.notes.searchnotes.presentation.SearchFragment"
         android:label="fragment_search_notes"
         tools:layout="@layout/fragment_search_notes"
         >

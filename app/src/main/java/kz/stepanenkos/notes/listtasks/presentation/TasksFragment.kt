@@ -29,6 +29,7 @@ import kz.stepanenkos.notes.common.extensions.view.gone
 import kz.stepanenkos.notes.common.extensions.view.show
 import kz.stepanenkos.notes.common.model.TaskData
 import kz.stepanenkos.notes.databinding.FragmentTasksBinding
+import kz.stepanenkos.notes.listtasks.listeners.TaskCheckedListener
 import kz.stepanenkos.notes.listtasks.listeners.TaskClickListener
 import kz.stepanenkos.notes.listtasks.presentation.view.TaskDetailsLookup
 import kz.stepanenkos.notes.listtasks.presentation.view.TaskKeyProvider
@@ -36,12 +37,12 @@ import kz.stepanenkos.notes.listtasks.presentation.view.TasksAdapter
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 const val TASK_ID = "TASK_ID"
-class TasksFragment : Fragment(R.layout.fragment_tasks), TaskClickListener {
+class TasksFragment : Fragment(R.layout.fragment_tasks), TaskClickListener, TaskCheckedListener {
     private val tasksViewModel: TasksViewModel by viewModel()
     private lateinit var binding: FragmentTasksBinding
 
     private lateinit var recyclerView: RecyclerView
-    private val tasksAdapter = TasksAdapter(this)
+    private val tasksAdapter = TasksAdapter(this, this)
 
     private lateinit var tracker: SelectionTracker<TaskData>
     private lateinit var toolbar: MaterialToolbar

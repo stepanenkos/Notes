@@ -1,13 +1,11 @@
 package kz.stepanenkos.notes.listtasks.presentation.view
 
 import android.graphics.Paint
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.CheckBox
 import android.widget.TextView
-import android.widget.Toast
 import androidx.cardview.widget.CardView
 import androidx.recyclerview.selection.ItemDetailsLookup
 import androidx.recyclerview.selection.SelectionTracker
@@ -18,6 +16,7 @@ import kz.stepanenkos.notes.common.extensions.view.gone
 import kz.stepanenkos.notes.common.extensions.view.show
 import kz.stepanenkos.notes.common.model.TaskData
 import kz.stepanenkos.notes.common.presentation.ContentTextView
+import kz.stepanenkos.notes.listtasks.listeners.TaskCheckedListener
 import kz.stepanenkos.notes.listtasks.listeners.TaskClickListener
 import org.threeten.bp.Instant
 import org.threeten.bp.ZoneId
@@ -25,7 +24,8 @@ import org.threeten.bp.ZonedDateTime
 import org.threeten.bp.format.DateTimeFormatter
 
 class TasksAdapter(
-    private val taskClickListener: TaskClickListener
+    private val taskClickListener: TaskClickListener,
+    private val taskCheckedListener: TaskCheckedListener
 ) : ListAdapter<TaskData, TasksAdapter.TasksViewHolder>(TasksDiffUtilCallback()) {
     private var tracker: SelectionTracker<TaskData>? = null
 
@@ -91,7 +91,7 @@ class TasksAdapter(
                 } else {
                     contentTask.paintFlags = 0
                 }
-                taskClickListener.onCheckedTask(taskData, checked)
+                taskCheckedListener.onCheckedTask(taskData, checked)
             }
 
             if (isActivated) {

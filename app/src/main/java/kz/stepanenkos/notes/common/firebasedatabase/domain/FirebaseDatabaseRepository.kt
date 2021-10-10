@@ -3,8 +3,8 @@ package kz.stepanenkos.notes.common.firebasedatabase.domain
 import com.google.firebase.firestore.FirebaseFirestoreException
 import kotlinx.coroutines.flow.Flow
 import kz.stepanenkos.notes.common.model.NoteData
-import kz.stepanenkos.notes.common.model.TaskData
 import kz.stepanenkos.notes.common.model.ResponseData
+import kz.stepanenkos.notes.common.model.TaskData
 
 interface FirebaseDatabaseRepository {
    suspend fun saveNote(noteData: NoteData)
@@ -16,8 +16,8 @@ interface FirebaseDatabaseRepository {
     suspend fun getAllNotes(): Flow<ResponseData<List<NoteData>, FirebaseFirestoreException>>
     suspend fun getAllTasks(): Flow<ResponseData<List<TaskData>, FirebaseFirestoreException>>
 
-    suspend fun searchNoteByText(searchKeyword: String): Flow<List<NoteData>>
-    suspend fun searchTaskByText(searchKeyword: String): Flow<List<TaskData>>
+    suspend fun searchNoteByText(searchKeyword: String): Flow<ResponseData<List<NoteData>, FirebaseFirestoreException>>
+    suspend fun searchTaskByText(searchKeyword: String): Flow<ResponseData<List<TaskData>, FirebaseFirestoreException>>
 
     fun updateNote(noteData: NoteData)
     fun updateTask(taskData: TaskData)

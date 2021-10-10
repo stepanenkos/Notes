@@ -27,7 +27,8 @@ class EditorViewModel(
     private val _taskById: MutableSharedFlow<TaskData> = MutableSharedFlow(replay = 1)
     val taskById: SharedFlow<TaskData> = _taskById.asSharedFlow()
 
-    private val _errorReceiving: MutableSharedFlow<FirebaseFirestoreException> = MutableSharedFlow(replay = 1)
+    private val _errorReceiving: MutableSharedFlow<FirebaseFirestoreException> =
+        MutableSharedFlow(replay = 1)
     val errorReceiving: SharedFlow<FirebaseFirestoreException> = _errorReceiving.asSharedFlow()
 
     suspend fun saveNote(titleNote: String, contentNote: String) {
@@ -42,14 +43,21 @@ class EditorViewModel(
         }
     }
 
-    private suspend fun saveNote(noteData: NoteData) {
-        firebaseDatabaseRepository.saveNote(noteData)
+    suspend fun saveNote(noteData: NoteData) {
+        val saveNoteData = noteData.copy(
+            searchKeywords = fillNoteSearchKeywordsList(
+                titleNote = noteData.titleNote,
+                contentNote = noteData.contentNote
+            )
+        )
+        firebaseDatabaseRepository.saveNote(saveNoteData)
     }
 
     suspend fun saveTask(taskData: TaskData) {
-        viewModelScope.launch(Dispatchers.IO) {
-            firebaseDatabaseRepository.saveTask(taskData)
-        }
+        val saveTaskData = taskData.copy(
+            searchKeywords = fillTaskSearchKeywordsList(taskData.contentTask)
+        )
+        firebaseDatabaseRepository.saveTask(saveTaskData)
     }
 
     fun updateNote(noteData: NoteData) {
@@ -110,6 +118,16 @@ class EditorViewModel(
         searchKeywordsList.add(contentNote.lowercase(Locale.getDefault()))
         searchKeywordsList.addAll(
             contentNote.lowercase(Locale.getDefault()).split(Regex("[\\p{Punct}\\s]+"))
+        )
+        return searchKeywordsList
+    }
+
+    private fun fillTaskSearchKeywordsList(contentTask: String): List<String> {
+        val searchKeywordsList: MutableList<String> = mutableListOf()
+
+        searchKeywordsList.add(contentTask.lowercase(Locale.getDefault()))
+        searchKeywordsList.addAll(
+            contentTask.lowercase(Locale.getDefault()).split(Regex("[\\p{Punct}\\s]+"))
         )
         return searchKeywordsList
     }

@@ -2,11 +2,12 @@ package kz.stepanenkos.notes.common.firebasedatabase.data
 
 import com.google.firebase.firestore.FirebaseFirestoreException
 import kotlinx.coroutines.flow.Flow
-import kz.stepanenkos.notes.common.model.NoteData
-import kz.stepanenkos.notes.common.model.TaskData
 import kz.stepanenkos.notes.common.firebasedatabase.data.datasource.FirebaseDatabaseSource
 import kz.stepanenkos.notes.common.firebasedatabase.domain.FirebaseDatabaseRepository
+import kz.stepanenkos.notes.common.model.NoteData
 import kz.stepanenkos.notes.common.model.ResponseData
+import kz.stepanenkos.notes.common.model.TaskData
+
 class DefaultFirebaseDatabaseRepository(
     private val firebaseDatabaseSource: FirebaseDatabaseSource
 ) : FirebaseDatabaseRepository {
@@ -35,11 +36,11 @@ class DefaultFirebaseDatabaseRepository(
     }
 
 
-    override suspend fun searchNoteByText(searchKeyword: String): Flow<List<NoteData>> {
+    override suspend fun searchNoteByText(searchKeyword: String): Flow<ResponseData<List<NoteData>, FirebaseFirestoreException>> {
         return firebaseDatabaseSource.searchNoteByText(searchKeyword)
     }
 
-    override suspend fun searchTaskByText(searchKeyword: String): Flow<List<TaskData>> {
+    override suspend fun searchTaskByText(searchKeyword: String): Flow<ResponseData<List<TaskData>, FirebaseFirestoreException>> {
         return firebaseDatabaseSource.searchTaskByText(searchKeyword)
     }
 

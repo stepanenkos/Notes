@@ -74,6 +74,7 @@ dependencies {
     implementation("androidx.recyclerview:recyclerview-selection:1.1.0")
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.5.0")
     implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8:1.5.31")
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-play-services:1.4.2")
 
 //Firebase
     implementation (platform("com.google.firebase:firebase-bom:28.4.1"))
@@ -82,36 +83,33 @@ dependencies {
     implementation("com.google.android.gms:play-services-auth:19.2.0")
     implementation("com.google.firebase:firebase-firestore-ktx")
 
-    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-play-services:1.4.2")
-
 //Lifecycle
     implementation("androidx.lifecycle:lifecycle-livedata-ktx:2.3.1")
     implementation("androidx.lifecycle:lifecycle-viewmodel-ktx:2.3.1")
 
 //Navigation
-    implementation("androidx.navigation:navigation-fragment-ktx:2.4.0-alpha09")
-    implementation("androidx.navigation:navigation-ui-ktx:2.4.0-alpha09")
+    implementation("androidx.navigation:navigation-fragment-ktx:2.4.0-alpha10")
+    implementation("androidx.navigation:navigation-ui-ktx:2.4.0-alpha10")
 
-    implementation("androidx.fragment:fragment-ktx:1.4.0-alpha09")
+    implementation("androidx.fragment:fragment-ktx:1.4.0-alpha10")
 
     implementation("com.jakewharton.threetenabp:threetenabp:1.3.0")
 
 //Koin
-    implementation("org.koin:koin-android:2.2.1")
-    implementation("org.koin:koin-androidx-viewmodel:2.2.1")
+    /*implementation ("io.insert-koin:koin-androidx-viewmodel:2.2.3")*/
+    implementation("io.insert-koin:koin-android:3.1.2")
 
 //Glide
     implementation("com.github.bumptech.glide:glide:4.12.0")
 
     implementation("androidx.preference:preference-ktx:1.1.1")
 
-    testImplementation("junit:junit:4.13.2")
-    androidTestImplementation("androidx.test.ext:junit:1.1.3")
-    androidTestImplementation("androidx.test.espresso:espresso-core:3.4.0")
-
 //ViewPump
     implementation("io.github.inflationx:viewpump:2.0.3")
 
+    testImplementation("junit:junit:4.13.2")
+    androidTestImplementation("androidx.test.ext:junit:1.1.3")
+    androidTestImplementation("androidx.test.espresso:espresso-core:3.4.0")
 }
 
 

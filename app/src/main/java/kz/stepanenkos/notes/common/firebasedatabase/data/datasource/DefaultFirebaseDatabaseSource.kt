@@ -90,7 +90,7 @@ class DefaultFirebaseDatabaseSource(
         }
 
     @ExperimentalCoroutinesApi
-    override suspend fun getAllNotes() = callbackFlow {
+    override suspend fun getAllNotes() = callbackFlow<ResponseData<List<NoteData>, FirebaseFirestoreException>> {
         val getAllNotes = auth.currentUser?.uid?.let { uid ->
             usersNode.document(uid).collection(NOTES_NODE_CHILD)
                 .addSnapshotListener { value, error ->
@@ -116,7 +116,7 @@ class DefaultFirebaseDatabaseSource(
     }
 
     @ExperimentalCoroutinesApi
-    override suspend fun getAllTasks() = callbackFlow {
+    override suspend fun getAllTasks() = callbackFlow<ResponseData<List<TaskData>, FirebaseFirestoreException>> {
         val getAllTasks = auth.currentUser?.uid?.let { uid ->
             usersNode.document(uid).collection(TASKS_NODE_CHILD)
                 .addSnapshotListener { value, error ->
@@ -142,7 +142,7 @@ class DefaultFirebaseDatabaseSource(
     }
 
     @ExperimentalCoroutinesApi
-    override suspend fun searchNoteByText(searchKeyword: String) = callbackFlow<List<NoteData>> {
+    override suspend fun searchNoteByText(searchKeyword: String) = callbackFlow<ResponseData<List<NoteData>, FirebaseFirestoreException>> {
         val searchNoteByText = auth.currentUser?.uid?.let { uid ->
             usersNode.document(uid).collection(NOTES_NODE_CHILD)
                 .addSnapshotListener { value, error ->
@@ -157,16 +157,21 @@ class DefaultFirebaseDatabaseSource(
                             ) {
                                 foundNotesBySearchText.add(doc.toObject(NoteData::class.java))
                             }
+                            trySend(ResponseData.Success(foundNotesBySearchText)).isSuccess
                         }
+
                     }
-                    trySend(foundNotesBySearchText).isSuccess
+                    if(error != null) {
+                        trySend(ResponseData.Error(error)).isFailure
+                    }
+
                 }
         }
         awaitClose { searchNoteByText?.remove() }
     }
 
     @ExperimentalCoroutinesApi
-    override suspend fun searchTaskByText(searchKeyword: String) = callbackFlow<List<TaskData>> {
+    override suspend fun searchTaskByText(searchKeyword: String) = callbackFlow<ResponseData<List<TaskData>, FirebaseFirestoreException>> {
         val searchTasksByText = auth.currentUser?.uid?.let { uid ->
             usersNode.document(uid).collection(TASKS_NODE_CHILD)
                 .addSnapshotListener { value, error ->
@@ -179,8 +184,11 @@ class DefaultFirebaseDatabaseSource(
                                 foundTasksBySearchText.add(doc.toObject(TaskData::class.java))
                             }
                         }
+                        trySend(ResponseData.Success(foundTasksBySearchText)).isSuccess
                     }
-                    trySend(foundTasksBySearchText).isSuccess
+                    if(error != null) {
+                        trySend(ResponseData.Error(error)).isFailure
+                    }
                 }
         }
         awaitClose { searchTasksByText?.remove() }
